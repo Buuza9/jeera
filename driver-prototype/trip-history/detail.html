@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Trip details</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <script src="../_shared/map.js"></script>
+  <style>
+    .det-screen {
+      padding: 70px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── Floating back button over the map ───────────────────── */
+    .det-back {
+      position: absolute;
+      top: 70px; inset-inline-start: 16px;
+      z-index: 1100;
+      width: 40px; height: 40px; border-radius: 12px;
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--border);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--text);
+      box-shadow: 0 4px 12px rgba(15,23,42,.15);
+    }
+    [data-theme="dark"] .det-back { background: rgba(17,24,39,.95); }
+    .det-back svg { width: 20px; height: 20px; }
+    [dir="rtl"] .det-back svg { transform: scaleX(-1); }
+
+    .det-status {
+      position: absolute;
+      top: 70px; inset-inline-end: 16px;
+      z-index: 1100;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 12px;
+      background: var(--brand-50);
+      color: var(--brand-700);
+      border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.04em;
+      box-shadow: 0 4px 12px rgba(15,23,42,.12);
+    }
+    [data-theme="dark"] .det-status { background: rgba(16,185,129,.18); }
+    .det-status::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--brand-500);
+    }
+
+    /* ── Map (top half) ──────────────────────────────────────── */
+    .det-map {
+      position: relative;
+      height: 38%;
+    }
+    .det-map #det-map-el { width: 100%; height: 100%; }
+
+    /* ── Bottom sheet — details ───────────────────────────────── */
+    .det-sheet {
+      position: absolute;
+      top: 38%; bottom: 0;
+      inset-inline: 0;
+      z-index: 1100;
+      background: var(--bg);
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 -16px 40px rgba(15,23,42,.15);
+      padding: 8px 20px 24px;
+      overflow-y: auto;
+      display: flex; flex-direction: column; gap: 12px;
+      scrollbar-width: none;
+    }
+    .det-sheet::-webkit-scrollbar { display: none; }
+    .sheet-handle {
+      width: 44px; height: 5px; border-radius: 999px;
+      background: var(--surface-2);
+      margin: 4px auto 4px;
+      flex: 0 0 auto;
+    }
+
+    .det-when {
+      text-align: center;
+    }
+    .det-when .date { font-size: 14px; font-weight: 700; }
+    .det-when .time { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Route block — From / To with track + km */
+    .route-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex; gap: 12px;
+    }
+    .route-card .pin-stack {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding-top: 4px; flex: 0 0 auto;
+    }
+    .route-card .pin-stack .pin {
+      width: 11px; height: 11px; border-radius: 50%;
+      box-shadow: 0 0 0 1px var(--border);
+    }
+    .route-card .pin-stack .pin.from { background: var(--brand-500); box-shadow: 0 0 0 1px var(--brand-500); }
+    .route-card .pin-stack .pin.to   { background: #dc2626; box-shadow: 0 0 0 1px #dc2626; }
+    .route-card .pin-stack .track {
+      width: 2px; flex: 1; min-height: 14px;
+      background: var(--border);
+      border-radius: 2px;
+    }
+    .route-card .stops { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+    .route-card .stop .l {
+      font-size: 10.5px; font-weight: 600; color: var(--text-muted);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .route-card .stop .a {
+      font-size: 13.5px; font-weight: 600;
+      margin-top: 2px; line-height: 1.35;
+    }
+
+    /* Fare breakdown */
+    .breakdown {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+    .breakdown h4 {
+      margin: 0 0 10px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .breakdown .row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13.5px;
+    }
+    .breakdown .row .l { color: var(--text-muted); }
+    .breakdown .row .v {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .breakdown .row .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+    .breakdown .row.minus .v { color: var(--accent-600); }
+    .breakdown .row.total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px; padding-top: 12px;
+    }
+    .breakdown .row.total .l { color: var(--text); font-weight: 700; }
+    .breakdown .row.total .v {
+      font-size: 18px; font-weight: 800;
+      color: var(--brand-700);
+    }
+
+    .meta-pair {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .meta-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .meta-card .ic {
+      width: 32px; height: 32px; border-radius: 10px;
+      background: var(--surface-2); color: var(--text-muted);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 auto;
+    }
+    .meta-card .ic svg { width: 16px; height: 16px; }
+    .meta-card .l { font-size: 11px; color: var(--text-muted); }
+    .meta-card .v {
+      font-size: 14px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .meta-card .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+
+    /* Rider */
+    .rider-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .rider-row .av {
+      width: 44px; height: 44px; border-radius: 50%;
+      color: white; font-weight: 700; font-size: 15px;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 auto;
+    }
+    .rider-row .who { flex: 1; min-width: 0; }
+    .rider-row .who .l { font-size: 11px; color: var(--text-muted); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; }
+    .rider-row .who .n { font-size: 15px; font-weight: 700; margin-top: 2px; }
+    .rider-row .who .rating {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-top: 4px;
+      font-size: 12px; color: var(--text-muted);
+    }
+    .rider-row .who .rating svg { width: 13px; height: 13px; fill: #f59e0b; color: #f59e0b; }
+
+    /* ── Trip timeline ───────────────────────────────────────── */
+    .timeline {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+    .timeline h4 {
+      margin: 0 0 12px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .tl-list {
+      list-style: none;
+      margin: 0; padding: 0;
+      position: relative;
+    }
+    /* The vertical brand-green line sits under the dot column. The dots
+       are 14px wide so the line is centred at 7px. */
+    .tl-list::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 6px;
+      top: 6px; bottom: 6px;
+      width: 2px;
+      background: var(--brand-500);
+      opacity: 0.35;
+      border-radius: 2px;
+    }
+    .tl-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 2px 0 14px;
+      position: relative;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot {
+      flex: 0 0 auto;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--brand-500);
+      margin-top: 3px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 1;
+    }
+    .tl-item.done .tl-dot { background: var(--brand-500); }
+    .tl-item:last-child .tl-dot {
+      width: 16px; height: 16px; margin-top: 2px;
+      background: var(--brand-500);
+      box-shadow: 0 0 0 4px rgba(16,185,129,.18);
+    }
+    .tl-body { flex: 1; min-width: 0; }
+    .tl-label {
+      font-size: 13.5px; font-weight: 600;
+      line-height: 1.3;
+    }
+    .tl-time {
+      font-size: 12px; color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      margin-top: 1px;
+    }
+
+    .support-link {
+      align-self: center;
+      font-size: 13px;
+      color: var(--brand-600);
+      font-weight: 600;
+      padding: 8px 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen det-screen">
+
+        <a class="det-back" href="index.html" aria-label="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 6l-6 6 6 6"/>
+          </svg>
+        </a>
+        <span class="det-status" data-i18n="det.status">Completed</span>
+
+        <div class="det-map">
+          <div id="det-map-el"></div>
+        </div>
+
+        <div class="det-sheet">
+          <div class="sheet-handle" aria-hidden="true"></div>
+
+          <div class="det-when">
+            <div class="date" id="d-date">Today</div>
+            <div class="time" id="d-time">14:30 · 14 min</div>
+          </div>
+
+          <div class="route-card">
+            <div class="pin-stack">
+              <span class="pin from"></span>
+              <span class="track"></span>
+              <span class="pin to"></span>
+            </div>
+            <div class="stops">
+              <div class="stop">
+                <div class="l" data-i18n="det.from">From</div>
+                <div class="a" id="d-from">Hai al-Andalus, Tripoli</div>
+              </div>
+              <div class="stop">
+                <div class="l" data-i18n="det.to">To</div>
+                <div class="a" id="d-to">Gargaresh, Tripoli</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="meta-pair">
+            <div class="meta-card">
+              <span class="ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12h3l3-9 6 18 3-9h3"/>
+                </svg>
+              </span>
+              <div>
+                <div class="l" data-i18n="det.distance">Distance</div>
+                <div class="v"><span id="d-km">8.5</span><span class="unit" data-i18n="unit.km">km</span></div>
+              </div>
+            </div>
+            <div class="meta-card">
+              <span class="ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+                </svg>
+              </span>
+              <div>
+                <div class="l" data-i18n="det.duration">Duration</div>
+                <div class="v"><span id="d-min">14</span><span class="unit" data-i18n="unit.min">min</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="breakdown">
+            <h4 data-i18n="det.breakdown">Fare breakdown</h4>
+            <div class="row">
+              <span class="l" data-i18n="det.fare">Trip fare (cash)</span>
+              <span class="v"><span id="d-fare">25</span><span class="unit" data-i18n="unit.currency">LYD</span></span>
+            </div>
+            <div class="row minus">
+              <span class="l">
+                <span data-i18n="det.commission">Jeera commission</span>
+                <span style="color:var(--text-faint);font-weight:500;"> · 15%</span>
+              </span>
+              <span class="v">−<span id="d-comm">3.75</span><span class="unit" data-i18n="unit.currency">LYD</span></span>
+            </div>
+            <div class="row total">
+              <span class="l" data-i18n="det.net">Net to you</span>
+              <span class="v"><span id="d-net">21.25</span><span class="unit" data-i18n="unit.currency">LYD</span></span>
+            </div>
+          </div>
+
+          <div class="rider-row">
+            <span class="av" id="d-av" style="background:linear-gradient(135deg,#fcd34d,#f59e0b)">KA</span>
+            <div class="who">
+              <div class="l" data-i18n="det.rider">Rider</div>
+              <div class="n" id="d-rider">Khalid Ahmad</div>
+              <div class="rating">
+                <svg viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.7 1.64-7.03L2 9.24l7.19-.61L12 2l2.81 6.63L22 9.24l-5.46 4.73 1.64 7.03z"/></svg>
+                <span><span id="d-rating">4.8</span> · <span data-i18n="det.rating">rated by you</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline">
+            <h4 data-i18n="det.timeline">Trip timeline</h4>
+            <ol class="tl-list">
+              <li class="tl-item done">
+                <span class="tl-dot" aria-hidden="true"></span>
+                <div class="tl-body">
+                  <div class="tl-label" data-i18n="det.tl.accepted">Request accepted</div>
+                  <div class="tl-time" id="tl-accepted">—</div>
+                </div>
+              </li>
+              <li class="tl-item done">
+                <span class="tl-dot" aria-hidden="true"></span>
+                <div class="tl-body">
+                  <div class="tl-label" data-i18n="det.tl.arrived">Arrived at pickup</div>
+                  <div class="tl-time" id="tl-arrived">—</div>
+                </div>
+              </li>
+              <li class="tl-item done">
+                <span class="tl-dot" aria-hidden="true"></span>
+                <div class="tl-body">
+                  <div class="tl-label" data-i18n="det.tl.started">Trip started</div>
+                  <div class="tl-time" id="tl-started">—</div>
+                </div>
+              </li>
+              <li class="tl-item done">
+                <span class="tl-dot" aria-hidden="true"></span>
+                <div class="tl-body">
+                  <div class="tl-label" data-i18n="det.tl.ended">Trip ended · cash collected</div>
+                  <div class="tl-time" id="tl-ended">—</div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <a class="support-link" href="../support/index.html" data-i18n="det.support">Report a problem with this trip</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "det.status":    { en: "Completed",                              ar: "مكتملة" },
+      "det.from":      { en: "From",                                   ar: "من" },
+      "det.to":        { en: "To",                                     ar: "إلى" },
+      "det.distance":  { en: "Distance",                               ar: "المسافة" },
+      "det.duration":  { en: "Duration",                               ar: "المدة" },
+      "det.breakdown": { en: "Fare breakdown",                         ar: "تفصيل الأجرة" },
+      "det.fare":      { en: "Trip fare (cash)",                       ar: "أجرة الرحلة (نقدًا)" },
+      "det.commission":{ en: "Jeera commission",                       ar: "عمولة جيرا" },
+      "det.net":       { en: "Net to you",                             ar: "صافي ربحك" },
+      "det.rider":     { en: "Rider",                                  ar: "الراكب" },
+      "det.rating":    { en: "rated by you",                           ar: "تقييمك له" },
+      "det.support":   { en: "Report a problem with this trip",        ar: "الإبلاغ عن مشكلة في هذه الرحلة" },
+      "det.timeline":  { en: "Trip timeline",                          ar: "الجدول الزمني للرحلة" },
+      "det.tl.accepted":{ en: "Request accepted",                      ar: "تم قبول الطلب" },
+      "det.tl.arrived":{ en: "Arrived at pickup",                      ar: "وصلت إلى نقطة الانطلاق" },
+      "det.tl.started":{ en: "Trip started",                           ar: "بدأت الرحلة" },
+      "det.tl.ended":  { en: "Trip ended · cash collected",            ar: "انتهت الرحلة · تم استلام النقود" },
+      "unit.currency": { en: "LYD",                                    ar: "د.ل" },
+      "unit.km":       { en: "km",                                     ar: "كم" },
+      "unit.min":      { en: "min",                                    ar: "د" },
+    });
+
+    // ── Mock trip data, keyed by ?id= (matches the order in index.html) ──
+    // Real impl would fetch from /trips/:id.
+    const TRIPS = {
+      "1": { from: "Hai al-Andalus, Tripoli",   to: "Gargaresh, Tripoli",
+             fromCoord: [32.8615,13.1497], toCoord: [32.8467,13.1158],
+             waypoints: [[32.8615,13.1497],[32.856,13.140],[32.852,13.130],[32.850,13.122],[32.8467,13.1158]],
+             when: "Today", time: "14:30",
+             km: 8.5, min: 14, fare: 25,
+             rider: "Khalid Ahmad", initials: "KA",
+             rating: 4.8, avBg: "linear-gradient(135deg,#fcd34d,#f59e0b)" },
+      "2": { from: "Souq al-Juma, Tripoli", to: "Old City (Medina), Tripoli",
+             fromCoord: [32.8964,13.2126], toCoord: [32.8990,13.1797],
+             waypoints: [[32.8964,13.2126],[32.898,13.205],[32.901,13.195],[32.8990,13.1797]],
+             when: "Today", time: "12:05",
+             km: 3.2, min: 9, fare: 14,
+             rider: "Sara Mansour", initials: "SM",
+             rating: 5.0, avBg: "linear-gradient(135deg,#a78bfa,#7c3aed)" },
+      "3": { from: "Hai al-Andalus, Tripoli", to: "Tripoli Airport (MJI)",
+             fromCoord: [32.8615,13.1497], toCoord: [32.6663,13.1590],
+             waypoints: [[32.8615,13.1497],[32.83,13.15],[32.78,13.15],[32.73,13.155],[32.6663,13.1590]],
+             when: "Today", time: "09:42",
+             km: 23.1, min: 28, fare: 42,
+             rider: "Omar Belhaj", initials: "OB",
+             rating: 4.7, avBg: "linear-gradient(135deg,#34d399,#059669)" },
+      "4": { from: "Gargaresh, Tripoli", to: "Hai al-Andalus, Tripoli",
+             fromCoord: [32.8467,13.1158], toCoord: [32.8615,13.1497],
+             waypoints: [[32.8467,13.1158],[32.850,13.122],[32.852,13.130],[32.856,13.140],[32.8615,13.1497]],
+             when: "Yesterday", time: "21:18",
+             km: 8.7, min: 16, fare: 26,
+             rider: "Nadia Ali", initials: "NA",
+             rating: 4.9, avBg: "linear-gradient(135deg,#f472b6,#db2777)" },
+      "5": { from: "Tripoli Central, Martyrs' Square", to: "Souq al-Juma, Tripoli",
+             fromCoord: [32.8973,13.1801], toCoord: [32.8964,13.2126],
+             waypoints: [[32.8973,13.1801],[32.898,13.190],[32.896,13.202],[32.8964,13.2126]],
+             when: "Yesterday", time: "18:54",
+             km: 5.4, min: 12, fare: 18,
+             rider: "Yousef Hadi", initials: "YH",
+             rating: 4.6, avBg: "linear-gradient(135deg,#60a5fa,#2563eb)" },
+    };
+
+    const id = new URLSearchParams(location.search).get('id') || '1';
+    const t = TRIPS[id] || TRIPS["1"];
+
+    // Hydrate
+    document.getElementById('d-date').textContent  = t.when;
+    document.getElementById('d-time').textContent  = `${t.time} · ${t.min} ${I18N.t('unit.min')}`;
+    document.getElementById('d-from').textContent  = t.from;
+    document.getElementById('d-to').textContent    = t.to;
+    document.getElementById('d-km').textContent    = t.km;
+    document.getElementById('d-min').textContent   = t.min;
+    document.getElementById('d-fare').textContent  = t.fare;
+    document.getElementById('d-comm').textContent  = (t.fare * 0.15).toFixed(2);
+    document.getElementById('d-net').textContent   = (t.fare * 0.85).toFixed(2);
+    document.getElementById('d-rider').textContent = t.rider;
+    document.getElementById('d-rating').textContent= t.rating.toFixed(1);
+    const av = document.getElementById('d-av');
+    av.textContent = t.initials;
+    av.style.background = t.avBg;
+
+    // Compute timeline timestamps from `time` (trip start) and `min` (duration).
+    // Accepted is 8 min before the start; Arrived 2 min before; Ended start+min.
+    function addMin(hhmm, delta) {
+      const [h, m] = hhmm.split(':').map(Number);
+      const total = (h * 60 + m + delta + 1440) % 1440;
+      return `${String(Math.floor(total / 60)).padStart(2,'0')}:${String(total % 60).padStart(2,'0')}`;
+    }
+    document.getElementById('tl-accepted').textContent = addMin(t.time, -8);
+    document.getElementById('tl-arrived').textContent  = addMin(t.time, -2);
+    document.getElementById('tl-started').textContent  = t.time;
+    document.getElementById('tl-ended').textContent    = addMin(t.time, t.min);
+
+    // Map: render the trip's route on a real Tripoli map.
+    JeeraMap.create('det-map-el', {
+      center: t.waypoints[Math.floor(t.waypoints.length / 2)],
+      zoom: 13,
+      onReady(map, L) {
+        JeeraMap.pin(L, t.fromCoord, 'rider', { label: 'Pickup' }).addTo(map);
+        JeeraMap.pin(L, t.toCoord,   'dest',  { label: 'Drop-off' }).addTo(map);
+        const route = JeeraMap.route(L, t.waypoints).addTo(map);
+        map.fitBounds(route.getBounds().pad(0.22));
+      },
+    });
+  </script>
+</body>
+</html>
