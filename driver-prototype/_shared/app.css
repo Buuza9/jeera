@@ -12,7 +12,8 @@ html, body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   letter-spacing: -0.01em;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 [dir="rtl"] body { font-family: var(--font-ar); }
@@ -51,16 +52,18 @@ a { color: inherit; text-decoration: none; }
 
 /* ─── iPhone 17 Pro Max frame (440 × 956 logical, Dynamic Island) ──── */
 .stage {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 16px;
   background: radial-gradient(1200px 600px at 50% 0%, #1e293b 0%, #0b1220 60%);
+  overflow: hidden;
 }
 .phone {
   width: 440px;
   height: 956px;
+  flex-shrink: 0;
   background: var(--bg);
   border-radius: 56px;
   border: 11px solid #0a0a0a;
@@ -70,6 +73,11 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   position: relative;
   color: var(--text);
+  /* Auto-fit to viewport: keep internal 440×956 coordinates, scale the
+     whole frame down if either dimension is tight. --phone-scale is
+     computed in frame.js (CSS `scale()` can't take a length-valued calc). */
+  transform: scale(var(--phone-scale, 1));
+  transform-origin: center center;
 }
 /* Dynamic Island */
 .phone::before {

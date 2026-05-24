@@ -37,5 +37,27 @@
     });
   }
 
-  document.addEventListener("DOMContentLoaded", mount);
+  // Compute the phone scale so the 440 × 956 frame fits any viewport.
+  // CSS `scale()` needs a unitless number, so we compute it here and feed
+  // the result into a custom property the stylesheet consumes.
+  const PHONE_W = 440;
+  const PHONE_H = 956;
+  const STAGE_PAD = 32; // matches .stage padding (16px on each side)
+
+  function fitPhone() {
+    const sx = Math.min(
+      1,
+      (window.innerHeight - STAGE_PAD) / PHONE_H,
+      (window.innerWidth  - STAGE_PAD) / PHONE_W,
+    );
+    document.documentElement.style.setProperty("--phone-scale", sx);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    mount();
+    fitPhone();
+  });
+  window.addEventListener("resize", fitPhone);
+  // Run synchronously too so the very first paint already has the right size.
+  fitPhone();
 })();
