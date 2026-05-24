@@ -12,6 +12,7 @@ commit that touches the prototype. Per `INSTRUCTIONS.MD` §7.
 | Item | Status | Notes |
 |---|---|---|
 | `_shared/tokens.css` | ✅ | Brand (green/amber placeholders), neutrals, dark theme, radii, shadows. Swap palette here when client confirms. |
+| Currency | ✅ | **LYD (د.ل)** — confirmed as the only supported currency. Every page uses the shared i18n key `unit.currency` (`LYD` in EN, `د.ل` in AR). |
 | `_shared/app.css` | ✅ | iPhone 17 Pro Max frame (440 × 956), Dynamic Island, status-bar layout, home indicator, buttons, fields, upload, cards, badges. Logical properties → RTL-safe. |
 | `_shared/i18n.js` | ✅ | `I18N.register` / `setLang` / `setTheme` / `apply`. EN/AR + light/dark, persisted to localStorage. |
 | `_shared/frame.js` | ✅ | Injects status bar (9:41 + signal/wifi/battery SVGs) and home indicator into every `.phone`. |
@@ -33,7 +34,7 @@ points to `driver-app/REQUIREMENTS.md` sections.
 ### Phase D2
 | Folder | Screens | Status | Spec | Notes |
 |---|---|---|---|---|
-| `dashboard/` | `index.html` | ⏳ | §2.3 | Header (avatar + name + menu), online toggle, today's-summary tiles, primary CTA, link to trip history. |
+| `dashboard/` | `index.html` | ✅ | §2.3 | **Map-first layout** (per Uber/Careem driver pattern). Compact header (avatar `AM` + name + "Jeera driver" + hamburger). Large `.map-placeholder` with faux street grid, driver pin (pulses when online), overlaid status pill (top-start) and today's-earnings chip (top-end, tap → trip-history). Online toggle row with iOS-style switch syncs the pill + pin + primary CTA + status line. Outstanding-commission card per §2.10 → links to `commission/`. Primary CTA mirrors the toggle (`Start ↔ Stop receiving requests`); secondary → `trip-history/`. Going online mocks an incoming request 3.5s later and routes to `ride-requests/`. Currency = `LYD / د.ل` via shared `unit.currency` i18n key. |
 | `ride-requests/` | `index.html` (modal over dashboard) | ⏳ | §2.4 | Pickup/destination addresses, distances, fare, accept/reject, auto-decline countdown (timer value TBD §5). |
 | `active-trip/` | `to-pickup.html`, `in-trip.html`, `complete.html` | ⏳ | §2.5 – §2.7 | Map placeholder div + metrics row + rider/destination card + primary CTA per step. Final step = "تأكيد استلام النقود". |
 
@@ -56,7 +57,7 @@ points to `driver-app/REQUIREMENTS.md` sections.
 
 These should appear as visible TODOs in the relevant mockup until the client confirms.
 
-- Currency display: deck shows ريال, Libya uses LYD (د.ل). → affects `dashboard/`, `earnings/`, `active-trip/complete.html`, `commission/*`.
+- ~~Currency display~~ — **resolved: LYD (د.ل) only.** Use shared `unit.currency` i18n key.
 - Commission rate default. → affects `commission/index.html`.
 - Settlement cap value. → affects `commission/index.html`.
 - Approved settlement channels list. → affects `commission/settle.html`.
