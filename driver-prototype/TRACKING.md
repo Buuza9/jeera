@@ -1,0 +1,74 @@
+# TRACKING.md — Driver Prototype
+
+Single source of truth for what's built in `driver-prototype/`. Update on every
+commit that touches the prototype. Per `INSTRUCTIONS.MD` §7.
+
+**Status legend:** ✅ Live · 🟡 Partial / WIP · ⏳ Pending · 📌 Stub · ❌ Dead
+
+---
+
+## Foundations
+
+| Item | Status | Notes |
+|---|---|---|
+| `_shared/tokens.css` | ✅ | Brand (green/amber placeholders), neutrals, dark theme, radii, shadows. Swap palette here when client confirms. |
+| `_shared/app.css` | ✅ | iPhone 17 Pro Max frame (440 × 956), Dynamic Island, status-bar layout, home indicator, buttons, fields, upload, cards, badges. Logical properties → RTL-safe. |
+| `_shared/i18n.js` | ✅ | `I18N.register` / `setLang` / `setTheme` / `apply`. EN/AR + light/dark, persisted to localStorage. |
+| `_shared/frame.js` | ✅ | Injects status bar (9:41 + signal/wifi/battery SVGs) and home indicator into every `.phone`. |
+| `_shared/toolbar.html` | 📌 | Reference snippet only — toolbar markup is currently inlined per page. |
+| Root `index.html` | ✅ | Redirects to `welcome/`. No dev hub — navigation happens inside the phone. |
+
+## Feature mockups
+
+Order mirrors `driver-app/CLAUDE.md` §3 phases (D1 → D4). Spec source column
+points to `driver-app/REQUIREMENTS.md` sections.
+
+### Phase D1
+| Folder | Screens | Status | Spec | Notes |
+|---|---|---|---|---|
+| `welcome/` | `index.html` | ✅ | (entry) | Brand mark, tagline, 3 feature rows, Get started → enrollment, secondary "I already have an account". |
+| `enrollment/` | `index.html` (form), `pending.html` (post-submit) | ✅ | §2.2 | KYC form: full name, phone, national ID, license #, plate #, ID photo, license photo. Submit → pending-approval state with submitted checklist. |
+| `auth/` | `index.html` (sign-in) | ⏳ | §2.1 | Returning-driver phone + sign-in CTA. Reachable from welcome's "I already have an account". |
+
+### Phase D2
+| Folder | Screens | Status | Spec | Notes |
+|---|---|---|---|---|
+| `dashboard/` | `index.html` | ⏳ | §2.3 | Header (avatar + name + menu), online toggle, today's-summary tiles, primary CTA, link to trip history. |
+| `ride-requests/` | `index.html` (modal over dashboard) | ⏳ | §2.4 | Pickup/destination addresses, distances, fare, accept/reject, auto-decline countdown (timer value TBD §5). |
+| `active-trip/` | `to-pickup.html`, `in-trip.html`, `complete.html` | ⏳ | §2.5 – §2.7 | Map placeholder div + metrics row + rider/destination card + primary CTA per step. Final step = "تأكيد استلام النقود". |
+
+### Phase D3
+| Folder | Screens | Status | Spec | Notes |
+|---|---|---|---|---|
+| `trip-history/` | `index.html` | ⏳ | §2.8 | Top stats strip (trips / earnings / hours) + scrollable trip cards. |
+| `earnings/` | `index.html` | ⏳ | §3 | Daily / weekly / monthly tabs, totals, per-trip rows. |
+| `commission/` | `index.html` (balance), `settle.html` (channel picker), `history.html` (past settlements), `suspended.html` (overdue state) | ⏳ | §2.10 | First-class revenue feature. Settlement channels list TBD §5. |
+
+### Phase D4
+| Folder | Screens | Status | Spec | Notes |
+|---|---|---|---|---|
+| `ratings/` | `index.html` (own rating), `rate-rider.html` (post-trip modal) | ⏳ | §3 | |
+| `profile/` | `index.html` | ⏳ | §3 | Driver info, vehicle details, document status badges. |
+| `settings/` | `index.html` | ⏳ | §3 | Theme, language (AR/EN), notifications, security, privacy. |
+| `support/` | `index.html` | ⏳ | §3 | Help, FAQ accordion, contact, SOS button. |
+
+## Open questions (from REQUIREMENTS §5)
+
+These should appear as visible TODOs in the relevant mockup until the client confirms.
+
+- Currency display: deck shows ريال, Libya uses LYD (د.ل). → affects `dashboard/`, `earnings/`, `active-trip/complete.html`, `commission/*`.
+- Commission rate default. → affects `commission/index.html`.
+- Settlement cap value. → affects `commission/index.html`.
+- Approved settlement channels list. → affects `commission/settle.html`.
+- Auto-decline timer on incoming request. → affects `ride-requests/index.html`.
+- Document expiry / re-upload UX. → affects `enrollment/`, `profile/`.
+- PIN / biometric session lock scope. → affects `enrollment/`, `auth/`, `settings/`.
+- Offline-mid-trip behavior. → affects `active-trip/`.
+
+## Conventions for the next agent
+
+1. Copy the `welcome/` template: `<head>` includes `app.css` + `i18n.js` + `frame.js`; body wraps content in `.stage > .phone > .screen`; every string goes through `data-i18n` + `I18N.register`.
+2. Never use `ml-/mr-/pl-/pr-` or `margin-left/right` — use logical properties (`margin-inline-start/end`, `padding-inline`).
+3. Use inline SVGs for icons (no emoji). Heroicons paths are fine; match line-weight to existing icons.
+4. No real maps — use a `.map-placeholder` div with a label.
+5. Update this file on every commit. Mark a feature ✅ only when its screens match the REQUIREMENTS section and render correctly in EN + AR + light + dark.

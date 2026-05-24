@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Welcome</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .welcome-screen {
+      padding: 96px 28px 40px;
+      align-items: center;
+      text-align: center;
+      background:
+        radial-gradient(420px 220px at 50% 0%, rgba(16,185,129,.18), transparent 70%),
+        var(--bg);
+    }
+    .welcome-brand {
+      width: 96px; height: 96px; border-radius: 28px;
+      background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow:
+        0 0 0 8px rgba(16,185,129,.08),
+        0 20px 50px rgba(16,185,129,.35);
+      margin: 16px 0 28px;
+      position: relative;
+    }
+    .welcome-brand::after {
+      content: ""; position: absolute; inset: 1px; border-radius: 27px;
+      background: linear-gradient(180deg, rgba(255,255,255,.22), transparent 55%);
+    }
+    .welcome-brand svg { width: 56px; height: 56px; position: relative; z-index: 1; }
+    .welcome-title { font-size: 30px; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.025em; }
+    .welcome-tag   { font-size: 15px; color: var(--text-muted); margin: 0 0 32px; max-width: 320px; line-height: 1.5; }
+    .features {
+      width: 100%;
+      display: flex; flex-direction: column; gap: 10px;
+      margin: 8px 0 28px;
+      text-align: start;
+    }
+    .feature {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .feature .ic {
+      flex: 0 0 auto;
+      width: 40px; height: 40px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--brand-50); color: var(--brand-600);
+    }
+    [data-theme="dark"] .feature .ic { background: rgba(16,185,129,.15); }
+    .feature .ic svg { width: 20px; height: 20px; }
+    .feature .text { display: flex; flex-direction: column; gap: 2px; }
+    .feature h4 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+    .feature p  { margin: 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.4; }
+    .welcome-actions { width: 100%; }
+    .welcome-actions .btn + .btn { margin-top: 10px; }
+    .legal { font-size: 11px; color: var(--text-faint); margin-top: 18px; max-width: 280px; line-height: 1.5; }
+    .legal a { color: var(--brand-600); }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen welcome-screen">
+        <div class="welcome-brand">
+          <!-- Stylised "J" for Jeera; replace with logo when client ships one -->
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M30 8 L30 30 a8 8 0 0 1 -16 0" />
+            <path d="M22 8 L36 8" opacity=".75"/>
+          </svg>
+        </div>
+        <h1 class="welcome-title" data-i18n="welcome.title">Welcome to Jeera</h1>
+        <p class="welcome-tag" data-i18n="welcome.tag">Start your journey with us — drive, earn, and grow.</p>
+
+        <div class="features">
+          <div class="feature">
+            <div class="ic">
+              <!-- Clock -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 7v5l3 2"/>
+              </svg>
+            </div>
+            <div class="text">
+              <h4 data-i18n="welcome.f1.title">Drive on your own schedule</h4>
+              <p data-i18n="welcome.f1.sub">Go online whenever you want.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="ic">
+              <!-- Banknote -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2.5" y="6" width="19" height="12" rx="2"/>
+                <circle cx="12" cy="12" r="2.5"/>
+                <path d="M6 9.5v.01M18 14.5v.01"/>
+              </svg>
+            </div>
+            <div class="text">
+              <h4 data-i18n="welcome.f2.title">Cash at the end of every trip</h4>
+              <p data-i18n="welcome.f2.sub">Riders pay you directly.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="ic">
+              <!-- Chart -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18"/>
+                <path d="M6 17v-5"/>
+                <path d="M11 17V8"/>
+                <path d="M16 17v-7"/>
+                <path d="M21 17V5"/>
+              </svg>
+            </div>
+            <div class="text">
+              <h4 data-i18n="welcome.f3.title">Track earnings in real time</h4>
+              <p data-i18n="welcome.f3.sub">See today's trips and totals at a glance.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="welcome-actions">
+          <a href="../enrollment/index.html" class="btn btn-primary" data-i18n="welcome.cta">Get started</a>
+          <a href="#" class="btn btn-secondary" data-i18n="welcome.signin">I already have an account</a>
+        </div>
+
+        <p class="legal" data-i18n="welcome.legal">
+          By continuing you agree to Jeera's Terms and Privacy Policy.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "welcome.title":    { en: "Welcome to Jeera",                   ar: "أهلاً بك في جيرا" },
+      "welcome.tag":      { en: "Start your journey with us — drive, earn, and grow.",
+                            ar: "ابدأ رحلتك معنا — قُد، اربح، وانطلق." },
+      "welcome.f1.title": { en: "Drive on your own schedule",         ar: "قُد متى ما أردت" },
+      "welcome.f1.sub":   { en: "Go online whenever you want.",       ar: "تشغيل/إيقاف الاستقبال بضغطة." },
+      "welcome.f2.title": { en: "Cash at the end of every trip",      ar: "نقدًا في نهاية كل رحلة" },
+      "welcome.f2.sub":   { en: "Riders pay you directly.",           ar: "الراكب يدفع لك مباشرةً." },
+      "welcome.f3.title": { en: "Track earnings in real time",        ar: "تابع أرباحك لحظة بلحظة" },
+      "welcome.f3.sub":   { en: "See today's trips and totals at a glance.",
+                            ar: "اطّلع على رحلات اليوم وأرباحه فورًا." },
+      "welcome.cta":      { en: "Get started",                        ar: "ابدأ الآن" },
+      "welcome.signin":   { en: "I already have an account",          ar: "لديّ حساب بالفعل" },
+      "welcome.legal":    { en: "By continuing you agree to Jeera's Terms and Privacy Policy.",
+                            ar: "بالمتابعة فأنت توافق على شروط جيرا وسياسة الخصوصية." },
+    });
+  </script>
+</body>
+</html>

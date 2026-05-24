@@ -1,0 +1,41 @@
+// Injects the iPhone chrome (status bar + home indicator) into every `.phone`
+// so feature pages don't repeat markup. Status bar shows 9:41, cell/wifi/battery.
+
+(function () {
+  const STATUS_BAR = `
+    <div class="status-bar">
+      <div class="sb-time">9:41</div>
+      <div class="sb-right">
+        <svg width="18" height="11" viewBox="0 0 18 11" fill="currentColor" aria-hidden="true">
+          <rect x="0"  y="6" width="3" height="5" rx="1"/>
+          <rect x="5"  y="4" width="3" height="7" rx="1"/>
+          <rect x="10" y="2" width="3" height="9" rx="1"/>
+          <rect x="15" y="0" width="3" height="11" rx="1"/>
+        </svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M1 4.5 A11 11 0 0 1 15 4.5"/>
+          <path d="M3.5 7 A7 7 0 0 1 12.5 7"/>
+          <path d="M6 9.5 A3.5 3.5 0 0 1 10 9.5"/>
+          <circle cx="8" cy="10.5" r="0.9" fill="currentColor" stroke="none"/>
+        </svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none" aria-hidden="true">
+          <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity=".5"/>
+          <rect x="23.5" y="3.5" width="2" height="5" rx="1" fill="currentColor" opacity=".5"/>
+          <rect x="2" y="2" width="19" height="8" rx="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+    </div>`;
+
+  const HOME_INDICATOR = `<div class="home-indicator"></div>`;
+
+  function mount() {
+    document.querySelectorAll(".phone").forEach((phone) => {
+      if (phone.dataset.chrome === "ready") return;
+      phone.insertAdjacentHTML("afterbegin", STATUS_BAR);
+      phone.insertAdjacentHTML("beforeend", HOME_INDICATOR);
+      phone.dataset.chrome = "ready";
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", mount);
+})();

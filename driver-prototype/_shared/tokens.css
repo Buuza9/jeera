@@ -1,0 +1,51 @@
+/* Design tokens — placeholders until the client confirms the palette.
+   Root CLAUDE.md: green primary, amber accent. Swap values here, not in
+   feature files. */
+
+:root {
+  /* Brand */
+  --brand-50:  #ecfdf5;
+  --brand-100: #d1fae5;
+  --brand-500: #10b981;
+  --brand-600: #059669;
+  --brand-700: #047857;
+
+  --accent-500: #f59e0b;
+  --accent-600: #d97706;
+
+  /* Neutrals (light) */
+  --bg:         #f7f7f8;
+  --surface:    #ffffff;
+  --surface-2:  #f1f5f9;
+  --border:     #e5e7eb;
+  --text:       #0f172a;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+
+  /* Feedback */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger:  #ef4444;
+  --info:    #3b82f6;
+
+  /* Radii / shadows */
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+  --shadow:    0 6px 20px rgba(15, 23, 42, .08);
+
+  /* Type */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-ar:   "SF Arabic", "Geeza Pro", "Tahoma", system-ui, sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg:         #0b1220;
+  --surface:    #111827;
+  --surface-2:  #1f2937;
+  --border:     #1f2937;
+  --text:       #f8fafc;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+}

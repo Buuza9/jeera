@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Pending approval</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 2"/>
+          </svg>
+        </div>
+        <h1 class="title" data-i18n="pending.title">Application received</h1>
+        <p class="subtitle" data-i18n="pending.subtitle">An admin will review your documents shortly.</p>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong data-i18n="pending.status">Status</strong>
+            <span class="badge badge-warning" data-i18n="pending.badge">Pending review</span>
+          </div>
+          <p style="margin:0; color:var(--text-muted); font-size:14px;" data-i18n="pending.note">
+            You will be notified once your documents are approved. You cannot accept ride requests until then.
+          </p>
+        </div>
+
+        <div class="card">
+          <p class="section-label" data-i18n="pending.checklist">Submitted</p>
+          <ul style="list-style:none; padding:0; margin:0; font-size:14px; color:var(--text);">
+            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.fullName">Full name</span></li>
+            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.nationalId">National ID</span></li>
+            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.licenseNo">License number</span></li>
+            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.plate">Plate number</span></li>
+            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.idPhoto">ID photo</span></li>
+            <li style="padding:8px 0">✓ <span data-i18n="enroll.licensePhoto">License photo</span></li>
+          </ul>
+        </div>
+
+        <div class="spacer"></div>
+
+        <a href="../welcome/index.html" class="btn btn-ghost" data-i18n="pending.signout">Sign out</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "pending.title":     { en: "Application received",          ar: "تم استلام طلبك" },
+      "pending.subtitle":  { en: "An admin will review your documents shortly.", ar: "سيقوم المسؤول بمراجعة مستنداتك قريبًا." },
+      "pending.status":    { en: "Status",                        ar: "الحالة" },
+      "pending.badge":     { en: "Pending review",                ar: "قيد المراجعة" },
+      "pending.note":      { en: "You will be notified once your documents are approved. You cannot accept ride requests until then.",
+                             ar: "سيتم إعلامك عند اعتماد مستنداتك. لا يمكنك قبول طلبات الرحلات قبل ذلك." },
+      "pending.checklist": { en: "Submitted",                     ar: "المُرسَل" },
+      "pending.signout":   { en: "Sign out",                      ar: "تسجيل الخروج" },
+      "enroll.fullName":   { en: "Full name",                     ar: "الاسم الكامل" },
+      "enroll.nationalId": { en: "National ID",                   ar: "رقم الهوية" },
+      "enroll.licenseNo":  { en: "License number",                ar: "رقم رخصة القيادة" },
+      "enroll.plate":      { en: "Plate number",                  ar: "رقم لوحة الدراجة" },
+      "enroll.idPhoto":    { en: "ID photo",                      ar: "صورة الهوية" },
+      "enroll.licensePhoto": { en: "License photo",               ar: "صورة الرخصة" },
+    });
+  </script>
+</body>
+</html>
