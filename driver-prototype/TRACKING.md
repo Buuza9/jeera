@@ -28,7 +28,7 @@ points to `driver-app/REQUIREMENTS.md` sections.
 |---|---|---|---|---|
 | `welcome/` | `index.html` | ✅ | (entry) | Brand mark, tagline, 3 feature rows, Get started → enrollment, secondary "I already have an account". |
 | `enrollment/` | `index.html` (form), `pending.html` (post-submit) | ✅ | §2.2 | KYC form: full name, phone, national ID, license #, plate #, ID photo, license photo. Submit → pending-approval state with submitted checklist. |
-| `auth/` | `index.html` (sign-in) | ⏳ | §2.1 | Returning-driver phone + sign-in CTA. Reachable from welcome's "I already have an account". |
+| `auth/` | `index.html` (sign-in), `otp.html` (verify), `success.html` (signed-in) | ✅ | §2.1 | Sign-in: Phone\|Email method toggle, +218 phone field (LTR, auto-format `9X XXX XXXX`) or email, "Send code → otp.html". OTP: six LTR boxes with auto-advance + paste, mock code `123456`, shake-on-error, 30s resend countdown, change-method link, brief "Verifying…" overlay → success.html. Success: animated check ring, "You're signed in", masked identifier, "Continue to dashboard" CTA + 3s auto-redirect. Visible TODO chips: §5 PIN/biometric scope, §2.2 approval-status branching (approved → dashboard, pending → enrollment/pending.html, suspended → commission/suspended.html). |
 
 ### Phase D2
 | Folder | Screens | Status | Spec | Notes |

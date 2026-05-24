@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Signed in</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .ok-screen {
+      padding: 88px 28px 32px;
+      align-items: center;
+      text-align: center;
+      background:
+        radial-gradient(420px 220px at 50% 0%, rgba(16,185,129,.18), transparent 70%),
+        var(--bg);
+    }
+
+    /* Big animated check ring */
+    .ok-ring {
+      width: 112px; height: 112px;
+      border-radius: 50%;
+      background: var(--brand-50);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      margin: 4px 0 8px;
+      animation: ok-pop .45s cubic-bezier(.2,.7,.3,1.2) both;
+    }
+    [data-theme="dark"] .ok-ring { background: rgba(16,185,129,.15); }
+    .ok-ring::before {
+      content: "";
+      position: absolute; inset: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--brand-500);
+      opacity: 0;
+      animation: ok-pulse 1.4s ease-out .35s infinite;
+    }
+    .ok-ring .disc {
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: var(--brand-500);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 28px rgba(16,185,129,.45);
+    }
+    .ok-ring svg {
+      width: 40px; height: 40px;
+      stroke: white; stroke-width: 3.5;
+      fill: none; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 36;
+      stroke-dashoffset: 36;
+      animation: ok-draw .45s ease-out .25s forwards;
+    }
+    @keyframes ok-pop {
+      0%   { transform: scale(.55); opacity: 0; }
+      60%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1);     opacity: 1; }
+    }
+    @keyframes ok-draw {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes ok-pulse {
+      0%   { transform: scale(1);    opacity: .55; }
+      100% { transform: scale(1.18); opacity: 0; }
+    }
+
+    .ok-title {
+      font-size: 26px; font-weight: 700; letter-spacing: -0.02em;
+      margin: 18px 0 8px;
+      opacity: 0; animation: fade-up .4s ease-out .45s forwards;
+    }
+    .ok-tag {
+      font-size: 15px; color: var(--text-muted);
+      max-width: 300px; line-height: 1.5;
+      margin: 0 0 6px;
+      opacity: 0; animation: fade-up .4s ease-out .55s forwards;
+    }
+    .ok-target {
+      font-size: 13.5px; font-weight: 600;
+      color: var(--text); direction: ltr;
+      margin: 0 0 26px;
+      opacity: 0; animation: fade-up .4s ease-out .6s forwards;
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .ok-actions {
+      width: 100%;
+      opacity: 0;
+      animation: fade-up .4s ease-out .75s forwards;
+    }
+    .ok-auto {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: var(--text-faint);
+      opacity: 0;
+      animation: fade-up .4s ease-out .9s forwards;
+    }
+    .ok-auto strong { color: var(--text-muted); font-weight: 600; }
+
+    .todo-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin: 18px auto 0;
+      padding: 6px 12px;
+      background: rgba(245,158,11,.12);
+      color: var(--accent-600);
+      border-radius: 999px;
+      font-size: 11.5px; font-weight: 600;
+    }
+    .todo-chip::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-600);
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen ok-screen">
+        <div class="ok-ring">
+          <div class="disc">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12.5l4.5 4.5L19 7.5"/>
+            </svg>
+          </div>
+        </div>
+
+        <h1 class="ok-title" data-i18n="ok.title">You're signed in</h1>
+        <p class="ok-tag"   data-i18n="ok.tag">Welcome back to Jeera. Let's get you on the road.</p>
+        <p class="ok-target" id="target">—</p>
+
+        <div class="spacer"></div>
+
+        <div class="ok-actions">
+          <a href="../dashboard/index.html" class="btn btn-primary" data-i18n="ok.cta">Continue to dashboard</a>
+          <p class="ok-auto">
+            <span data-i18n="ok.auto.prefix">Redirecting in</span>
+            <strong><span id="cd">3</span><span data-i18n="ok.auto.s">s</span></strong>…
+          </p>
+        </div>
+
+        <div style="text-align:center;">
+          <span class="todo-chip" data-i18n="ok.todo">TODO §2.2 — branch on approval status (pending → enrollment/pending.html, suspended → commission/suspended.html)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "ok.title":       { en: "You're signed in",                          ar: "تم تسجيل الدخول" },
+      "ok.tag":         { en: "Welcome back to Jeera. Let's get you on the road.",
+                          ar: "أهلاً بعودتك إلى جيرا. لننطلق." },
+      "ok.cta":         { en: "Continue to dashboard",                     ar: "المتابعة إلى الرئيسية" },
+      "ok.auto.prefix": { en: "Redirecting in",                            ar: "الانتقال خلال" },
+      "ok.auto.s":      { en: "s",                                         ar: "ث" },
+      "ok.todo":        { en: "TODO §2.2 — branch on approval status (pending → enrollment/pending.html, suspended → commission/suspended.html)",
+                          ar: "TODO §2.2 — التفرّع حسب حالة الاعتماد (قيد المراجعة / موقوف)" },
+    });
+
+    // Show the identifier that was verified (carried over via ?to=)
+    const params = new URLSearchParams(location.search);
+    const to = params.get('to');
+    document.getElementById('target').textContent = to ? decodeURIComponent(to) : '';
+
+    // Auto-redirect countdown — interruptible by tapping Continue (a normal <a>).
+    const cdEl = document.getElementById('cd');
+    let n = 3;
+    const iv = setInterval(() => {
+      n -= 1;
+      if (n <= 0) {
+        clearInterval(iv);
+        location.href = '../dashboard/index.html';
+      } else {
+        cdEl.textContent = String(n);
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
