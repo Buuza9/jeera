@@ -1,0 +1,9 @@
+# Repo-root gitignore — OS/editor artifacts + anything that lands at the top
+# level. Per-workspace ignores (rider-app, driver-app, admin-dashboard, prototypes)
+# live inside their respective folders once each workspace is scaffolded.
+
+.DS_Store
+*.swp
+.vscode/
+.idea/
+*.log
