@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Trip complete</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .done-screen {
+      padding: 88px 24px 28px;
+      align-items: center;
+      text-align: center;
+      background:
+        radial-gradient(420px 220px at 50% 0%, rgba(16,185,129,.18), transparent 70%),
+        var(--bg);
+    }
+
+    /* Animated check ring (matches auth/success.html) */
+    .ok-ring {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: var(--brand-50);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      margin: 4px 0 8px;
+      animation: ok-pop .45s cubic-bezier(.2,.7,.3,1.2) both;
+    }
+    [data-theme="dark"] .ok-ring { background: rgba(16,185,129,.15); }
+    .ok-ring::before {
+      content: "";
+      position: absolute; inset: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--brand-500);
+      opacity: 0;
+      animation: ok-pulse 1.4s ease-out .35s infinite;
+    }
+    .ok-ring .disc {
+      width: 66px; height: 66px; border-radius: 50%;
+      background: var(--brand-500);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 24px rgba(16,185,129,.45);
+    }
+    .ok-ring svg {
+      width: 36px; height: 36px;
+      stroke: white; stroke-width: 3.5;
+      fill: none; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 36; stroke-dashoffset: 36;
+      animation: ok-draw .45s ease-out .25s forwards;
+    }
+    @keyframes ok-pop {
+      0%   { transform: scale(.55); opacity: 0; }
+      60%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1);    opacity: 1; }
+    }
+    @keyframes ok-draw { to { stroke-dashoffset: 0; } }
+    @keyframes ok-pulse {
+      0%   { transform: scale(1);    opacity: .55; }
+      100% { transform: scale(1.18); opacity: 0; }
+    }
+
+    .done-title {
+      font-size: 24px; font-weight: 700; letter-spacing: -0.02em;
+      margin: 14px 0 6px;
+      opacity: 0; animation: fade-up .4s ease-out .45s forwards;
+    }
+    .done-tag {
+      font-size: 14.5px; color: var(--text-muted);
+      margin: 0 0 18px;
+      opacity: 0; animation: fade-up .4s ease-out .55s forwards;
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Big fare-due card */
+    .fare-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--brand-500);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 10px 28px rgba(16,185,129,.18);
+      opacity: 0; animation: fade-up .4s ease-out .65s forwards;
+    }
+    .fare-card .label {
+      font-size: 11.5px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--brand-700);
+    }
+    .fare-card .amount {
+      margin: 6px 0 4px;
+      font-size: 44px; font-weight: 800;
+      letter-spacing: -0.03em; color: var(--text);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+    .fare-card .amount .unit {
+      font-size: 18px; font-weight: 700;
+      color: var(--text-muted);
+      margin-inline-start: 6px;
+    }
+    .fare-card .cash-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px;
+      background: var(--brand-50);
+      color: var(--brand-700);
+      border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+      margin-top: 4px;
+    }
+    [data-theme="dark"] .fare-card .cash-pill { background: rgba(16,185,129,.15); }
+    .fare-card .cash-pill svg { width: 13px; height: 13px; }
+
+    /* Meta row (distance + duration) */
+    .meta-row {
+      width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+      opacity: 0; animation: fade-up .4s ease-out .75s forwards;
+    }
+    .meta-row .m {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .meta-row .m .ic {
+      width: 32px; height: 32px; border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--text-muted);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 auto;
+    }
+    .meta-row .m .ic svg { width: 16px; height: 16px; }
+    .meta-row .m .body { flex: 1; text-align: start; }
+    .meta-row .m .l { font-size: 11px; color: var(--text-muted); }
+    .meta-row .m .v {
+      font-size: 15px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .meta-row .m .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+
+    /* Commission notice (§2.10 accrual on completion) */
+    .commission-note {
+      width: 100%;
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(245,158,11,.10);
+      border: 1px solid rgba(245,158,11,.25);
+      border-radius: var(--radius);
+      color: var(--accent-600);
+      font-size: 12.5px; text-align: start;
+      opacity: 0; animation: fade-up .4s ease-out .85s forwards;
+    }
+    .commission-note svg { width: 18px; height: 18px; flex: 0 0 auto; }
+    .commission-note b { font-weight: 700; }
+
+    .done-actions {
+      width: 100%;
+      opacity: 0; animation: fade-up .4s ease-out .95s forwards;
+    }
+    .done-actions .btn + .btn { margin-top: 10px; }
+
+    .todo-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin: 14px auto 0;
+      padding: 5px 11px;
+      background: rgba(245,158,11,.12);
+      color: var(--accent-600);
+      border-radius: 999px;
+      font-size: 11px; font-weight: 600;
+    }
+    .todo-chip::before {
+      content: ""; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent-600);
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="in-trip.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen done-screen">
+        <div class="ok-ring">
+          <div class="disc">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12.5l4.5 4.5L19 7.5"/>
+            </svg>
+          </div>
+        </div>
+
+        <h1 class="done-title" data-i18n="done.title">Trip completed</h1>
+        <p class="done-tag"    data-i18n="done.tag">Safe trip!</p>
+
+        <div class="fare-card">
+          <div class="label" data-i18n="done.fare.label">Fare due</div>
+          <div class="amount">25<span class="unit" data-i18n="unit.currency">LYD</span></div>
+          <div class="cash-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2.5" y="6" width="19" height="12" rx="2"/>
+              <circle cx="12" cy="12" r="2.5"/>
+              <path d="M6 9.5v.01M18 14.5v.01"/>
+            </svg>
+            <span data-i18n="done.cash">Cash</span>
+          </div>
+        </div>
+
+        <div class="meta-row">
+          <div class="m">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12h3l3-9 6 18 3-9h3"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="l" data-i18n="done.distance">Distance</div>
+              <div class="v">8.5<span class="unit" data-i18n="unit.km">km</span></div>
+            </div>
+          </div>
+          <div class="m">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="l" data-i18n="done.duration">Duration</div>
+              <div class="v">14<span class="unit" data-i18n="unit.min">min</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="commission-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+          </svg>
+          <span>
+            <span data-i18n="done.commission.prefix">Confirming cash adds</span>
+            <b><span id="c-amount">3.75</span> <span data-i18n="unit.currency">LYD</span></b>
+            <span data-i18n="done.commission.suffix">to your commission balance.</span>
+          </span>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="done-actions">
+          <button type="button" class="btn btn-primary" id="confirm" data-i18n="done.confirm">Confirm cash received</button>
+          <a class="btn btn-secondary" href="../dashboard/index.html" data-i18n="done.back">Back to home</a>
+        </div>
+
+        <div style="text-align:center;">
+          <span class="todo-chip" data-i18n="done.todo">TODO §5 — commission rate default (15% placeholder)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "done.title":             { en: "Trip completed",                 ar: "تم إنهاء الرحلة" },
+      "done.tag":               { en: "Safe trip!",                     ar: "رحلة موفقة!" },
+      "done.fare.label":        { en: "Fare due",                       ar: "الأجرة المستحقّة" },
+      "done.cash":              { en: "Cash",                           ar: "نقدًا" },
+      "done.distance":          { en: "Distance",                       ar: "المسافة" },
+      "done.duration":          { en: "Duration",                       ar: "المدة" },
+      "done.commission.prefix": { en: "Confirming cash adds",           ar: "بتأكيد الاستلام تضاف" },
+      "done.commission.suffix": { en: "to your commission balance.",    ar: "إلى رصيد العمولة الخاص بك." },
+      "done.confirm":           { en: "Confirm cash received",          ar: "تأكيد استلام النقود" },
+      "done.back":              { en: "Back to home",                   ar: "العودة للرئيسية" },
+      "done.todo":              { en: "TODO §5 — commission rate default (15% placeholder)",
+                                  ar: "TODO §5 — نسبة العمولة الافتراضية (15% مبدئيًا)" },
+      "unit.currency":          { en: "LYD",                            ar: "د.ل" },
+      "unit.km":                { en: "km",                             ar: "كم" },
+      "unit.min":               { en: "min",                            ar: "د" },
+    });
+
+    // Confirm cash → settle trip + accrue commission, then back to dashboard.
+    document.getElementById('confirm').addEventListener('click', () => {
+      // Real impl: POST /trips/:id/confirm-cash → server records the cash
+      // collection and accrues fare × commission_rate to the driver's balance.
+      location.href = '../dashboard/index.html';
+    });
+  </script>
+</body>
+</html>
