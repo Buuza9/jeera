@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Settle commission</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .settle-screen {
+      padding: 70px 20px 110px;
+      gap: 14px;
+      position: relative;
+    }
+
+    .settle-header { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .back-btn {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--text); cursor: pointer; flex: 0 0 auto;
+    }
+    .back-btn svg { width: 20px; height: 20px; }
+    [dir="rtl"] .back-btn svg { transform: scaleX(-1); }
+    .settle-header h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; flex: 1; min-width: 0; }
+
+    /* Amount block */
+    .amount-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+    }
+    .amount-card .l {
+      font-size: 11.5px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .amount-card .big {
+      margin: 8px 0 2px;
+      font-size: 40px; font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+    .amount-card .big .unit { font-size: 17px; font-weight: 700; color: var(--text-muted); margin-inline-start: 5px; }
+    .amount-card .of {
+      font-size: 12.5px; color: var(--text-muted);
+    }
+
+    /* Full / partial segmented control */
+    .seg {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4px; padding: 4px;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      margin-top: 14px;
+    }
+    .seg button {
+      border: 0; cursor: pointer;
+      background: transparent;
+      padding: 10px; border-radius: calc(var(--radius) - 4px);
+      font-size: 13.5px; font-weight: 600; font-family: inherit;
+      color: var(--text-muted);
+      transition: background .15s, color .15s, box-shadow .15s;
+    }
+    .seg button.on {
+      background: var(--bg); color: var(--text);
+      box-shadow: 0 1px 2px rgba(15,23,42,.08);
+    }
+    [data-theme="dark"] .seg button.on { box-shadow: 0 0 0 1px var(--border); }
+
+    .partial-field { margin-top: 12px; display: none; }
+    .partial-field.show { display: block; }
+    .partial-field label { display: block; font-size: 12.5px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+    .partial-input {
+      display: flex; align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 14px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .partial-input:focus-within { border-color: var(--brand-500); box-shadow: 0 0 0 3px rgba(16,185,129,.15); }
+    .partial-input input {
+      flex: 1; min-width: 0; border: 0; outline: none; background: transparent;
+      padding: 13px 0; font-size: 18px; font-weight: 700; font-family: inherit;
+      color: var(--text); font-variant-numeric: tabular-nums;
+    }
+    .partial-input .unit { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+
+    /* Channel picker */
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-faint);
+      padding: 0 4px; margin-top: 2px;
+    }
+    .channels { display: flex; flex-direction: column; gap: 10px; }
+    .channel {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .channel.on {
+      border-color: var(--brand-500);
+      background: var(--brand-50);
+    }
+    [data-theme="dark"] .channel.on { background: rgba(16,185,129,.1); }
+    .channel .ic {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--surface-2); color: var(--text-muted);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 auto;
+    }
+    .channel.on .ic { background: var(--brand-500); color: white; }
+    .channel .ic svg { width: 20px; height: 20px; }
+    .channel .body { flex: 1; min-width: 0; }
+    .channel .body .n { font-size: 14.5px; font-weight: 700; }
+    .channel .body .d { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.35; }
+    .channel .radio {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border);
+      flex: 0 0 auto; position: relative;
+      transition: border-color .15s;
+    }
+    .channel.on .radio { border-color: var(--brand-500); }
+    .channel.on .radio::after {
+      content: ""; position: absolute; inset: 4px;
+      border-radius: 50%; background: var(--brand-500);
+    }
+
+    .todo-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin: 2px auto 0;
+      padding: 5px 11px;
+      background: rgba(245,158,11,.12);
+      color: var(--accent-600);
+      border-radius: 999px;
+      font-size: 10.5px; font-weight: 600;
+    }
+    .todo-chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-600); }
+
+    /* Sticky action */
+    .action-bar {
+      position: absolute; bottom: 0; inset-inline: 0;
+      padding: 14px 20px 22px;
+      background: linear-gradient(180deg, transparent 0, var(--bg) 22%, var(--bg) 100%);
+      z-index: 5;
+    }
+
+    /* Confirmation overlay */
+    .confirm-overlay {
+      position: absolute; inset: 0;
+      z-index: 60;
+      display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; padding: 32px;
+      text-align: center;
+      background: var(--bg);
+    }
+    .confirm-overlay.show { display: flex; }
+    .confirm-overlay .ring {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: var(--brand-50);
+      display: flex; align-items: center; justify-content: center;
+      animation: pop .45s cubic-bezier(.2,.7,.3,1.2) both;
+    }
+    [data-theme="dark"] .confirm-overlay .ring { background: rgba(16,185,129,.15); }
+    .confirm-overlay .ring .disc {
+      width: 66px; height: 66px; border-radius: 50%;
+      background: var(--brand-500);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 24px rgba(16,185,129,.45);
+    }
+    .confirm-overlay .ring svg {
+      width: 36px; height: 36px; stroke: white; stroke-width: 3.5;
+      fill: none; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 36; stroke-dashoffset: 36;
+      animation: draw .45s ease-out .25s forwards;
+    }
+    @keyframes pop { 0%{transform:scale(.55);opacity:0} 60%{transform:scale(1.06);opacity:1} 100%{transform:scale(1)} }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    .confirm-overlay h2 { margin: 6px 0 0; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+    .confirm-overlay p { margin: 0; font-size: 14px; color: var(--text-muted); max-width: 280px; line-height: 1.5; }
+    .confirm-overlay .ref {
+      font-size: 12.5px; color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 999px; padding: 6px 14px;
+    }
+    .confirm-overlay .ref b { color: var(--text); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen settle-screen">
+        <div class="settle-header">
+          <a class="back-btn" href="index.html" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
+          <h1 data-i18n="set.title">Settle commission</h1>
+        </div>
+
+        <!-- Amount -->
+        <div class="amount-card">
+          <div class="l" data-i18n="set.youOwe">You're settling</div>
+          <div class="big"><span id="amt">48</span><span class="unit" data-i18n="unit.currency">LYD</span></div>
+          <div class="of" data-i18n="set.outOf">of 48 LYD outstanding</div>
+
+          <div class="seg">
+            <button id="seg-full" class="on" data-i18n="set.full">Full balance</button>
+            <button id="seg-partial" data-i18n="set.partial">Partial</button>
+          </div>
+
+          <div class="partial-field" id="partial">
+            <label for="partial-amt" data-i18n="set.amount">Amount to settle</label>
+            <div class="partial-input">
+              <input id="partial-amt" type="number" inputmode="decimal" min="1" max="48" placeholder="0" />
+              <span class="unit" data-i18n="unit.currency">LYD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Channels -->
+        <div class="section-label" data-i18n="set.channel">Settlement method</div>
+        <div class="channels" id="channels">
+          <div class="channel on" data-channel="bank">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9"/><path d="M9 19v-5h6v5"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="n" data-i18n="set.bank">Bank transfer</div>
+              <div class="d" data-i18n="set.bank.d">To Jeera's settlement account.</div>
+            </div>
+            <span class="radio" aria-hidden="true"></span>
+          </div>
+
+          <div class="channel" data-channel="office">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="3" width="16" height="18" rx="2"/>
+                <path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M10 21v-4h4v4"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="n" data-i18n="set.office">In-person drop-off</div>
+              <div class="d" data-i18n="set.office.d">Pay cash at the Jeera office, Tripoli.</div>
+            </div>
+            <span class="radio" aria-hidden="true"></span>
+          </div>
+
+          <div class="channel" data-channel="mobile">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="n" data-i18n="set.mobile">Mobile money</div>
+              <div class="d" data-i18n="set.mobile.d">Transfer from a linked mobile wallet.</div>
+            </div>
+            <span class="radio" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top: 4px;">
+          <span class="todo-chip" data-i18n="set.todo">TODO §5 — confirm approved settlement channels with client</span>
+        </div>
+
+        <!-- Confirmation overlay -->
+        <div class="confirm-overlay" id="overlay">
+          <div class="ring"><div class="disc">
+            <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          </div></div>
+          <h2 data-i18n="set.done.title">Settlement recorded</h2>
+          <p data-i18n="set.done.sub">Your commission balance has been updated. Keep driving!</p>
+          <span class="ref"><span data-i18n="set.ref">Reference</span> <b id="ref-no">JRA-48213</b></span>
+          <a class="btn btn-primary" href="history.html" style="margin-top:6px;max-width:240px;" data-i18n="set.done.cta">View settlement history</a>
+        </div>
+      </div>
+
+      <div class="action-bar" id="action-bar">
+        <button type="button" class="btn btn-primary" id="confirm" data-i18n="set.cta">Confirm settlement</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "set.title":      { en: "Settle commission",                     ar: "تسوية العمولة" },
+      "set.youOwe":     { en: "You're settling",                       ar: "أنت تسوّي" },
+      "set.outOf":      { en: "of 48 LYD outstanding",                 ar: "من أصل 48 د.ل مستحقّة" },
+      "set.full":       { en: "Full balance",                          ar: "كامل الرصيد" },
+      "set.partial":    { en: "Partial",                               ar: "جزئي" },
+      "set.amount":     { en: "Amount to settle",                      ar: "المبلغ المراد تسويته" },
+      "set.channel":    { en: "Settlement method",                     ar: "طريقة التسوية" },
+      "set.bank":       { en: "Bank transfer",                         ar: "تحويل بنكي" },
+      "set.bank.d":     { en: "To Jeera's settlement account.",        ar: "إلى حساب التسوية الخاص بجيرا." },
+      "set.office":     { en: "In-person drop-off",                    ar: "تسليم شخصي" },
+      "set.office.d":   { en: "Pay cash at the Jeera office, Tripoli.", ar: "ادفع نقدًا في مكتب جيرا، طرابلس." },
+      "set.mobile":     { en: "Mobile money",                          ar: "محفظة الهاتف" },
+      "set.mobile.d":   { en: "Transfer from a linked mobile wallet.", ar: "حوّل من محفظة هاتف مرتبطة." },
+      "set.todo":       { en: "TODO §5 — confirm approved settlement channels with client",
+                          ar: "TODO §5 — تأكيد قنوات التسوية المعتمدة مع العميل" },
+      "set.cta":        { en: "Confirm settlement",                    ar: "تأكيد التسوية" },
+      "set.done.title": { en: "Settlement recorded",                   ar: "تم تسجيل التسوية" },
+      "set.done.sub":   { en: "Your commission balance has been updated. Keep driving!",
+                          ar: "تم تحديث رصيد عمولتك. واصل القيادة!" },
+      "set.ref":        { en: "Reference",                             ar: "المرجع" },
+      "set.done.cta":   { en: "View settlement history",               ar: "عرض سجل التسويات" },
+      "unit.currency":  { en: "LYD",                                   ar: "د.ل" },
+    });
+
+    const OUTSTANDING = 48;
+
+    // Full / partial toggle
+    const segFull = document.getElementById('seg-full');
+    const segPartial = document.getElementById('seg-partial');
+    const partial = document.getElementById('partial');
+    const partialAmt = document.getElementById('partial-amt');
+    const amtEl = document.getElementById('amt');
+
+    function setMode(full) {
+      segFull.classList.toggle('on', full);
+      segPartial.classList.toggle('on', !full);
+      partial.classList.toggle('show', !full);
+      if (full) {
+        amtEl.textContent = OUTSTANDING;
+      } else {
+        partialAmt.focus();
+        syncPartial();
+      }
+    }
+    function syncPartial() {
+      let v = parseFloat(partialAmt.value || '0');
+      if (isNaN(v) || v < 0) v = 0;
+      if (v > OUTSTANDING) { v = OUTSTANDING; partialAmt.value = OUTSTANDING; }
+      amtEl.textContent = v ? (Number.isInteger(v) ? v : v.toFixed(2)) : '0';
+    }
+    segFull.addEventListener('click', () => setMode(true));
+    segPartial.addEventListener('click', () => setMode(false));
+    partialAmt.addEventListener('input', syncPartial);
+
+    // Channel selection
+    const channels = document.querySelectorAll('.channel');
+    channels.forEach((c) => {
+      c.addEventListener('click', () => {
+        channels.forEach((x) => x.classList.toggle('on', x === c));
+      });
+    });
+
+    // Confirm → success overlay
+    document.getElementById('confirm').addEventListener('click', () => {
+      // Real impl: POST /commission/settlements { amount, channel } → ref no.
+      document.getElementById('overlay').classList.add('show');
+      document.getElementById('action-bar').style.display = 'none';
+    });
+  </script>
+</body>
+</html>

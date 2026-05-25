@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Account suspended</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .susp-screen {
+      padding: 84px 24px 28px;
+      align-items: center;
+      text-align: center;
+      background:
+        radial-gradient(420px 220px at 50% 0%, rgba(220,38,38,.16), transparent 70%),
+        var(--bg);
+    }
+
+    .susp-icon {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: rgba(220,38,38,.12);
+      display: flex; align-items: center; justify-content: center;
+      margin: 4px 0 8px;
+      animation: pop .45s cubic-bezier(.2,.7,.3,1.2) both;
+    }
+    [data-theme="dark"] .susp-icon { background: rgba(220,38,38,.18); }
+    .susp-icon .disc {
+      width: 66px; height: 66px; border-radius: 50%;
+      background: #dc2626; color: white;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 24px rgba(220,38,38,.4);
+    }
+    .susp-icon svg { width: 34px; height: 34px; }
+    @keyframes pop { 0%{transform:scale(.55);opacity:0} 60%{transform:scale(1.06);opacity:1} 100%{transform:scale(1)} }
+
+    .susp-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin: 14px 0 8px;
+      padding: 5px 12px;
+      background: rgba(220,38,38,.12);
+      color: #dc2626;
+      border-radius: 999px;
+      font-size: 11.5px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .susp-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; }
+    .susp-tag { font-size: 14.5px; color: var(--text-muted); margin: 0 0 22px; line-height: 1.5; max-width: 320px; }
+
+    /* Owed card */
+    .owed-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid rgba(220,38,38,.35);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+    }
+    .owed-card .l {
+      font-size: 11.5px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #dc2626;
+    }
+    .owed-card .amount {
+      margin: 6px 0 4px;
+      font-size: 42px; font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+    .owed-card .amount .unit { font-size: 17px; font-weight: 700; color: var(--text-muted); margin-inline-start: 5px; }
+    .owed-card .reason {
+      font-size: 12.5px; color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Steps to reactivate */
+    .steps {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 4px 14px;
+      margin-top: 12px;
+      text-align: start;
+    }
+    .step {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 0;
+    }
+    .step + .step { border-top: 1px solid var(--border); }
+    .step .num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--brand-50); color: var(--brand-700);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      flex: 0 0 auto;
+    }
+    [data-theme="dark"] .step .num { background: rgba(16,185,129,.15); }
+    .step .body .t { font-size: 13.5px; font-weight: 600; }
+    .step .body .d { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+    .susp-actions { width: 100%; margin-top: 4px; }
+    .susp-actions .btn + .btn { margin-top: 10px; }
+
+    .support-link {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 13px; color: var(--brand-600); font-weight: 600;
+    }
+
+    .todo-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin: 14px auto 0;
+      padding: 5px 11px;
+      background: rgba(245,158,11,.12);
+      color: var(--accent-600);
+      border-radius: 999px;
+      font-size: 10.5px; font-weight: 600;
+    }
+    .todo-chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-600); }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen susp-screen">
+        <div class="susp-icon">
+          <div class="disc">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 8v5"/><path d="M12 16h.01"/>
+            </svg>
+          </div>
+        </div>
+
+        <span class="susp-badge" data-i18n="susp.badge">Account suspended</span>
+        <h1 class="susp-title" data-i18n="susp.title">You can't go online</h1>
+        <p class="susp-tag" data-i18n="susp.tag">Your commission balance is overdue. Clear it to reactivate your account and start receiving requests again.</p>
+
+        <div class="owed-card">
+          <div class="l" data-i18n="susp.owed">Balance to clear</div>
+          <div class="amount">215<span class="unit" data-i18n="unit.currency">LYD</span></div>
+          <div class="reason" data-i18n="susp.reason">Overdue since 18 May · exceeds 200 LYD cap</div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <span class="num">1</span>
+            <div class="body">
+              <div class="t" data-i18n="susp.s1.t">Settle the full balance</div>
+              <div class="d" data-i18n="susp.s1.d">Pay 215 LYD through any approved channel.</div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="num">2</span>
+            <div class="body">
+              <div class="t" data-i18n="susp.s2.t">Wait for admin confirmation</div>
+              <div class="d" data-i18n="susp.s2.d">Jeera verifies the payment and reactivates your account.</div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="num">3</span>
+            <div class="body">
+              <div class="t" data-i18n="susp.s3.t">Go back online</div>
+              <div class="d" data-i18n="susp.s3.d">Resume receiving ride requests as usual.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="susp-actions">
+          <a class="btn btn-primary" href="settle.html" data-i18n="susp.cta">Settle now to reactivate</a>
+          <a class="support-link" href="../support/index.html" data-i18n="susp.support">Contact support</a>
+        </div>
+
+        <div style="text-align:center;">
+          <span class="todo-chip" data-i18n="susp.todo">TODO §5 — settlement cap + overdue grace period TBD</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "susp.badge":   { en: "Account suspended",                ar: "الحساب موقوف" },
+      "susp.title":   { en: "You can't go online",              ar: "لا يمكنك الاتصال" },
+      "susp.tag":     { en: "Your commission balance is overdue. Clear it to reactivate your account and start receiving requests again.",
+                        ar: "رصيد عمولتك متأخّر. سدّده لإعادة تفعيل حسابك واستئناف استقبال الطلبات." },
+      "susp.owed":    { en: "Balance to clear",                 ar: "الرصيد المطلوب سداده" },
+      "susp.reason":  { en: "Overdue since 18 May · exceeds 200 LYD cap",
+                        ar: "متأخّر منذ 18 مايو · تجاوز حد 200 د.ل" },
+      "susp.s1.t":    { en: "Settle the full balance",          ar: "سدّد كامل الرصيد" },
+      "susp.s1.d":    { en: "Pay 215 LYD through any approved channel.",
+                        ar: "ادفع 215 د.ل عبر أي قناة معتمدة." },
+      "susp.s2.t":    { en: "Wait for admin confirmation",      ar: "انتظر تأكيد الإدارة" },
+      "susp.s2.d":    { en: "Jeera verifies the payment and reactivates your account.",
+                        ar: "تتحقّق جيرا من الدفع وتعيد تفعيل حسابك." },
+      "susp.s3.t":    { en: "Go back online",                   ar: "عُد للاتصال" },
+      "susp.s3.d":    { en: "Resume receiving ride requests as usual.",
+                        ar: "استأنف استقبال طلبات الرحلات كالمعتاد." },
+      "susp.cta":     { en: "Settle now to reactivate",         ar: "سدّد الآن لإعادة التفعيل" },
+      "susp.support": { en: "Contact support",                  ar: "تواصل مع الدعم" },
+      "susp.todo":    { en: "TODO §5 — settlement cap + overdue grace period TBD",
+                        ar: "TODO §5 — حد التسوية ومهلة التأخّر قيد التأكيد" },
+      "unit.currency":{ en: "LYD",                              ar: "د.ل" },
+    });
+  </script>
+</body>
+</html>

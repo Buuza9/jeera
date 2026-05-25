@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Settlement history</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .sh-screen { padding: 70px 20px 28px; gap: 14px; }
+
+    .sh-header { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .back-btn {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--text); cursor: pointer; flex: 0 0 auto;
+    }
+    .back-btn svg { width: 20px; height: 20px; }
+    [dir="rtl"] .back-btn svg { transform: scaleX(-1); }
+    .sh-header h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; flex: 1; min-width: 0; }
+
+    /* Summary strip */
+    .summary {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .summary .s { padding: 4px 6px; }
+    .summary .s + .s { border-inline-start: 1px solid var(--border); }
+    .summary .s .v {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .summary .s .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+    .summary .s .l { font-size: 11px; color: var(--text-muted); margin-top: 2px; letter-spacing: .04em; text-transform: uppercase; font-weight: 600; }
+
+    .month-head {
+      padding: 4px 4px; margin-top: 4px;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .settlements { display: flex; flex-direction: column; gap: 10px; }
+    .stl {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+    .stl .ic {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: var(--brand-50); color: var(--brand-700);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 auto;
+    }
+    [data-theme="dark"] .stl .ic { background: rgba(16,185,129,.15); }
+    .stl .ic svg { width: 20px; height: 20px; }
+    .stl .body { flex: 1; min-width: 0; }
+    .stl .body .top {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+    }
+    .stl .body .ch { font-size: 14px; font-weight: 700; }
+    .stl .body .amt {
+      font-size: 15px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .stl .body .amt .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+    .stl .body .meta {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 4px;
+      font-size: 12px; color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .stl .body .meta .sep { width: 3px; height: 3px; border-radius: 50%; background: var(--text-faint); }
+    .stl .body .meta .ref { font-weight: 600; }
+    .badge-paid {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(16,185,129,.12); color: var(--brand-700);
+      padding: 2px 8px; border-radius: 999px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    }
+    [data-theme="dark"] .badge-paid { background: rgba(16,185,129,.18); }
+    .badge-paid svg { width: 11px; height: 11px; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen sh-screen">
+        <div class="sh-header">
+          <a class="back-btn" href="index.html" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 6l-6 6 6 6"/>
+            </svg>
+          </a>
+          <h1 data-i18n="sh.title">Settlement history</h1>
+        </div>
+
+        <div class="summary">
+          <div class="s">
+            <div class="v">215<span class="unit" data-i18n="unit.currency">LYD</span></div>
+            <div class="l" data-i18n="sh.thisMonth">Settled this month</div>
+          </div>
+          <div class="s">
+            <div class="v">1,840<span class="unit" data-i18n="unit.currency">LYD</span></div>
+            <div class="l" data-i18n="sh.allTime">All time</div>
+          </div>
+        </div>
+
+        <div class="month-head" data-i18n="sh.may">May 2026</div>
+        <div class="settlements">
+          <div class="stl">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9"/><path d="M9 19v-5h6v5"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="top">
+                <span class="ch" data-i18n="sh.bank">Bank transfer</span>
+                <span class="amt">52<span class="unit" data-i18n="unit.currency">LYD</span></span>
+              </div>
+              <div class="meta">
+                <span data-i18n="sh.d.may18">18 May · 09:12</span>
+                <span class="sep"></span>
+                <span class="ref">JRA-48102</span>
+                <span class="sep"></span>
+                <span class="badge-paid">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                  <span data-i18n="sh.paid">Paid</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stl">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="3" width="16" height="18" rx="2"/>
+                <path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M10 21v-4h4v4"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="top">
+                <span class="ch" data-i18n="sh.office">In-person drop-off</span>
+                <span class="amt">64<span class="unit" data-i18n="unit.currency">LYD</span></span>
+              </div>
+              <div class="meta">
+                <span data-i18n="sh.d.may11">11 May · 17:40</span>
+                <span class="sep"></span>
+                <span class="ref">JRA-47980</span>
+                <span class="sep"></span>
+                <span class="badge-paid">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                  <span data-i18n="sh.paid">Paid</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stl">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="top">
+                <span class="ch" data-i18n="sh.mobile">Mobile money</span>
+                <span class="amt">41<span class="unit" data-i18n="unit.currency">LYD</span></span>
+              </div>
+              <div class="meta">
+                <span data-i18n="sh.d.may4">4 May · 20:05</span>
+                <span class="sep"></span>
+                <span class="ref">JRA-47845</span>
+                <span class="sep"></span>
+                <span class="badge-paid">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                  <span data-i18n="sh.paid">Paid</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="month-head" data-i18n="sh.apr">April 2026</div>
+        <div class="settlements">
+          <div class="stl">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9"/><path d="M9 19v-5h6v5"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="top">
+                <span class="ch" data-i18n="sh.bank">Bank transfer</span>
+                <span class="amt">58<span class="unit" data-i18n="unit.currency">LYD</span></span>
+              </div>
+              <div class="meta">
+                <span data-i18n="sh.d.apr27">27 Apr · 11:28</span>
+                <span class="sep"></span>
+                <span class="ref">JRA-47702</span>
+                <span class="sep"></span>
+                <span class="badge-paid">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                  <span data-i18n="sh.paid">Paid</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stl">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="3" width="16" height="18" rx="2"/>
+                <path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M10 21v-4h4v4"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="top">
+                <span class="ch" data-i18n="sh.office">In-person drop-off</span>
+                <span class="amt">47<span class="unit" data-i18n="unit.currency">LYD</span></span>
+              </div>
+              <div class="meta">
+                <span data-i18n="sh.d.apr20">20 Apr · 16:02</span>
+                <span class="sep"></span>
+                <span class="ref">JRA-47588</span>
+                <span class="sep"></span>
+                <span class="badge-paid">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                  <span data-i18n="sh.paid">Paid</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "sh.title":     { en: "Settlement history",       ar: "سجل التسويات" },
+      "sh.thisMonth": { en: "Settled this month",        ar: "المُسوّى هذا الشهر" },
+      "sh.allTime":   { en: "All time",                  ar: "الإجمالي" },
+      "sh.may":       { en: "May 2026",                  ar: "مايو 2026" },
+      "sh.apr":       { en: "April 2026",                ar: "أبريل 2026" },
+      "sh.bank":      { en: "Bank transfer",             ar: "تحويل بنكي" },
+      "sh.office":    { en: "In-person drop-off",        ar: "تسليم شخصي" },
+      "sh.mobile":    { en: "Mobile money",              ar: "محفظة الهاتف" },
+      "sh.paid":      { en: "Paid",                      ar: "مدفوع" },
+      "sh.d.may18":   { en: "18 May · 09:12",            ar: "18 مايو · 09:12" },
+      "sh.d.may11":   { en: "11 May · 17:40",            ar: "11 مايو · 17:40" },
+      "sh.d.may4":    { en: "4 May · 20:05",             ar: "4 مايو · 20:05" },
+      "sh.d.apr27":   { en: "27 Apr · 11:28",            ar: "27 أبريل · 11:28" },
+      "sh.d.apr20":   { en: "20 Apr · 16:02",            ar: "20 أبريل · 16:02" },
+      "unit.currency":{ en: "LYD",                       ar: "د.ل" },
+    });
+  </script>
+</body>
+</html>
