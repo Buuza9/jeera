@@ -12,6 +12,8 @@
       padding: 70px 20px 28px;
       gap: 14px;
     }
+    /* Don't let the flex column squish cards — overflow should scroll instead. */
+    .earn-screen > * { flex-shrink: 0; }
 
     /* ── Header ───────────────────────────────────────────────── */
     .earn-header {
@@ -71,10 +73,12 @@
       background: rgba(255,255,255,.10);
     }
     .hero .l {
+      position: relative; z-index: 1;
       font-size: 12px; font-weight: 600; opacity: .9;
       letter-spacing: 0.04em; text-transform: uppercase;
     }
     .hero .amount {
+      position: relative; z-index: 1;
       margin: 6px 0 2px;
       font-size: 44px; font-weight: 800;
       letter-spacing: -0.03em; line-height: 1.02;
