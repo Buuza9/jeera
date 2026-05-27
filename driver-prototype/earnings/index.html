@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
+  <script src="../_shared/navbar.js"></script>
   <style>
     .earn-screen {
       padding: 70px 20px 28px;
@@ -222,7 +223,7 @@
     .todo-chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-600); }
   </style>
 </head>
-<body>
+<body data-nav="earnings">
   <div class="toolbar">
     <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
     <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>

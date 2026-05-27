@@ -120,6 +120,10 @@ a { color: inherit; text-decoration: none; }
   scrollbar-width: none;
 }
 .screen::-webkit-scrollbar { display: none; }
+/* Flex children keep their natural height — overflow should scroll, never
+   squish cards. (Spacers still grow via flex:1; flex-shrink only blocks
+   collapsing.) */
+.screen > * { flex-shrink: 0; }
 
 /* ─── Toolbar (top-left of every mockup) ──────────────────────────── */
 .toolbar {
@@ -237,3 +241,45 @@ a { color: inherit; text-decoration: none; }
 
 /* RTL fine-tuning */
 [dir="rtl"] .title, [dir="rtl"] .subtitle { text-align: center; }
+
+/* ─── Bottom tab bar (injected by navbar.js) ─────────────────────── */
+.navbar {
+  position: absolute; bottom: 0; inset-inline: 0; z-index: 25;
+  display: flex; align-items: stretch;
+  padding: 9px 8px 22px;          /* bottom pad clears the home indicator */
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -6px 20px rgba(15,23,42,.06);
+}
+[data-theme="dark"] .navbar { box-shadow: 0 -6px 20px rgba(0,0,0,.4); }
+.nav-item {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 4px 2px; border-radius: 12px;
+  color: var(--text-muted); text-decoration: none;
+  transition: color .15s;
+}
+.nav-item .nav-ic { width: 24px; height: 24px; display: inline-flex; }
+.nav-item .nav-ic svg { width: 24px; height: 24px; }
+.nav-item .nav-lbl {
+  font-size: 10.5px; font-weight: 600; letter-spacing: -0.01em;
+}
+.nav-item.on { color: var(--brand-600); }
+.nav-item.on .nav-ic svg { stroke-width: 2.3; }
+.nav-item:active { transform: scale(.94); }
+
+/* Pages that carry a navbar reserve bottom room so content clears it. */
+.has-navbar .screen { padding-bottom: 96px; }
+
+/* ─── Circular map button (full-bleed map overlays) ──────────────── */
+.fab {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(15,23,42,.06);
+  box-shadow: 0 4px 14px rgba(15,23,42,.16);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--text); cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+[data-theme="dark"] .fab { background: rgba(31,41,55,.92); color: #f8fafc; border-color: rgba(255,255,255,.08); }
+.fab svg { width: 21px; height: 21px; }

@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeera Driver — Profile</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <script src="../_shared/navbar.js"></script>
+  <style>
+    .prof-screen { padding: 74px 18px 28px; gap: 14px; }
+
+    .prof-title { margin: 0 2px 2px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+
+    /* ── Identity hero ───────────────────────────────────────── */
+    .id-card {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 16px;
+      color: var(--text); text-decoration: none;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .id-card:hover { border-color: var(--brand-500); box-shadow: 0 4px 14px rgba(16,185,129,.12); }
+    .id-card .edit { color: var(--text-faint); flex: 0 0 auto; }
+    .id-card .edit svg { width: 18px; height: 18px; }
+    [dir="rtl"] .id-card .edit svg { transform: scaleX(-1); }
+    .id-card .avatar-lg {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+      color: white; font-size: 22px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex: 0 0 auto;
+    }
+    .id-card .who { flex: 1; min-width: 0; }
+    .id-card .who h2 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+    .id-card .who .role { margin: 2px 0 0; font-size: 12.5px; color: var(--text-muted); }
+    .id-card .rate {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 7px; padding: 3px 9px; border-radius: 999px;
+      background: rgba(245,158,11,.14); color: var(--accent-600);
+      font-size: 12px; font-weight: 700;
+    }
+    .id-card .rate svg { width: 13px; height: 13px; }
+
+    /* ── Quick stats ─────────────────────────────────────────── */
+    .stat3 {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 10px;
+    }
+    .stat3 .s { text-align: center; padding: 0 4px; }
+    .stat3 .s + .s { border-inline-start: 1px solid var(--border); }
+    .stat3 .v { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+    .stat3 .l { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Section ─────────────────────────────────────────────── */
+    .sec-label {
+      margin: 8px 4px 0; font-size: 11.5px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint);
+    }
+    .list {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 14px; color: var(--text); text-decoration: none;
+    }
+    .row + .row { border-top: 1px solid var(--border); }
+    .row .ic {
+      width: 34px; height: 34px; border-radius: 10px; flex: 0 0 auto;
+      background: var(--surface-2); color: var(--text-muted);
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .row .ic svg { width: 18px; height: 18px; }
+    .row .body { flex: 1; min-width: 0; }
+    .row .body .t { font-size: 14px; font-weight: 600; }
+    .row .body .d { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    .row .chev { color: var(--text-faint); flex: 0 0 auto; }
+    .row .chev svg { width: 18px; height: 18px; }
+    [dir="rtl"] .row .chev svg { transform: scaleX(-1); }
+
+    .pill-ok {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; border-radius: 999px;
+      background: rgba(16,185,129,.12); color: var(--brand-700);
+      font-size: 11px; font-weight: 700; flex: 0 0 auto;
+    }
+    [data-theme="dark"] .pill-ok { background: rgba(16,185,129,.18); }
+    .pill-ok svg { width: 12px; height: 12px; }
+
+    /* Segmented control (language / appearance) */
+    .seg {
+      display: inline-flex; gap: 3px; padding: 3px; flex: 0 0 auto;
+      background: var(--surface-2); border-radius: 10px;
+    }
+    .seg button {
+      border: 0; background: transparent; color: var(--text-muted);
+      padding: 6px 12px; border-radius: 8px; cursor: pointer;
+      font-family: inherit; font-size: 12.5px; font-weight: 600;
+      transition: background .15s, color .15s;
+    }
+    .seg button.on { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+
+    /* Toggle switch (reused look) */
+    .switch {
+      position: relative; flex: 0 0 auto;
+      width: 46px; height: 28px; border-radius: 999px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      cursor: pointer; transition: background .2s;
+    }
+    .switch::after {
+      content: ""; position: absolute; top: 2px; inset-inline-start: 2px;
+      width: 22px; height: 22px; border-radius: 50%; background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,.18); transition: inset-inline-start .2s;
+    }
+    .switch.on { background: var(--brand-500); border-color: var(--brand-500); }
+    .switch.on::after { inset-inline-start: 20px; }
+
+    .signout { color: #dc2626; }
+    .signout .ic { background: rgba(220,38,38,.1); color: #dc2626; }
+    .signout .t { color: #dc2626; }
+
+    .todo-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin: 8px auto 0; padding: 5px 11px;
+      background: rgba(245,158,11,.12); color: var(--accent-600);
+      border-radius: 999px; font-size: 10.5px; font-weight: 600;
+    }
+    .todo-chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-600); }
+
+    .ver { text-align: center; font-size: 11px; color: var(--text-faint); margin-top: 2px; }
+  </style>
+</head>
+<body data-nav="profile">
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="../dashboard/index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen prof-screen">
+        <h1 class="prof-title" data-i18n="prof.title">Profile</h1>
+
+        <!-- Identity -->
+        <a class="id-card" href="#">
+          <div class="avatar-lg">AM</div>
+          <div class="who">
+            <h2 data-i18n="prof.name">Ahmad Mohammed</h2>
+            <p class="role" data-i18n="prof.role">Jeera driver · Tripoli</p>
+            <span class="rate">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.2 6.8.6-5.1 4.5 1.5 6.7L12 17l-6 3.5 1.5-6.7L2.4 8.8l6.8-.6z"/></svg>
+              4.9 · <span data-i18n="prof.rate.count">1,204 trips</span>
+            </span>
+          </div>
+          <span class="edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <!-- Quick stats -->
+        <div class="stat3">
+          <div class="s">
+            <div class="v">1,204</div>
+            <div class="l" data-i18n="prof.s.trips">Total trips</div>
+          </div>
+          <div class="s">
+            <div class="v">96<span style="font-size:12px">%</span></div>
+            <div class="l" data-i18n="prof.s.accept">Acceptance</div>
+          </div>
+          <div class="s">
+            <div class="v">14<span style="font-size:12px"> mo</span></div>
+            <div class="l" data-i18n="prof.s.tenure">With Jeera</div>
+          </div>
+        </div>
+
+        <!-- Vehicle -->
+        <div class="sec-label" data-i18n="prof.sec.vehicle">Vehicle</div>
+        <div class="list">
+          <div class="row">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/>
+                <path d="M9 17h6M6 14l3-7h4l3 5h2"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="t" data-i18n="prof.v.model">Honda CG 125 · Red</div>
+              <div class="d" data-i18n="prof.v.plate">Plate · طرابلس 12345</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents -->
+        <div class="sec-label" data-i18n="prof.sec.docs">Documents</div>
+        <div class="list">
+          <div class="row">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 14h6"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="t" data-i18n="prof.d.license">Driver's license</div>
+              <div class="d" data-i18n="prof.d.license.exp">Expires 03/2027</div>
+            </div>
+            <span class="pill-ok">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i18n="prof.verified">Verified</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2.2"/><path d="M14 10h4M14 14h4"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="t" data-i18n="prof.d.id">National ID</div>
+              <div class="d" data-i18n="prof.d.id.exp">Verified 01/2026</div>
+            </div>
+            <span class="pill-ok">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i18n="prof.verified">Verified</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 12l2 2 4-4"/><path d="M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/>
+              </svg>
+            </span>
+            <div class="body">
+              <div class="t" data-i18n="prof.d.reg">Vehicle registration</div>
+              <div class="d" data-i18n="prof.d.reg.exp">Expires 08/2026</div>
+            </div>
+            <span class="pill-ok">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i18n="prof.verified">Verified</span>
+            </span>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <span class="todo-chip" data-i18n="prof.todo.docs">TODO §5 — document expiry / re-upload UX TBD</span>
+        </div>
+
+        <!-- Settings -->
+        <div class="sec-label" data-i18n="prof.sec.settings">Settings</div>
+        <div class="list">
+          <div class="row">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/>
+              </svg>
+            </span>
+            <div class="body"><div class="t" data-i18n="prof.set.lang">Language</div></div>
+            <div class="seg" id="seg-lang">
+              <button data-lang="en">EN</button>
+              <button data-lang="ar">عربي</button>
+            </div>
+          </div>
+          <div class="row">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+              </svg>
+            </span>
+            <div class="body"><div class="t" data-i18n="prof.set.theme">Appearance</div></div>
+            <div class="seg" id="seg-theme">
+              <button data-theme-opt="light" data-i18n="prof.theme.light">Light</button>
+              <button data-theme-opt="dark" data-i18n="prof.theme.dark">Dark</button>
+            </div>
+          </div>
+          <div class="row">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+              </svg>
+            </span>
+            <div class="body"><div class="t" data-i18n="prof.set.notif">Notifications</div></div>
+            <button class="switch on" id="sw-notif" role="switch" aria-checked="true"></button>
+          </div>
+          <a class="row" href="#">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+              </svg>
+            </span>
+            <div class="body"><div class="t" data-i18n="prof.set.security">Security &amp; PIN</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+
+        <!-- More -->
+        <div class="sec-label" data-i18n="prof.sec.more">More</div>
+        <div class="list">
+          <a class="row" href="../support/index.html">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.5c0 1.7-2.5 2-2.5 3.5"/><path d="M12 17h.01"/>
+              </svg>
+            </span>
+            <div class="body"><div class="t" data-i18n="prof.more.support">Help &amp; support</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="row" href="#">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l8 4v5c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V7z"/>
+              </svg>
+            </span>
+            <div class="body"><div class="t" data-i18n="prof.more.privacy">Privacy &amp; terms</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="row signout" href="../auth/index.html">
+            <span class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/>
+              </svg>
+            </span>
+            <div class="body"><div class="t" data-i18n="prof.more.signout">Sign out</div></div>
+          </a>
+        </div>
+
+        <div class="ver" data-i18n="prof.version">Jeera Driver · v0.1 (prototype)</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "prof.title":       { en: "Profile",                  ar: "حسابي" },
+      "prof.name":        { en: "Ahmad Mohammed",           ar: "أحمد محمد" },
+      "prof.role":        { en: "Jeera driver · Tripoli",   ar: "سائق جيرا · طرابلس" },
+      "prof.rate.count":  { en: "1,204 trips",              ar: "1٬204 رحلة" },
+      "prof.s.trips":     { en: "Total trips",              ar: "إجمالي الرحلات" },
+      "prof.s.accept":    { en: "Acceptance",               ar: "القبول" },
+      "prof.s.tenure":    { en: "With Jeera",               ar: "مع جيرا" },
+
+      "prof.sec.vehicle": { en: "Vehicle",                  ar: "المركبة" },
+      "prof.v.model":     { en: "Honda CG 125 · Red",       ar: "هوندا CG 125 · أحمر" },
+      "prof.v.plate":     { en: "Plate · طرابلس 12345",      ar: "اللوحة · طرابلس 12345" },
+
+      "prof.sec.docs":    { en: "Documents",                ar: "المستندات" },
+      "prof.d.license":   { en: "Driver's license",         ar: "رخصة القيادة" },
+      "prof.d.license.exp": { en: "Expires 03/2027",        ar: "تنتهي 03/2027" },
+      "prof.d.id":        { en: "National ID",              ar: "الهوية الوطنية" },
+      "prof.d.id.exp":    { en: "Verified 01/2026",         ar: "موثّقة 01/2026" },
+      "prof.d.reg":       { en: "Vehicle registration",     ar: "تسجيل المركبة" },
+      "prof.d.reg.exp":   { en: "Expires 08/2026",          ar: "تنتهي 08/2026" },
+      "prof.verified":    { en: "Verified",                 ar: "موثّق" },
+      "prof.todo.docs":   { en: "TODO §5 — document expiry / re-upload UX TBD",
+                            ar: "TODO §5 — انتهاء المستندات / إعادة الرفع قيد التأكيد" },
+
+      "prof.sec.settings":{ en: "Settings",                 ar: "الإعدادات" },
+      "prof.set.lang":    { en: "Language",                 ar: "اللغة" },
+      "prof.set.theme":   { en: "Appearance",               ar: "المظهر" },
+      "prof.theme.light": { en: "Light",                    ar: "فاتح" },
+      "prof.theme.dark":  { en: "Dark",                     ar: "داكن" },
+      "prof.set.notif":   { en: "Notifications",            ar: "الإشعارات" },
+      "prof.set.security":{ en: "Security & PIN",            ar: "الأمان والرمز" },
+
+      "prof.sec.more":    { en: "More",                     ar: "المزيد" },
+      "prof.more.support":{ en: "Help & support",           ar: "المساعدة والدعم" },
+      "prof.more.privacy":{ en: "Privacy & terms",          ar: "الخصوصية والشروط" },
+      "prof.more.signout":{ en: "Sign out",                 ar: "تسجيل الخروج" },
+      "prof.version":     { en: "Jeera Driver · v0.1 (prototype)", ar: "جيرا للسائق · v0.1 (نموذج)" },
+    });
+
+    // Language + appearance segmented controls reflect and drive I18N.
+    const segLang  = document.getElementById('seg-lang');
+    const segTheme = document.getElementById('seg-theme');
+
+    function syncSegs() {
+      const lang  = localStorage.getItem('jeera.lang')  || 'en';
+      const theme = localStorage.getItem('jeera.theme') || 'light';
+      segLang.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.lang === lang));
+      segTheme.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.themeOpt === theme));
+    }
+    segLang.querySelectorAll('button').forEach((b) =>
+      b.addEventListener('click', () => { I18N.setLang(b.dataset.lang); syncSegs(); }));
+    segTheme.querySelectorAll('button').forEach((b) =>
+      b.addEventListener('click', () => { I18N.setTheme(b.dataset.themeOpt); syncSegs(); }));
+    syncSegs();
+
+    // Notifications toggle (local only)
+    const swNotif = document.getElementById('sw-notif');
+    swNotif.addEventListener('click', () => {
+      const on = !swNotif.classList.contains('on');
+      swNotif.classList.toggle('on', on);
+      swNotif.setAttribute('aria-checked', String(on));
+    });
+  </script>
+</body>
+</html>

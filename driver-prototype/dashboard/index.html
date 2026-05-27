@@ -7,174 +7,124 @@
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
+  <script src="../_shared/navbar.js"></script>
   <script src="../_shared/map.js"></script>
   <style>
-    .dash-screen {
-      padding: 70px 20px 24px;
-      gap: 14px;
+    /* Full-bleed map dashboard — map fills the phone, controls float on top. */
+    .dash-screen { padding: 0; gap: 0; position: relative; overflow: hidden; }
+
+    /* Map fills everything. isolation:isolate keeps Leaflet's panes (z 200–700)
+       inside their own stacking context, BELOW the status bar (z 31). */
+    .map-fill {
+      position: absolute; inset: 0; z-index: 0;
+      isolation: isolate;
+    }
+    .map-fill .leaflet-container { width: 100%; height: 100%; }
+
+    /* ── Top-left controls ───────────────────────────────────── */
+    .map-corner {
+      position: absolute; top: 64px; inset-inline-start: 14px; z-index: 20;
+      display: flex; gap: 8px;
     }
 
-    /* ── Header (compact) ────────────────────────────────────── */
-    .dash-header {
-      display: flex; align-items: center; gap: 12px;
-    }
-    .avatar {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
-      color: white;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 15px;
-      flex: 0 0 auto;
-    }
-    .dash-header .who { flex: 1; min-width: 0; }
-    .dash-header h2 {
-      margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.01em;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .dash-header .sub { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); }
-    .icon-btn {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: var(--surface); border: 1px solid var(--border);
-      display: inline-flex; align-items: center; justify-content: center;
-      color: var(--text); cursor: pointer; flex: 0 0 auto;
-    }
-    .icon-btn svg { width: 20px; height: 20px; }
-
-    /* ── Map container — real Leaflet + OSM tiles ───────────────
-       JeeraMap.create() injects Leaflet's CSS and renders into this div.
-       Overlays (status pill, earnings chip) sit on top via z-index.   */
-    .map-placeholder {
-      position: relative;
-      flex: 1; min-height: 320px;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .map-placeholder .leaflet-container {
-      width: 100%; height: 100%;
-    }
-
-    /* Status pill overlay (top-start) — above Leaflet's control pane */
-    .map-status {
-      position: absolute; top: 12px; inset-inline-start: 12px;
+    /* Online control — single status pill, absolutely centred at top.
+       Default Offline; tapping animates it to Online (label slides up,
+       pill morphs grey → green). Only one status shows at a time. */
+    .go-pill {
+      position: absolute; top: 62px; left: 50%;
+      transform: translateX(-50%); z-index: 20;
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.92);
-      color: var(--text);
-      font-size: 12.5px; font-weight: 600;
-      box-shadow: 0 4px 12px rgba(15,23,42,.12);
-      backdrop-filter: blur(6px);
-      z-index: 1100;
+      padding: 10px 20px; border: 0; border-radius: 999px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 8px 20px rgba(15,23,42,.2);
+      backdrop-filter: blur(10px);
+      color: var(--text); cursor: pointer; font-family: inherit;
+      transition: background .35s, color .35s, box-shadow .35s, transform .12s;
     }
-    [data-theme="dark"] .map-status { background: rgba(17,24,39,.85); color: #f8fafc; }
-    .map-status .dot {
-      width: 8px; height: 8px; border-radius: 50%;
+    [data-theme="dark"] .go-pill { background: rgba(31,41,55,.96); color: #f8fafc; }
+    .go-pill:active { transform: translateX(-50%) scale(.95); }
+
+    .go-pill .go-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto;
       background: var(--text-faint);
-      flex: 0 0 auto;
+      transition: background .35s, box-shadow .35s;
     }
-    .map-status.on .dot { background: var(--brand-500); box-shadow: 0 0 0 3px rgba(16,185,129,.25); }
+    /* a fixed-height window; the track slides to reveal one label at a time */
+    .go-pill .go-label {
+      height: 18px; overflow: hidden;
+      font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em;
+    }
+    .go-pill .go-track {
+      display: flex; flex-direction: column;
+      transition: transform .35s cubic-bezier(.34,1.25,.5,1);
+    }
+    .go-pill .go-track > span {
+      height: 18px; line-height: 18px; text-align: center;
+    }
 
-    /* Earnings chip overlay (top-end) — above Leaflet's control pane */
-    .map-earn {
-      position: absolute; top: 12px; inset-inline-end: 12px;
-      padding: 8px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.92);
-      box-shadow: 0 4px 12px rgba(15,23,42,.12);
-      backdrop-filter: blur(6px);
-      text-align: end;
-      z-index: 1100;
-      cursor: pointer;
+    /* ON state */
+    .go-pill[data-state="on"] {
+      background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(16,185,129,.45);
     }
-    [data-theme="dark"] .map-earn { background: rgba(17,24,39,.85); }
-    .map-earn .l { font-size: 10.5px; color: var(--text-muted); font-weight: 600;
-                    letter-spacing: 0.04em; text-transform: uppercase; }
-    .map-earn .v {
-      font-size: 16px; font-weight: 700; letter-spacing: -0.01em;
-      font-variant-numeric: tabular-nums;
-      color: var(--text);
+    .go-pill[data-state="on"] .go-track { transform: translateY(-18px); }
+    .go-pill[data-state="on"] .go-dot {
+      background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.35);
+      animation: godot 1.7s ease-out infinite;
     }
-    [data-theme="dark"] .map-earn .v { color: #f8fafc; }
-    .map-earn .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-    .map-earn .sub { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+    @keyframes godot {
+      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,.6); }
+      70%  { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+    }
 
-    /* ── Online toggle row ───────────────────────────────────── */
-    .online-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+    .bell-dot { position: relative; }
+    .bell-dot::after {
+      content: ""; position: absolute; top: 9px; inset-inline-end: 11px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-600); border: 2px solid white;
     }
-    .online-row .label { flex: 1; min-width: 0; }
-    .online-row .label h4 { margin: 0; font-size: 14px; font-weight: 600; }
-    .online-row .label p  { margin: 2px 0 0; font-size: 11.5px; color: var(--text-muted); }
+    [data-theme="dark"] .bell-dot::after { border-color: #1f2937; }
 
-    .switch {
-      position: relative; flex: 0 0 auto;
-      width: 50px; height: 30px; border-radius: 999px;
-      background: var(--surface-2); border: 1px solid var(--border);
-      cursor: pointer; transition: background .2s;
+    /* ── Bottom dock (earnings + commission) above the navbar ── */
+    .map-dock {
+      position: absolute; inset-inline: 14px; bottom: 88px; z-index: 20;
+      display: flex; align-items: stretch;
+      background: rgba(255,255,255,.96);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(15,23,42,.18);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
     }
-    .switch::after {
-      content: "";
-      position: absolute; top: 2px;
-      inset-inline-start: 2px;
-      width: 24px; height: 24px; border-radius: 50%;
-      background: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,.18);
-      transition: inset-inline-start .2s;
+    [data-theme="dark"] .map-dock { background: rgba(31,41,55,.96); }
+    .dock-cell {
+      flex: 1; min-width: 0;
+      padding: 13px 15px; text-decoration: none; color: var(--text);
+      display: flex; flex-direction: column; gap: 2px;
     }
-    .switch.on { background: var(--brand-500); border-color: var(--brand-500); }
-    .switch.on::after { inset-inline-start: 22px; }
-
-    /* ── Commission row (compact) ────────────────────────────── */
-    .commission-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      cursor: pointer;
+    .dock-cell + .dock-cell { border-inline-start: 1px solid var(--border); }
+    [data-theme="dark"] .dock-cell { color: #f8fafc; }
+    .dock-cell .l {
+      font-size: 10.5px; font-weight: 700; color: var(--text-muted);
+      letter-spacing: 0.05em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 6px;
     }
-    .commission-row .c-ic {
-      width: 32px; height: 32px; border-radius: 10px;
-      background: rgba(245,158,11,.14); color: var(--accent-600);
-      display: inline-flex; align-items: center; justify-content: center;
-      flex: 0 0 auto;
-    }
-    .commission-row .c-ic svg { width: 16px; height: 16px; }
-    .commission-row .c-body { flex: 1; min-width: 0; }
-    .commission-row .c-l { margin: 0; font-size: 11.5px; color: var(--text-muted); }
-    .commission-row .c-v {
-      margin: 1px 0 0; font-size: 14.5px; font-weight: 700;
+    .dock-cell .v {
+      font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
       font-variant-numeric: tabular-nums;
     }
-    .commission-row .c-v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 4px; }
-    .commission-row .chev { color: var(--text-faint); flex: 0 0 auto; }
-    .commission-row .chev svg { width: 18px; height: 18px; }
-    [dir="rtl"] .commission-row .chev svg { transform: scaleX(-1); }
-
-    .dash-actions .btn + .btn { margin-top: 8px; }
-
-    .todo-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin: 10px auto 0;
-      padding: 5px 11px;
-      background: rgba(245,158,11,.12);
-      color: var(--accent-600);
-      border-radius: 999px;
-      font-size: 11px; font-weight: 600;
+    .dock-cell .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+    .dock-cell .sub { font-size: 11px; color: var(--text-muted); }
+    .dock-cell.comm .l { color: var(--accent-600); }
+    .dock-cell.comm .chev {
+      margin-inline-start: auto; color: var(--text-faint);
     }
-    .todo-chip::before {
-      content: ""; width: 5px; height: 5px; border-radius: 50%;
-      background: var(--accent-600);
-    }
+    .dock-cell.comm .chev svg { width: 15px; height: 15px; vertical-align: middle; }
+    [dir="rtl"] .dock-cell.comm .chev svg { transform: scaleX(-1); }
   </style>
 </head>
-<body>
+<body data-nav="home">
   <div class="toolbar">
     <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
     <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
@@ -186,106 +136,70 @@
   <div class="stage">
     <div class="phone">
       <div class="screen dash-screen">
-        <!-- Header -->
-        <div class="dash-header">
-          <div class="avatar">AM</div>
-          <div class="who">
-            <h2 data-i18n="dash.hello">Ahmad Mohammed</h2>
-            <p class="sub" data-i18n="dash.role">Jeera driver</p>
-          </div>
-          <button class="icon-btn" aria-label="Menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/>
+        <!-- Full-bleed Leaflet + OSM map of Tripoli -->
+        <div class="map-fill" id="map-wrap">
+          <div id="map" style="width:100%;height:100%;"></div>
+        </div>
+
+        <!-- Top-left: notifications -->
+        <div class="map-corner">
+          <button class="fab bell-dot" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.7 21a2 2 0 0 1-3.4 0"/>
             </svg>
           </button>
         </div>
 
-        <!-- Real map: Leaflet + OSM/CARTO tiles centred on Tripoli.
-             Driver bike-pin is injected by JeeraMap at the centre; status
-             pill and earnings chip overlay the map via z-index. -->
-        <div class="map-placeholder" id="map-wrap">
-          <div id="map" style="width:100%;height:100%;"></div>
-          <div class="map-status" id="map-status">
-            <span class="dot"></span>
-            <span data-i18n="dash.status.off">Offline</span>
-          </div>
-          <a class="map-earn" href="../earnings/index.html" aria-label="Today's earnings">
-            <div class="l" data-i18n="dash.today.short">Today</div>
-            <div class="v">320<span class="unit" data-i18n="unit.currency">LYD</span></div>
-            <div class="sub"><span>15</span> <span data-i18n="dash.trips.short">trips · 6h</span></div>
+        <!-- Online control (top-centre) — single status pill, Offline by default -->
+        <button class="go-pill" id="online-switch" data-state="off" role="switch" aria-checked="false">
+          <span class="go-dot"></span>
+          <span class="go-label">
+            <span class="go-track">
+              <span data-i18n="dash.status.off">Offline</span>
+              <span data-i18n="dash.status.on">Online</span>
+            </span>
+          </span>
+        </button>
+
+        <!-- Bottom dock: today's earnings + outstanding commission (§2.10) -->
+        <div class="map-dock">
+          <a class="dock-cell" href="../earnings/index.html">
+            <span class="l" data-i18n="dash.today.short">Today</span>
+            <span class="v">320<span class="unit" data-i18n="unit.currency">LYD</span></span>
+            <span class="sub"><span>15</span> <span data-i18n="dash.trips.short">trips · 6h</span></span>
+          </a>
+          <a class="dock-cell comm" href="../commission/index.html">
+            <span class="l">
+              <span data-i18n="dash.commission.l">Commission</span>
+              <span class="chev">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 6l6 6-6 6"/>
+                </svg>
+              </span>
+            </span>
+            <span class="v">48<span class="unit" data-i18n="unit.currency">LYD</span></span>
+            <span class="sub" data-i18n="dash.commission.due">Due Sunday</span>
           </a>
         </div>
-
-        <!-- Online toggle -->
-        <div class="online-row" id="online-row">
-          <div class="label">
-            <h4 data-i18n="dash.available">Available for trips</h4>
-            <p id="online-state" data-i18n="dash.offline">Flip the switch to start receiving requests.</p>
-          </div>
-          <button class="switch" id="online-switch" role="switch" aria-checked="false"></button>
-        </div>
-
-        <!-- Commission balance (REQUIREMENTS §2.10 — always visible) -->
-        <a class="commission-row" href="../commission/index.html">
-          <span class="c-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="6" width="18" height="13" rx="2"/>
-              <path d="M3 10h18"/><path d="M7 15h4"/>
-            </svg>
-          </span>
-          <div class="c-body">
-            <p class="c-l" data-i18n="dash.commission.l">Outstanding commission</p>
-            <p class="c-v">48<span class="unit" data-i18n="unit.currency">SAR</span></p>
-          </div>
-          <span class="chev">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 6l6 6-6 6"/>
-            </svg>
-          </span>
-        </a>
-
-        <div class="dash-actions">
-          <button type="button" class="btn btn-primary" id="primary-cta" data-i18n="dash.cta.start">Start receiving requests</button>
-          <a class="btn btn-secondary" href="../trip-history/index.html" data-i18n="dash.cta.history">View trip history</a>
-        </div>
-
       </div>
     </div>
   </div>
 
   <script>
     I18N.register({
-      "dash.hello":        { en: "Ahmad Mohammed",                      ar: "أحمد محمد" },
-      "dash.role":         { en: "Jeera driver",                        ar: "سائق جيرا" },
-      "dash.available":    { en: "Available for trips",                 ar: "متاح للرحلات" },
-      "dash.offline":      { en: "Flip the switch to start receiving requests.",
-                             ar: "فعّل الزر لبدء استقبال الطلبات." },
-      "dash.online":       { en: "Listening for incoming requests…",
-                             ar: "جارٍ استقبال الطلبات…" },
-      "dash.status.off":   { en: "Offline",                             ar: "غير متاح" },
-      "dash.status.on":    { en: "Online",                              ar: "متاح" },
-      "dash.city":         { en: "Tripoli",                             ar: "طرابلس" },
-      "dash.country":      { en: "Libya",                               ar: "ليبيا" },
-      "dash.nb.andalus":   { en: "Hai al-Andalus",                      ar: "حي الأندلس" },
-      "dash.nb.gargaresh": { en: "Gargaresh",                           ar: "قرقارش" },
-      "dash.nb.souq":      { en: "Souq al-Juma",                        ar: "سوق الجمعة" },
-      "dash.today.short":  { en: "Today",                               ar: "اليوم" },
-      "dash.trips.short":  { en: "trips · 6h",                          ar: "رحلة · 6 س" },
-      "dash.commission.l": { en: "Outstanding commission",              ar: "العمولة المستحقّة" },
-      "dash.cta.start":    { en: "Start receiving requests",            ar: "بدء استقبال الطلبات" },
-      "dash.cta.stop":     { en: "Stop receiving requests",             ar: "إيقاف استقبال الطلبات" },
-      "dash.cta.history":  { en: "View trip history",                   ar: "سجل الرحلات" },
-      "unit.currency":     { en: "LYD",                                 ar: "د.ل" },
+      "dash.status.off":   { en: "Offline",                  ar: "غير متصل" },
+      "dash.status.on":    { en: "Online",                   ar: "متصل" },
+      "dash.today.short":  { en: "Today",                    ar: "اليوم" },
+      "dash.trips.short":  { en: "trips · 6h",               ar: "رحلة · 6 س" },
+      "dash.commission.l": { en: "Commission",               ar: "العمولة" },
+      "dash.commission.due": { en: "Due Sunday",             ar: "تستحق الأحد" },
+      "unit.currency":     { en: "LYD",                      ar: "د.ل" },
     });
 
-    // Online toggle wiring — switch ⇄ status pill ⇄ driver-pin pulse ⇄ primary CTA.
-    const sw     = document.getElementById('online-switch');
-    const cta    = document.getElementById('primary-cta');
-    const state  = document.getElementById('online-state');
-    const status = document.getElementById('map-status');
+    // Online control wiring — single pill ⇄ driver-pin pulse ⇄ mock request.
+    const sw = document.getElementById('online-switch');
 
-    // Real Tripoli map. The driver pin marker is stored so we can toggle
-    // its pulse class when going online/offline.
     let driverMarker = null;
     JeeraMap.create('map', {
       center: JeeraMap.TRIPOLI.center,
@@ -296,32 +210,21 @@
     });
 
     function setOnline(on) {
-      sw.classList.toggle('on', on);
+      sw.dataset.state = on ? 'on' : 'off';
       sw.setAttribute('aria-checked', String(on));
-      status.classList.toggle('on', on);
-      state.setAttribute('data-i18n', on ? 'dash.online' : 'dash.offline');
-      cta.setAttribute('data-i18n',   on ? 'dash.cta.stop' : 'dash.cta.start');
-      status.querySelector('span:last-child')
-            .setAttribute('data-i18n', on ? 'dash.status.on' : 'dash.status.off');
-      I18N.apply();
-      // Toggle the driver pin's pulse class (icon element may not exist yet
-      // if Leaflet is still bootstrapping — guard).
-      const el = driverMarker && driverMarker.getElement
-                 && driverMarker.getElement();
+
+      const el = driverMarker && driverMarker.getElement && driverMarker.getElement();
       const inner = el && el.querySelector('.jm-pin-driver');
       if (inner) inner.classList.toggle('pulse', on);
 
       clearTimeout(window._pingT);
       if (on) {
         window._pingT = setTimeout(() => {
-          if (sw.classList.contains('on')) {
-            location.href = '../ride-requests/index.html';
-          }
+          if (sw.dataset.state === 'on') location.href = '../ride-requests/index.html';
         }, 3500);
       }
     }
-    sw.addEventListener('click',  () => setOnline(!sw.classList.contains('on')));
-    cta.addEventListener('click', () => setOnline(!sw.classList.contains('on')));
+    sw.addEventListener('click', () => setOnline(sw.dataset.state !== 'on'));
   </script>
 </body>
 </html>
