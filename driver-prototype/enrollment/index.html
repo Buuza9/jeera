@@ -7,6 +7,32 @@
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
+  <style>
+    .enr-sub { margin-bottom: 22px; }
+    .upload-tile {
+      width: 100%; display: flex; gap: 12px; align-items: center;
+      cursor: pointer; text-align: start; font-family: inherit;
+      padding: 16px; border-radius: var(--r-md);
+      border: 1px dashed var(--border); background: var(--surface);
+      color: var(--text);
+      transition: border-color .15s, background .15s;
+    }
+    .upload-tile .u-ic {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      background: var(--surface-2); color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .upload-tile .u-ic svg { width: 20px; height: 20px; }
+    .upload-tile .u-txt { flex: 1; min-width: 0; }
+    .upload-tile .u-txt .t { font-size: 14px; font-weight: 600; }
+    .upload-tile .u-txt .s { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .upload-tile.done {
+      border-style: solid; border-color: var(--brand-500); background: var(--brand-50);
+    }
+    [data-theme="dark"] .upload-tile.done { background: oklch(from var(--brand-500) l c h / .12); }
+    .upload-tile.done .u-ic { background: var(--brand-600); color: var(--text-onbrand); }
+    .upload-tile.done .u-txt .t { color: var(--brand-700); }
+  </style>
 </head>
 <body>
   <div class="toolbar">
@@ -14,103 +40,125 @@
     <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
     <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
     <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="../welcome/index.html">←</a>
   </div>
 
   <div class="stage">
     <div class="phone">
       <div class="screen">
-        <div class="brand-mark">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" width="36" height="36">
-            <path d="M30 8 L30 30 a8 8 0 0 1 -16 0" />
-            <path d="M22 8 L36 8" opacity=".75"/>
-          </svg>
+        <!-- App bar -->
+        <div class="appbar">
+          <a class="ab-btn" href="../welcome/index.html" aria-label="Back">
+            <svg class="chev chev-end" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+          </a>
+          <div style="flex:1;min-width:0">
+            <div class="ab-title" data-i18n="enr.title">Driver enrollment</div>
+          </div>
         </div>
-        <h1 class="title" data-i18n="enroll.title">Register as a driver</h1>
-        <p class="subtitle" data-i18n="enroll.subtitle">Complete the form to start.</p>
 
-        <form onsubmit="event.preventDefault(); window.location.href='./pending.html'">
+        <p class="body enr-sub" data-i18n="enr.sub">We'll review your details within 24 hours.</p>
+
+        <div class="stack stack-3" style="flex:1">
           <div class="field">
-            <label data-i18n="enroll.fullName">Full name</label>
-            <input type="text" data-i18n-placeholder="enroll.fullName.ph" placeholder="e.g. Ahmed Mohammed" />
+            <label data-i18n="enr.fullname">Full name</label>
+            <input id="f-name" type="text" placeholder="Ahmed Mohamed Al-Tarhouni" data-i18n-placeholder="enr.fullname.ph" />
           </div>
-
           <div class="field">
-            <label data-i18n="enroll.phone">Phone number</label>
-            <input type="tel" inputmode="tel" placeholder="+218 9X XXX XXXX" />
-          </div>
-
-          <div class="field">
-            <label data-i18n="enroll.nationalId">National ID number</label>
-            <input type="text" inputmode="numeric" />
-          </div>
-
-          <div class="field">
-            <label data-i18n="enroll.licenseNo">Driver's license number</label>
-            <input type="text" inputmode="numeric" />
-          </div>
-
-          <div class="field">
-            <label data-i18n="enroll.plate">Motorbike plate number</label>
-            <input type="text" />
-          </div>
-
-          <p class="section-label" data-i18n="enroll.documents">Documents</p>
-
-          <div class="field">
-            <label data-i18n="enroll.idPhoto">ID photo</label>
-            <div class="upload" onclick="this.classList.toggle('done')">
-              <span class="ic">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-                  <path d="M12 16V4"/>
-                  <path d="M6 10l6-6 6 6"/>
-                  <path d="M4 20h16"/>
-                </svg>
-              </span>
-              <span data-i18n="enroll.upload.tap">Tap to upload photo</span>
+            <label data-i18n="enr.phone">Phone</label>
+            <div class="field-prefix">
+              <span class="pfx">+218</span>
+              <input id="f-phone" type="tel" dir="ltr" placeholder="9X XXX XXXX" />
             </div>
           </div>
-
           <div class="field">
-            <label data-i18n="enroll.licensePhoto">License photo</label>
-            <div class="upload" onclick="this.classList.toggle('done')">
-              <span class="ic">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-                  <path d="M12 16V4"/>
-                  <path d="M6 10l6-6 6 6"/>
-                  <path d="M4 20h16"/>
-                </svg>
-              </span>
-              <span data-i18n="enroll.upload.tap">Tap to upload photo</span>
-            </div>
+            <label data-i18n="enr.id">National ID number</label>
+            <input id="f-id" type="text" dir="ltr" placeholder="1198XXXXXXX" />
+          </div>
+          <div class="field">
+            <label data-i18n="enr.license">Driver's license number</label>
+            <input id="f-lic" type="text" dir="ltr" placeholder="LIB-XXXXXXX" />
+          </div>
+          <div class="field">
+            <label data-i18n="enr.plate">Vehicle plate</label>
+            <input id="f-plate" type="text" dir="ltr" placeholder="123 TR 5" />
           </div>
 
-          <button class="btn btn-primary" type="submit" data-i18n="enroll.submit">Submit for approval</button>
-          <div class="divider" data-i18n="common.or">or</div>
-          <a href="../index.html" class="btn btn-secondary" data-i18n="enroll.alreadyDriver">Already a driver? Sign in</a>
-        </form>
+          <div class="divider"><span data-i18n="prof.docs">Documents</span></div>
+
+          <button class="upload-tile" id="doc-id">
+            <span class="u-ic" data-ic>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/><path d="M12 4v12"/><path d="M7 9l5-5 5 5"/>
+              </svg>
+            </span>
+            <span class="u-txt">
+              <span class="t" data-i18n="enr.id.photo">National ID photo</span>
+              <span class="s" data-i18n="enr.id.photo.sub">Front side, clear &amp; legible</span>
+            </span>
+          </button>
+
+          <button class="upload-tile" id="doc-lic">
+            <span class="u-ic" data-ic>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/><path d="M12 4v12"/><path d="M7 9l5-5 5 5"/>
+              </svg>
+            </span>
+            <span class="u-txt">
+              <span class="t" data-i18n="enr.lic.photo">Driver's license photo</span>
+              <span class="s" data-i18n="enr.lic.photo.sub">Both sides if double-sided</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="action-bar">
+          <a class="btn btn-primary" id="submit" href="pending.html" data-i18n="enr.submit">Submit for review</a>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
     I18N.register({
-      "nav.pending":          { en: "Pending state →",      ar: "حالة قيد المراجعة ←" },
-      "enroll.title":         { en: "Register as a driver", ar: "التسجيل كسائق" },
-      "enroll.subtitle":      { en: "Complete the form to start.", ar: "أكمل البيانات للبدء" },
-      "enroll.fullName":      { en: "Full name",            ar: "الاسم الكامل" },
-      "enroll.fullName.ph":   { en: "e.g. Ahmed Mohammed",  ar: "مثال: أحمد محمد" },
-      "enroll.phone":         { en: "Phone number",         ar: "رقم الهاتف" },
-      "enroll.nationalId":    { en: "National ID number",   ar: "رقم الهوية" },
-      "enroll.licenseNo":     { en: "Driver's license number", ar: "رقم رخصة القيادة" },
-      "enroll.plate":         { en: "Motorbike plate number", ar: "رقم لوحة الدراجة" },
-      "enroll.documents":     { en: "Documents",            ar: "المستندات" },
-      "enroll.idPhoto":       { en: "ID photo",             ar: "صورة الهوية" },
-      "enroll.licensePhoto":  { en: "License photo",        ar: "صورة رخصة القيادة" },
-      "enroll.upload.tap":    { en: "Tap to upload photo",  ar: "اضغط لرفع الصورة" },
-      "enroll.submit":        { en: "Submit for approval",  ar: "إرسال للمراجعة" },
-      "enroll.alreadyDriver": { en: "Already a driver? Sign in", ar: "سائق مسجّل؟ تسجيل الدخول" },
-      "common.or":            { en: "or",                   ar: "أو" },
+      "enr.title":         { en: "Driver enrollment",              ar: "تسجيل السائق" },
+      "enr.sub":           { en: "We'll review your details within 24 hours.",
+                             ar: "سنراجع بياناتك خلال ٢٤ ساعة." },
+      "enr.fullname":      { en: "Full name",                      ar: "الاسم الكامل" },
+      "enr.fullname.ph":   { en: "Ahmed Mohamed Al-Tarhouni",      ar: "أحمد محمد الترهوني" },
+      "enr.phone":         { en: "Phone",                          ar: "رقم الهاتف" },
+      "enr.id":            { en: "National ID number",             ar: "الرقم الوطني" },
+      "enr.license":       { en: "Driver's license number",        ar: "رقم رخصة القيادة" },
+      "enr.plate":         { en: "Vehicle plate",                  ar: "لوحة السيارة" },
+      "prof.docs":         { en: "Documents",                      ar: "المستندات" },
+      "enr.id.photo":      { en: "National ID photo",              ar: "صورة الرقم الوطني" },
+      "enr.id.photo.sub":  { en: "Front side, clear & legible",    ar: "الوجه الأمامي، واضح ومقروء" },
+      "enr.lic.photo":     { en: "Driver's license photo",         ar: "صورة رخصة القيادة" },
+      "enr.lic.photo.sub": { en: "Both sides if double-sided",     ar: "الوجهان إن كانت مزدوجة" },
+      "enr.submit":        { en: "Submit for review",              ar: "إرسال للمراجعة" },
     });
+
+    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+    const UPLOAD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/><path d="M12 4v12"/><path d="M7 9l5-5 5 5"/></svg>';
+
+    const submit = document.getElementById('submit');
+    const fields = ['f-name','f-phone','f-id','f-lic','f-plate'].map((id) => document.getElementById(id));
+    const docs = { id: false, lic: false };
+
+    function refresh() {
+      const filled = fields.every((f) => f.value.trim().length > 1);
+      const ok = filled && docs.id && docs.lic;
+      submit.style.opacity = ok ? '1' : '.5';
+      submit.style.pointerEvents = ok ? '' : 'none';
+    }
+    function toggleDoc(el, key) {
+      docs[key] = !docs[key];
+      el.classList.toggle('done', docs[key]);
+      el.querySelector('[data-ic]').innerHTML = docs[key] ? CHECK : UPLOAD;
+      refresh();
+    }
+    document.getElementById('doc-id').addEventListener('click', (e) => { e.preventDefault(); toggleDoc(e.currentTarget, 'id'); });
+    document.getElementById('doc-lic').addEventListener('click', (e) => { e.preventDefault(); toggleDoc(e.currentTarget, 'lic'); });
+    fields.forEach((f) => f.addEventListener('input', refresh));
+    refresh();
   </script>
 </body>
 </html>

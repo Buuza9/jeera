@@ -3,10 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Djera Driver — Pending approval</title>
+  <title>Djera Driver — Application submitted</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
+  <style>
+    .pend-screen { padding-top: 88px; }
+    .pend-head { text-align: center; margin-bottom: 28px; }
+    .pend-icon {
+      width: 88px; height: 88px; border-radius: var(--r-xl);
+      background: var(--brand-50); color: var(--brand-700);
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+    }
+    [data-theme="dark"] .pend-icon { background: oklch(from var(--brand-500) l c h / .14); }
+    .pend-icon svg { width: 42px; height: 42px; }
+    .pend-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; letter-spacing: -0.035em; margin: 0; }
+    .pend-sub { margin: 8px auto 0; max-width: 320px; }
+    .kv {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 14px;
+    }
+    .kv + .kv { border-top: 1px solid var(--hairline); }
+    .kv .k { font-size: 13px; color: var(--text-muted); }
+    .kv .v { font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  </style>
 </head>
 <body>
   <div class="toolbar">
@@ -14,65 +35,52 @@
     <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
     <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
     <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="index.html">←</a>
   </div>
 
   <div class="stage">
     <div class="phone">
-      <div class="screen">
-        <div class="brand-mark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32">
-            <circle cx="12" cy="12" r="9"/>
-            <path d="M12 7v5l3 2"/>
-          </svg>
-        </div>
-        <h1 class="title" data-i18n="pending.title">Application received</h1>
-        <p class="subtitle" data-i18n="pending.subtitle">An admin will review your documents shortly.</p>
-
-        <div class="card" style="margin-bottom: 16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <strong data-i18n="pending.status">Status</strong>
-            <span class="badge badge-warning" data-i18n="pending.badge">Pending review</span>
+      <div class="screen pend-screen">
+        <div class="pend-head">
+          <div class="pend-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+            </svg>
           </div>
-          <p style="margin:0; color:var(--text-muted); font-size:14px;" data-i18n="pending.note">
-            You will be notified once your documents are approved. You cannot accept ride requests until then.
-          </p>
+          <h1 class="pend-title" data-i18n="enr.pend.title">Application submitted</h1>
+          <p class="body pend-sub" data-i18n="enr.pend.sub">We're reviewing your documents. You'll get a notification within 24 hours.</p>
+          <span class="badge badge-warn" style="margin-top:14px">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span data-i18n="enr.pend.eta">Estimated wait: under 24 hours</span>
+          </span>
         </div>
 
-        <div class="card">
-          <p class="section-label" data-i18n="pending.checklist">Submitted</p>
-          <ul style="list-style:none; padding:0; margin:0; font-size:14px; color:var(--text);">
-            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.fullName">Full name</span></li>
-            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.nationalId">National ID</span></li>
-            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.licenseNo">License number</span></li>
-            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.plate">Plate number</span></li>
-            <li style="padding:8px 0; border-bottom:1px solid var(--border)">✓ <span data-i18n="enroll.idPhoto">ID photo</span></li>
-            <li style="padding:8px 0">✓ <span data-i18n="enroll.licensePhoto">License photo</span></li>
-          </ul>
+        <div class="card" style="padding:4px">
+          <div class="kv"><span class="k" data-i18n="enr.fullname">Full name</span><span class="v">Ahmed Al-Tarhouni</span></div>
+          <div class="kv"><span class="k" data-i18n="enr.id">National ID number</span><span class="v">1198********</span></div>
+          <div class="kv"><span class="k" data-i18n="enr.license">Driver's license number</span><span class="v">LIB-2843109</span></div>
+          <div class="kv"><span class="k" data-i18n="enr.plate">Vehicle plate</span><span class="v">247 TR 5</span></div>
+          <div class="kv"><span class="k" data-i18n="prof.docs">Documents</span><span class="v">2 of 2</span></div>
         </div>
 
         <div class="spacer"></div>
-
-        <a href="../welcome/index.html" class="btn btn-ghost" data-i18n="pending.signout">Sign out</a>
+        <a class="btn btn-secondary" href="../welcome/index.html" data-i18n="enr.pend.home">Back to home</a>
       </div>
     </div>
   </div>
 
   <script>
     I18N.register({
-      "pending.title":     { en: "Application received",          ar: "تم استلام طلبك" },
-      "pending.subtitle":  { en: "An admin will review your documents shortly.", ar: "سيقوم المسؤول بمراجعة مستنداتك قريبًا." },
-      "pending.status":    { en: "Status",                        ar: "الحالة" },
-      "pending.badge":     { en: "Pending review",                ar: "قيد المراجعة" },
-      "pending.note":      { en: "You will be notified once your documents are approved. You cannot accept ride requests until then.",
-                             ar: "سيتم إعلامك عند اعتماد مستنداتك. لا يمكنك قبول طلبات الرحلات قبل ذلك." },
-      "pending.checklist": { en: "Submitted",                     ar: "المُرسَل" },
-      "pending.signout":   { en: "Sign out",                      ar: "تسجيل الخروج" },
-      "enroll.fullName":   { en: "Full name",                     ar: "الاسم الكامل" },
-      "enroll.nationalId": { en: "National ID",                   ar: "رقم الهوية" },
-      "enroll.licenseNo":  { en: "License number",                ar: "رقم رخصة القيادة" },
-      "enroll.plate":      { en: "Plate number",                  ar: "رقم لوحة الدراجة" },
-      "enroll.idPhoto":    { en: "ID photo",                      ar: "صورة الهوية" },
-      "enroll.licensePhoto": { en: "License photo",               ar: "صورة الرخصة" },
+      "enr.pend.title": { en: "Application submitted",  ar: "تم استلام طلبك" },
+      "enr.pend.sub":   { en: "We're reviewing your documents. You'll get a notification within 24 hours.",
+                          ar: "نراجع مستنداتك حاليًا. سيصلك إشعار خلال ٢٤ ساعة." },
+      "enr.pend.eta":   { en: "Estimated wait: under 24 hours",  ar: "وقت الانتظار المتوقّع: أقل من ٢٤ ساعة" },
+      "enr.pend.home":  { en: "Back to home",           ar: "العودة للرئيسية" },
+      "enr.fullname":   { en: "Full name",              ar: "الاسم الكامل" },
+      "enr.id":         { en: "National ID number",     ar: "الرقم الوطني" },
+      "enr.license":    { en: "Driver's license number", ar: "رقم رخصة القيادة" },
+      "enr.plate":      { en: "Vehicle plate",          ar: "لوحة السيارة" },
+      "prof.docs":      { en: "Documents",              ar: "المستندات" },
     });
   </script>
 </body>
