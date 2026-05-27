@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light" data-palette="palm">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Djera — Brand identity</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="styles/tokens.css" />
+
+  <style>
+    html, body { height: auto; overflow: auto; background: var(--bg-deep); }
+    body {
+      font-family: var(--font-sans);
+      color: var(--text);
+      margin: 0;
+      padding: 56px 32px 80px;
+      letter-spacing: -0.011em;
+    }
+    .page { max-width: 1240px; margin: 0 auto; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 56px;
+    }
+    .topbar a {
+      font-family: var(--font-mono);
+      font-size: 12px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 8px 14px; border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .topbar a:hover { color: var(--text); border-color: var(--border-strong); }
+
+    /* Hero */
+    .hero {
+      padding: 60px 0 80px;
+      text-align: start;
+    }
+    .hero .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand-600);
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(56px, 9vw, 124px);
+      font-weight: 600;
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+      margin: 0 0 24px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--brand-600);
+    }
+    .hero p {
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0;
+    }
+
+    /* Section */
+    section { padding: 48px 0; border-top: 1px solid var(--border); }
+    .sect-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .sect-head h2 {
+      font-family: var(--font-display);
+      font-size: 28px; font-weight: 600; letter-spacing: -0.025em;
+      margin: 0;
+    }
+    .sect-head .num {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+    }
+
+    /* Concept grid (2x2) */
+    .concepts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .concept {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 32px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .concept.primary {
+      background: linear-gradient(160deg, var(--brand-50), var(--surface) 70%);
+      border-color: oklch(from var(--brand-500) l c h / .25);
+    }
+    .concept-head {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .concept-head .tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em;
+      padding: 4px 10px; border-radius: 999px;
+      background: var(--surface-2); color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .concept.primary .concept-head .tag {
+      background: var(--brand-600); color: var(--text-onbrand);
+    }
+    .concept h3 {
+      font-family: var(--font-display);
+      font-size: 22px; font-weight: 600; letter-spacing: -0.022em;
+      margin: 0;
+    }
+    .concept p {
+      font-size: 14px; color: var(--text-muted); line-height: 1.55;
+      margin: 0;
+    }
+    .stage-box {
+      background: var(--surface-2);
+      border-radius: 16px;
+      padding: 60px 32px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 180px;
+    }
+    .concept.primary .stage-box {
+      background: oklch(from var(--brand-50) calc(l + .005) c h);
+    }
+    .lockup-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+    }
+    .lockup-row .lbl {
+      font-family: var(--font-mono);
+      font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em;
+      color: var(--text-faint); text-transform: uppercase;
+      width: 90px; flex-shrink: 0;
+    }
+    .lockup-row .out {
+      flex: 1;
+      padding: 18px 22px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 64px;
+    }
+
+    /* Color tokens */
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+    .swatch {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .swatch .chip {
+      height: 110px;
+      border-radius: 10px;
+    }
+    .swatch .meta {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .swatch .name {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+    .swatch .val {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-faint);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Type */
+    .type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .type-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+    }
+    .type-card .label {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .type-card .specimen {
+      font-family: var(--font-display);
+      font-size: 96px; font-weight: 600;
+      letter-spacing: -0.045em;
+      line-height: 1;
+      margin: 0;
+    }
+    .type-card.ar .specimen {
+      font-family: var(--font-ar);
+      font-weight: 700;
+      text-align: end;
+      direction: rtl;
+    }
+    .type-card .meta {
+      margin-top: 24px;
+      display: flex; justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 12px; color: var(--text-faint);
+    }
+
+    /* Applications */
+    .apps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .app-card {
+      aspect-ratio: 4 / 5;
+      border-radius: 22px;
+      padding: 28px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-card.bg-brand    { background: var(--brand-600); color: var(--text-onbrand); }
+    .app-card.bg-sand     { background: var(--warm-100); color: var(--text); }
+    .app-card.bg-deep     { background: var(--brand-900); color: var(--text-onbrand); }
+    .app-card.bg-cream    { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+    .app-card.bg-accent   { background: var(--accent-500); color: var(--text); }
+    .app-card.bg-terra    { background: var(--terra-500); color: var(--text-onbrand); }
+    .app-card .corner {
+      font-family: var(--font-mono);
+      font-size: 10.5px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: .65;
+    }
+    .app-card .center {
+      align-self: center;
+    }
+    .app-card .label {
+      font-family: var(--font-display);
+      font-size: 20px; font-weight: 600; letter-spacing: -0.022em;
+      line-height: 1.2;
+    }
+    .app-card .sub {
+      font-size: 13px; opacity: .7; margin-top: 4px;
+    }
+
+    /* Driver pin demo */
+    .pin-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .pin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    .pin-card .map-bg {
+      width: 130px; height: 130px; border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 30%, var(--brand-100), transparent 60%),
+        repeating-linear-gradient(45deg, var(--map-block), var(--map-block) 8px, var(--map-road) 8px, var(--map-road) 9px);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .pin-card .map-bg::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,.08));
+    }
+    .pin-card .lbl {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Driver pin shape (used inline) */
+    .pin {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--brand-600);
+      border: 3px solid white;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 16px rgba(20,18,12,.28);
+      position: relative; z-index: 5;
+    }
+    .pin svg { transform: rotate(-12deg); }
+
+    /* Footer */
+    .footnote {
+      margin-top: 80px;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-faint);
+      letter-spacing: 0.04em;
+      display: flex; justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <span style="font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; letter-spacing: 0.18em; color: var(--text-muted); text-transform: uppercase;">
+        Djera · Brand identity · v0.1
+      </span>
+      <a href="Prototype.html">Open prototype →</a>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="eyebrow">For Libya's drivers</div>
+      <h1>djera<em>.</em></h1>
+      <p>A ride-share built around how Tripoli already moves — cash in hand at the end of every trip, no middleman, Arabic-first. The brand is warm, geometric, and confident.</p>
+    </div>
+
+    <!-- Concepts -->
+    <section>
+      <div class="sect-head">
+        <h2>Mark concepts</h2>
+        <span class="num">01 / 05</span>
+      </div>
+
+      <div class="concepts">
+        <!-- A — The Dart (primary, ties to driver pin) -->
+        <div class="concept primary">
+          <div class="concept-head">
+            <h3>The Dart</h3>
+            <span class="tag">Primary</span>
+          </div>
+          <p>A folded-paper dart, viewed from above. The same shape drives the brand mark <em>and</em> the driver pin on the map — one form, one identity. The crease catches light to imply altitude and motion. Two-tone fold reads as a paper plane or compass needle depending on context.</p>
+
+          <div class="stage-box">
+            <!-- Big primary mark -->
+            <svg width="172" height="172" viewBox="0 0 80 80" aria-label="Djera">
+              <rect x="0" y="0" width="80" height="80" rx="22" fill="var(--brand-600)"/>
+              <rect x="1.5" y="1.5" width="77" height="77" rx="20.5" fill="none" stroke="rgba(255,255,255,.10)"/>
+              <!-- Dart, rotated -12deg -->
+              <g transform="rotate(-12 40 40)">
+                <path d="M40 18 L58 60 L40 51 Z" fill="white" opacity="0.98"/>
+                <path d="M40 18 L22 60 L40 51 Z" fill="white" opacity="0.55"/>
+                <path d="M40 18 L40 51" stroke="var(--brand-600)" stroke-width="0.7" opacity=".4"/>
+              </g>
+              <!-- Saffron origin dot (top corner — pickup pin reference) -->
+              <circle cx="64" cy="16" r="5" fill="var(--accent-500)"/>
+            </svg>
+          </div>
+
+          <div class="lockup-row">
+            <span class="lbl">Lockup</span>
+            <div class="out">
+              <span style="display: inline-flex; align-items: center; gap: 14px;">
+                <svg width="38" height="38" viewBox="0 0 80 80">
+                  <rect width="80" height="80" rx="22" fill="var(--brand-600)"/>
+                  <g transform="rotate(-12 40 40)">
+                    <path d="M40 18 L58 60 L40 51 Z" fill="white" opacity="0.98"/>
+                    <path d="M40 18 L22 60 L40 51 Z" fill="white" opacity="0.55"/>
+                  </g>
+                  <circle cx="64" cy="16" r="5" fill="var(--accent-500)"/>
+                </svg>
+                <span style="font-family: var(--font-display); font-size: 30px; font-weight: 600; letter-spacing: -0.04em; line-height: 1;">djera</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="lockup-row">
+            <span class="lbl">Arabic</span>
+            <div class="out">
+              <span style="display: inline-flex; align-items: center; gap: 14px; direction: rtl;">
+                <svg width="38" height="38" viewBox="0 0 80 80">
+                  <rect width="80" height="80" rx="22" fill="var(--brand-600)"/>
+                  <g transform="rotate(-12 40 40)">
+                    <path d="M40 18 L58 60 L40 51 Z" fill="white" opacity="0.98"/>
+                    <path d="M40 18 L22 60 L40 51 Z" fill="white" opacity="0.55"/>
+                  </g>
+                  <circle cx="64" cy="16" r="5" fill="var(--accent-500)"/>
+                </svg>
+                <span style="font-family: var(--font-ar); font-size: 34px; font-weight: 700; line-height: 1; letter-spacing: 0;">جيرا</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- B — Route-D monogram -->
+        <div class="concept">
+          <div class="concept-head">
+            <h3>Route-D Monogram</h3>
+            <span class="tag">Alt 01</span>
+          </div>
+          <p>A capital D where the curved side traces a route, opening at the top into a small pickup dot. Reads as a wayfinding mark — the rider boards at the dot and the route arcs around.</p>
+
+          <div class="stage-box">
+            <svg width="172" height="172" viewBox="0 0 80 80" aria-label="Djera (D-monogram)">
+              <rect width="80" height="80" rx="22" fill="var(--text)"/>
+              <!-- D as an open arc -->
+              <path d="M 26 18 L 26 62"
+                    fill="none" stroke="var(--bg)" stroke-width="9" stroke-linecap="round"/>
+              <path d="M 26 22 A 18 18 0 0 1 26 58"
+                    fill="none" stroke="var(--bg)" stroke-width="9" stroke-linecap="round"/>
+              <!-- Pickup dot (saffron) where the route starts -->
+              <circle cx="26" cy="22" r="5" fill="var(--accent-500)"/>
+            </svg>
+          </div>
+
+          <div class="lockup-row">
+            <span class="lbl">Lockup</span>
+            <div class="out">
+              <span style="display: inline-flex; align-items: center; gap: 14px;">
+                <svg width="38" height="38" viewBox="0 0 80 80">
+                  <rect width="80" height="80" rx="22" fill="var(--text)"/>
+                  <path d="M 26 18 L 26 62" fill="none" stroke="var(--bg)" stroke-width="9" stroke-linecap="round"/>
+                  <path d="M 26 22 A 18 18 0 0 1 26 58" fill="none" stroke="var(--bg)" stroke-width="9" stroke-linecap="round"/>
+                  <circle cx="26" cy="22" r="5" fill="var(--accent-500)"/>
+                </svg>
+                <span style="font-family: var(--font-display); font-size: 30px; font-weight: 600; letter-spacing: -0.04em; line-height: 1;">djera</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- C — DJ ligature wordmark -->
+        <div class="concept">
+          <div class="concept-head">
+            <h3>DJ Ligature</h3>
+            <span class="tag">Alt 02</span>
+          </div>
+          <p>The "dj" digraph fused into a single glyph: the descender of the J swings under the d to form a road. Type-driven, no separate icon needed — works at sign-size and at favicon-size as just <em>dj</em>.</p>
+
+          <div class="stage-box" style="padding: 50px 32px;">
+            <span style="font-family: var(--font-display); font-size: 132px; font-weight: 600; letter-spacing: -0.06em; line-height: 0.85; color: var(--brand-700); position: relative;">
+              <span style="display: inline-block; position: relative;">
+                <span>dj</span>
+                <!-- Underline swoosh below the dj -->
+                <svg viewBox="0 0 220 40" width="200" height="36"
+                     style="position: absolute; left: -8px; bottom: -14px;"
+                     fill="none" stroke="var(--accent-500)" stroke-width="6" stroke-linecap="round">
+                  <path d="M8 28 Q 60 4, 130 14 T 210 22" />
+                </svg>
+              </span>
+            </span>
+          </div>
+
+          <div class="lockup-row">
+            <span class="lbl">Wordmark</span>
+            <div class="out">
+              <span style="font-family: var(--font-display); font-size: 30px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; color: var(--brand-700);">djera</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- D — Cumin seed -->
+        <div class="concept">
+          <div class="concept-head">
+            <h3>The Seed</h3>
+            <span class="tag">Alt 03</span>
+          </div>
+          <p>A nod to the name — "jeera" / "djera" is cumin in Arabic. An almond-shaped seed with a single ridge down the middle; warm, organic, distinct from every other rideshare's geometric circles. Sits beautifully next to Arabic letterforms.</p>
+
+          <div class="stage-box">
+            <svg width="172" height="172" viewBox="0 0 80 80" aria-label="Djera (seed)">
+              <rect width="80" height="80" rx="22" fill="var(--accent-500)"/>
+              <!-- Seed: pointed almond shape -->
+              <path d="M 40 14 Q 22 28, 24 50 Q 27 64, 40 66 Q 53 64, 56 50 Q 58 28, 40 14 Z"
+                    fill="var(--brand-700)"/>
+              <!-- Ridge -->
+              <path d="M 40 18 Q 32 30, 33 50 Q 36 60, 40 62"
+                    fill="none" stroke="var(--accent-500)" stroke-width="1.6" opacity=".55"/>
+              <path d="M 40 18 Q 48 30, 47 50 Q 44 60, 40 62"
+                    fill="none" stroke="var(--accent-500)" stroke-width="1.6" opacity=".35"/>
+              <!-- Centre line -->
+              <path d="M 40 14 L 40 66" stroke="var(--accent-500)" stroke-width="1" opacity=".55"/>
+            </svg>
+          </div>
+
+          <div class="lockup-row">
+            <span class="lbl">Lockup</span>
+            <div class="out">
+              <span style="display: inline-flex; align-items: center; gap: 14px;">
+                <svg width="38" height="38" viewBox="0 0 80 80">
+                  <rect width="80" height="80" rx="22" fill="var(--accent-500)"/>
+                  <path d="M 40 14 Q 22 28, 24 50 Q 27 64, 40 66 Q 53 64, 56 50 Q 58 28, 40 14 Z" fill="var(--brand-700)"/>
+                  <path d="M 40 14 L 40 66" stroke="var(--accent-500)" stroke-width="1" opacity=".55"/>
+                </svg>
+                <span style="font-family: var(--font-display); font-size: 30px; font-weight: 600; letter-spacing: -0.04em; line-height: 1;">djera</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Driver pin -->
+    <section>
+      <div class="sect-head">
+        <h2>The pin (one shape, one identity)</h2>
+        <span class="num">02 / 05</span>
+      </div>
+
+      <div class="pin-row">
+        <div class="pin-card">
+          <div class="map-bg">
+            <div class="pin">
+              <svg width="26" height="26" viewBox="0 0 32 32">
+                <path d="M16 3 L27 27 L16 22 Z" fill="white" opacity=".98"/>
+                <path d="M16 3 L5 27 L16 22 Z" fill="white" opacity=".55"/>
+                <path d="M16 3 L16 22" stroke="var(--brand-600)" stroke-width="0.6" opacity=".45"/>
+              </svg>
+            </div>
+          </div>
+          <div class="lbl">Driver · Idle</div>
+        </div>
+
+        <div class="pin-card">
+          <div class="map-bg">
+            <div class="pin" style="box-shadow: 0 0 0 6px oklch(from var(--brand-500) l c h / .25), 0 6px 16px rgba(20,18,12,.28);">
+              <svg width="26" height="26" viewBox="0 0 32 32">
+                <path d="M16 3 L27 27 L16 22 Z" fill="white" opacity=".98"/>
+                <path d="M16 3 L5 27 L16 22 Z" fill="white" opacity=".55"/>
+              </svg>
+            </div>
+          </div>
+          <div class="lbl">Driver · Online</div>
+        </div>
+
+        <div class="pin-card">
+          <div class="map-bg">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div style="padding: 6px 10px; border-radius: 999px; background: var(--brand-600); color: white; font-size: 11px; font-weight: 700; box-shadow: var(--shadow-sm); white-space: nowrap;">Pickup</div>
+              <div style="width: 14px; height: 14px; border-radius: 50%; background: var(--brand-600); border: 3px solid white; margin-top: 4px;"></div>
+            </div>
+          </div>
+          <div class="lbl">Pickup</div>
+        </div>
+
+        <div class="pin-card">
+          <div class="map-bg">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div style="padding: 6px 10px; border-radius: 999px; background: var(--text); color: var(--bg); font-size: 11px; font-weight: 700; box-shadow: var(--shadow-sm); white-space: nowrap;">Drop-off</div>
+              <div style="width: 14px; height: 14px; border-radius: 50%; background: var(--terra-500); border: 3px solid white; margin-top: 4px;"></div>
+            </div>
+          </div>
+          <div class="lbl">Destination</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Color -->
+    <section>
+      <div class="sect-head">
+        <h2>Palette</h2>
+        <span class="num">03 / 05</span>
+      </div>
+
+      <div class="palette">
+        <div class="swatch">
+          <div class="chip" style="background: var(--brand-700);"></div>
+          <div class="meta"><span class="name">Palm 700</span><span class="val">oklch(.38 .075 150)</span></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background: var(--brand-600);"></div>
+          <div class="meta"><span class="name">Palm 600</span><span class="val">Primary</span></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background: var(--brand-500);"></div>
+          <div class="meta"><span class="name">Palm 500</span><span class="val">oklch(.54 .105 150)</span></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background: var(--accent-500);"></div>
+          <div class="meta"><span class="name">Saffron</span><span class="val">Accent / origin</span></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background: var(--terra-500);"></div>
+          <div class="meta"><span class="name">Terra</span><span class="val">Destination</span></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background: var(--bg); border: 1px solid var(--border);"></div>
+          <div class="meta"><span class="name">Sand</span><span class="val">Surface</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Type -->
+    <section>
+      <div class="sect-head">
+        <h2>Type</h2>
+        <span class="num">04 / 05</span>
+      </div>
+
+      <div class="type-grid">
+        <div class="type-card">
+          <div class="label">Display · Geist</div>
+          <p class="specimen">djera</p>
+          <div class="meta">
+            <span>Aa Bb Cc 0123</span>
+            <span>Semibold · −4.5% track</span>
+          </div>
+        </div>
+        <div class="type-card ar">
+          <div class="label">Arabic · IBM Plex Sans Arabic</div>
+          <p class="specimen">جيرا</p>
+          <div class="meta">
+            <span style="direction: ltr;">ا ب ت ث 0123</span>
+            <span style="direction: ltr;">Bold · 0% track</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Applications -->
+    <section>
+      <div class="sect-head">
+        <h2>Applications</h2>
+        <span class="num">05 / 05</span>
+      </div>
+
+      <div class="apps">
+        <!-- App icon (brand) -->
+        <div class="app-card bg-brand">
+          <span class="corner">App icon</span>
+          <div class="center" style="margin: auto;">
+            <svg width="120" height="120" viewBox="0 0 80 80">
+              <g transform="rotate(-12 40 40)">
+                <path d="M40 12 L62 64 L40 53 Z" fill="white" opacity=".98"/>
+                <path d="M40 12 L18 64 L40 53 Z" fill="white" opacity=".55"/>
+              </g>
+              <circle cx="64" cy="14" r="5" fill="var(--accent-500)"/>
+            </svg>
+          </div>
+          <span class="corner">v0.1</span>
+        </div>
+
+        <!-- Splash -->
+        <div class="app-card bg-cream">
+          <span class="corner" style="color: var(--text-muted);">Splash · 1080×2400</span>
+          <div class="center" style="margin: auto; text-align: center;">
+            <svg width="72" height="72" viewBox="0 0 80 80">
+              <rect width="80" height="80" rx="22" fill="var(--brand-600)"/>
+              <g transform="rotate(-12 40 40)">
+                <path d="M40 18 L58 60 L40 51 Z" fill="white" opacity=".98"/>
+                <path d="M40 18 L22 60 L40 51 Z" fill="white" opacity=".55"/>
+              </g>
+              <circle cx="64" cy="16" r="5" fill="var(--accent-500)"/>
+            </svg>
+            <div style="margin-top: 22px; font-family: var(--font-display); font-size: 32px; font-weight: 600; letter-spacing: -0.04em;">djera</div>
+            <div style="margin-top: 4px; font-size: 12px; color: var(--text-muted);">Drive your city.</div>
+          </div>
+          <span class="corner" style="color: var(--text-muted);">For Libya</span>
+        </div>
+
+        <!-- Sticker / decal for car -->
+        <div class="app-card bg-deep">
+          <span class="corner">Decal · vehicle</span>
+          <div class="center" style="margin: auto; display: flex; align-items: center; gap: 14px;">
+            <svg width="44" height="44" viewBox="0 0 80 80">
+              <rect width="80" height="80" rx="22" fill="var(--accent-500)"/>
+              <g transform="rotate(-12 40 40)">
+                <path d="M40 18 L58 60 L40 51 Z" fill="var(--brand-900)" opacity=".95"/>
+                <path d="M40 18 L22 60 L40 51 Z" fill="var(--brand-900)" opacity=".5"/>
+              </g>
+            </svg>
+            <div style="font-family: var(--font-display); font-size: 32px; font-weight: 600; letter-spacing: -0.04em; line-height: 1;">djera</div>
+          </div>
+          <span class="corner">Two-tone OK on dark</span>
+        </div>
+
+        <!-- Bilingual lockup -->
+        <div class="app-card bg-sand">
+          <span class="corner" style="color: var(--text-muted);">Bilingual</span>
+          <div class="center" style="margin: auto;">
+            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+              <span style="font-family: var(--font-display); font-size: 42px; font-weight: 600; letter-spacing: -0.045em; line-height: 1; color: var(--brand-700);">djera</span>
+              <span style="font-family: var(--font-ar); font-size: 52px; font-weight: 700; line-height: 1; color: var(--brand-700); direction: rtl;">جيرا</span>
+            </div>
+          </div>
+          <span class="corner" style="color: var(--text-muted);">Stack on splash</span>
+        </div>
+
+        <!-- Mark only on saffron -->
+        <div class="app-card bg-accent">
+          <span class="corner">Single-color · saffron</span>
+          <div class="center" style="margin: auto;">
+            <svg width="120" height="120" viewBox="0 0 80 80">
+              <g transform="rotate(-12 40 40)">
+                <path d="M40 8 L66 68 L40 55 Z" fill="var(--brand-900)" opacity=".98"/>
+                <path d="M40 8 L14 68 L40 55 Z" fill="var(--brand-900)" opacity=".5"/>
+              </g>
+            </svg>
+          </div>
+          <span class="corner">Knockout / 1-color</span>
+        </div>
+
+        <!-- Photographic / message -->
+        <div class="app-card bg-terra">
+          <span class="corner">Voice</span>
+          <div class="center" style="margin: auto; max-width: 220px;">
+            <span style="font-family: var(--font-display); font-size: 24px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2;">
+              Cash in your hand at every stop.
+            </span>
+          </div>
+          <span class="corner">Sample copy</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="footnote">
+      <span>Djera · brand identity v0.1 · drafted May 2026</span>
+      <span>open the prototype to see it in motion →</span>
+    </div>
+  </div>
+</body>
+</html>
