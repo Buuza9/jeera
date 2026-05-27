@@ -28,12 +28,42 @@
 
   const HOME_INDICATOR = `<div class="home-indicator"></div>`;
 
+  // Sliders icon — the handle that collapses / reveals the dev toolbar.
+  const TOOLBAR_HANDLE = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M4 7h8M16 7h4M4 17h4M12 17h8"/>
+      <circle cx="14" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>
+    </svg>`;
+
   function mount() {
     document.querySelectorAll(".phone").forEach((phone) => {
       if (phone.dataset.chrome === "ready") return;
       phone.insertAdjacentHTML("afterbegin", STATUS_BAR);
       phone.insertAdjacentHTML("beforeend", HOME_INDICATOR);
       phone.dataset.chrome = "ready";
+    });
+  }
+
+  // Add a collapse/expand handle to the dev toolbar so it can be tucked away.
+  // State persists across pages; default is collapsed (out of the way).
+  const TOOLBAR_KEY = "jeera.toolbar";
+  function mountToolbar() {
+    document.querySelectorAll(".toolbar").forEach((tb) => {
+      if (tb.dataset.toggle === "ready") return;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "toolbar-toggle";
+      btn.setAttribute("aria-label", "Toggle toolbar");
+      btn.innerHTML = TOOLBAR_HANDLE;
+      tb.insertBefore(btn, tb.firstChild);
+      btn.addEventListener("click", () => {
+        const collapsed = tb.classList.toggle("collapsed");
+        localStorage.setItem(TOOLBAR_KEY, collapsed ? "collapsed" : "open");
+      });
+      if ((localStorage.getItem(TOOLBAR_KEY) || "collapsed") === "collapsed") {
+        tb.classList.add("collapsed");
+      }
+      tb.dataset.toggle = "ready";
     });
   }
 
@@ -55,6 +85,7 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     mount();
+    mountToolbar();
     fitPhone();
   });
   window.addEventListener("resize", fitPhone);

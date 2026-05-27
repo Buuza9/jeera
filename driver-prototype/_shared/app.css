@@ -139,6 +139,16 @@ a { color: inherit; text-decoration: none; }
 .toolbar button.active { background: var(--brand-500); color: white; }
 .toolbar .back { background: #1f2937; color: #cbd5e1; }
 
+/* Collapse handle — tucks the dev toolbar away; click to reveal. */
+.toolbar .toolbar-toggle {
+  width: 30px; height: 30px; padding: 0; background: transparent;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #cbd5e1; border-radius: 999px;
+}
+.toolbar .toolbar-toggle svg { width: 16px; height: 16px; }
+.toolbar .toolbar-toggle:hover { color: #fff; background: #1f2937; }
+.toolbar.collapsed > *:not(.toolbar-toggle) { display: none; }
+
 /* ─── Common UI ───────────────────────────────────────────────────── */
 .brand-mark {
   display: flex; align-items: center; justify-content: center;
