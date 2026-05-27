@@ -16,7 +16,7 @@
     }
     .auth-head { text-align: center; }
     .auth-head .brand-mark { width: 72px; height: 72px; border-radius: 22px; font-size: 30px; margin-top: 4px; }
-    .auth-title { font-size: 26px; font-weight: 700; margin: 14px 0 6px; letter-spacing: -0.02em; }
+    .auth-title { font-family: var(--font-display); font-size: 26px; font-weight: 600; margin: 14px 0 6px; letter-spacing: -0.03em; }
     .auth-tag   { font-size: 14.5px; color: var(--text-muted); margin: 0 0 24px; line-height: 1.5; }
 
     .method-tabs {
@@ -39,7 +39,7 @@
     .method-tabs button.active {
       background: var(--bg);
       color: var(--text);
-      box-shadow: 0 1px 2px rgba(15,23,42,.06), 0 1px 1px rgba(15,23,42,.04);
+      box-shadow: var(--shadow-sm);
     }
     [data-theme="dark"] .method-tabs button.active { box-shadow: 0 0 0 1px var(--border); }
 
@@ -154,9 +154,12 @@
       <div class="screen auth-screen">
         <div class="auth-head">
           <div class="brand-mark">
-            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" width="34" height="34">
-              <path d="M30 8 L30 30 a8 8 0 0 1 -16 0" />
-              <path d="M22 8 L36 8" opacity=".75"/>
+            <svg viewBox="0 0 80 80" width="40" height="40" aria-label="Djera">
+              <g transform="rotate(-12 40 40)">
+                <path d="M40 18 L58 60 L40 51 Z" fill="currentColor" opacity="0.98"/>
+                <path d="M40 18 L22 60 L40 51 Z" fill="currentColor" opacity="0.55"/>
+              </g>
+              <circle cx="64" cy="16" r="5" fill="var(--accent-500)"/>
             </svg>
           </div>
           <h1 class="auth-title" data-i18n="auth.title">Djera Driver</h1>
