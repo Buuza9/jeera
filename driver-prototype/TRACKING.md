@@ -5,6 +5,12 @@ commit that touches the prototype. Per `INSTRUCTIONS.MD` §7.
 
 **Status legend:** ✅ Live · 🟡 Partial / WIP · ⏳ Pending · 📌 Stub · ❌ Dead
 
+> **Design:** all screens now match the **Djera** design system ported from
+> `claude-design-mockups` (warm Libyan oklch palette, Geist/Inter/IBM Plex
+> Arabic, grain stage). Brand renamed **Jeera → Djera** (EN + AR `دجيرا`).
+> Every mockup screen has a built equivalent here (real Leaflet maps replace
+> the mockup's stylized SVG map on map screens).
+
 ---
 
 ## Foundations
