@@ -9,218 +9,52 @@
   <script src="../_shared/frame.js"></script>
   <script src="../_shared/navbar.js"></script>
   <style>
-    .earn-screen {
-      padding: 70px 20px 28px;
-      gap: 14px;
-    }
-    /* Don't let the flex column squish cards — overflow should scroll instead. */
-    .earn-screen > * { flex-shrink: 0; }
-
-    /* ── Header ───────────────────────────────────────────────── */
-    .earn-header {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 2px;
-    }
-    .back-btn {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: var(--surface); border: 1px solid var(--border);
-      display: inline-flex; align-items: center; justify-content: center;
-      color: var(--text); cursor: pointer;
-      flex: 0 0 auto;
-    }
-    .back-btn svg { width: 20px; height: 20px; }
-    [dir="rtl"] .back-btn svg { transform: scaleX(-1); }
-    .earn-header h1 {
-      margin: 0; font-size: 19px; font-weight: 700;
-      letter-spacing: -0.01em; flex: 1; min-width: 0;
-    }
-
-    /* ── Period tabs ──────────────────────────────────────────── */
-    .period-tabs {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 4px; padding: 4px;
-      background: var(--surface-2);
-      border-radius: 14px;
-    }
-    .period-tabs button {
-      padding: 9px 6px;
-      border: 0; border-radius: 10px;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 13px; font-weight: 600; font-family: inherit;
-      cursor: pointer;
-      transition: background .15s, color .15s, box-shadow .15s;
-    }
-    .period-tabs button.on {
-      background: var(--surface);
-      color: var(--text);
-      box-shadow: 0 2px 6px rgba(0,0,0,.08);
-    }
-    [data-theme="dark"] .period-tabs button.on { box-shadow: 0 2px 6px rgba(0,0,0,.4); }
-
-    /* ── Hero total ───────────────────────────────────────────── */
     .hero {
-      position: relative;
-      background: linear-gradient(135deg, var(--brand-600), var(--brand-500));
-      border-radius: 20px;
-      padding: 20px;
-      color: white;
-      overflow: hidden;
+      padding: 22px; border-radius: var(--r-lg); position: relative; overflow: hidden;
+      background: linear-gradient(140deg, var(--brand-600), var(--brand-700) 80%);
+      color: var(--text-onbrand); box-shadow: var(--shadow-md);
     }
     .hero::after {
-      content: ""; position: absolute;
-      inset-block-start: -40px; inset-inline-end: -30px;
-      width: 150px; height: 150px; border-radius: 50%;
-      background: rgba(255,255,255,.10);
+      content: ""; position: absolute; inset-inline-end: -30px; top: -30px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: oklch(from var(--accent-500) l c h / .18); filter: blur(20px);
     }
-    .hero .l {
-      position: relative; z-index: 1;
-      font-size: 12px; font-weight: 600; opacity: .9;
-      letter-spacing: 0.04em; text-transform: uppercase;
+    .hero .eyebrow { color: oklch(from var(--brand-50) l c h / .8); }
+    .hero .net {
+      font-family: var(--font-display); font-size: 52px; font-weight: 600;
+      letter-spacing: -0.04em; line-height: 1.05; margin-top: 6px; font-variant-numeric: tabular-nums;
     }
-    .hero .amount {
-      position: relative; z-index: 1;
-      margin: 6px 0 2px;
-      font-size: 44px; font-weight: 800;
-      letter-spacing: -0.03em; line-height: 1.02;
-      font-variant-numeric: tabular-nums;
-    }
-    .hero .amount .unit { font-size: 18px; font-weight: 700; opacity: .85; margin-inline-start: 6px; }
+    .hero .net .u { font-size: 18px; margin-inline-start: 8px; opacity: .7; }
     .hero .delta {
-      display: inline-flex; align-items: center; gap: 5px;
-      margin-top: 10px;
-      padding: 4px 10px;
-      background: rgba(255,255,255,.18);
-      border-radius: 999px;
-      font-size: 12px; font-weight: 600;
-      position: relative; z-index: 1;
-    }
-    .hero .delta svg { width: 13px; height: 13px; }
-    [dir="rtl"] .hero .delta svg { transform: scaleX(-1); }
-
-    /* ── Bar chart ────────────────────────────────────────────── */
-    .chart-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px 14px 12px;
-    }
-    .chart-card .cap {
-      font-size: 12px; font-weight: 700; color: var(--text-faint);
-      letter-spacing: 0.06em; text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-    .bars {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      gap: 6px; height: 96px;
-    }
-    .bar-col {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; gap: 6px; height: 100%;
-      justify-content: flex-end;
-    }
-    .bar-col .track {
-      width: 100%; max-width: 26px;
-      display: flex; align-items: flex-end;
-      flex: 1;
-    }
-    .bar-col .fill {
-      width: 100%;
-      background: var(--brand-100);
-      border-radius: 6px 6px 4px 4px;
-      transition: height .5s cubic-bezier(.2,.7,.3,1);
-      min-height: 4px;
-    }
-    [data-theme="dark"] .bar-col .fill { background: oklch(from var(--brand-500) l c h / .25); }
-    .bar-col.hi .fill {
-      background: linear-gradient(180deg, var(--brand-500), var(--brand-600));
-    }
-    .bar-col .lbl {
-      font-size: 10.5px; color: var(--text-muted); font-weight: 600;
-    }
-    .bar-col.hi .lbl { color: var(--brand-600); }
-
-    /* ── Stats grid ───────────────────────────────────────────── */
-    .stat-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    }
-    .stat-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-    }
-    .stat-box .ic {
-      width: 30px; height: 30px; border-radius: 9px;
-      display: inline-flex; align-items: center; justify-content: center;
-      background: var(--surface-2); color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    .stat-box .ic svg { width: 16px; height: 16px; }
-    .stat-box.cash .ic   { background: var(--brand-50); color: var(--brand-600); }
-    .stat-box.comm .ic   { background: oklch(from var(--accent-600) l c h / .14); color: var(--accent-600); }
-    [data-theme="dark"] .stat-box.cash .ic { background: oklch(from var(--brand-500) l c h / .15); }
-    .stat-box .v {
-      font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
-      font-variant-numeric: tabular-nums;
-    }
-    .stat-box .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-    .stat-box .l { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-    /* ── Breakdown list ───────────────────────────────────────── */
-    .section-head {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 2px; margin-top: 4px;
-    }
-    .section-head h3 {
-      margin: 0; font-size: 12px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text-faint);
-    }
-    .section-head .meta { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-
-    .rows {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-    .row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 13px 14px;
-    }
-    .row + .row { border-top: 1px solid var(--border); }
-    .row .av {
-      width: 36px; height: 36px; border-radius: 10px;
-      display: inline-flex; align-items: center; justify-content: center;
-      background: var(--surface-2); color: var(--text-muted);
+      display: inline-flex; align-items: center; gap: 4px; margin-top: 12px;
+      padding: 5px 12px; background: oklch(1 0 0 / .15); border-radius: 999px;
       font-size: 12px; font-weight: 700;
-      flex: 0 0 auto;
     }
-    .row .av svg { width: 17px; height: 17px; }
-    .row .info { flex: 1; min-width: 0; }
-    .row .info .t {
-      font-size: 14px; font-weight: 600;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .row .info .s { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .row .amt {
-      font-size: 14.5px; font-weight: 700; text-align: end;
-      font-variant-numeric: tabular-nums;
-      flex: 0 0 auto;
-    }
-    .row .amt .unit { font-size: 10.5px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
 
-    .todo-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin: 6px auto 0;
-      padding: 5px 11px;
-      background: oklch(from var(--accent-600) l c h / .12);
-      color: var(--accent-600);
-      border-radius: 999px;
-      font-size: 10.5px; font-weight: 600;
-    }
-    .todo-chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-600); }
+    .chart { padding: 16px; }
+    .bars { display: flex; align-items: flex-end; gap: 4px; height: 110px; margin-bottom: 8px; }
+    .bars .bar { flex: 1; background: var(--brand-100); border-radius: 4px 4px 1px 1px; transition: height .4s var(--ease-out); transform-origin: bottom; }
+    [data-theme="dark"] .bars .bar { background: oklch(from var(--brand-500) l c h / .25); }
+    .bars .bar.hi { background: var(--brand-600); }
+    .blabels { display: flex; gap: 4px; font-size: 10px; color: var(--text-faint); }
+    .blabels span { flex: 1; text-align: center; }
+
+    .stats2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .statc { padding: 14px; }
+    .statc .eyebrow { font-size: 10px; }
+    .statc .v { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .statc .v .u { font-size: 11px; color: var(--text-muted); margin-inline-start: 4px; font-weight: 600; }
+    .statc.warn .eyebrow, .statc.warn .v { color: var(--accent-700); }
+
+    .brk-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .brk-list { padding: 4px; }
+    .brk-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; color: var(--text); text-decoration: none; }
+    .brk-row + .brk-row { border-top: 1px solid var(--hairline); }
+    .brk-row .t { font-size: 13.5px; font-weight: 600; }
+    .brk-row .t .arr { color: var(--text-faint); }
+    .brk-row .s { font-size: 11.5px; color: var(--text-faint); margin-top: 2px; }
+    .brk-row .amt { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .brk-row .amt .u { font-size: 10px; color: var(--text-muted); margin-inline-start: 3px; font-weight: 600; }
   </style>
 </head>
 <body data-nav="earnings">
@@ -234,91 +68,49 @@
 
   <div class="stage">
     <div class="phone">
-      <div class="screen earn-screen">
-        <!-- Header -->
-        <div class="earn-header">
-          <a class="back-btn" href="../dashboard/index.html" aria-label="Back">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 6l-6 6 6 6"/>
-            </svg>
+      <div class="screen">
+        <div class="appbar">
+          <a class="ab-btn" href="../dashboard/index.html" aria-label="Back">
+            <svg class="chev chev-end" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
           </a>
-          <h1 data-i18n="earn.title">Earnings</h1>
+          <div style="flex:1;min-width:0"><div class="ab-title" data-i18n="earn.title">Earnings</div></div>
         </div>
 
-        <!-- Period tabs -->
-        <div class="period-tabs" role="tablist">
-          <button class="on" data-period="day"   data-i18n="earn.tab.day">Today</button>
-          <button         data-period="week"  data-i18n="earn.tab.week">This week</button>
-          <button         data-period="month" data-i18n="earn.tab.month">This month</button>
-        </div>
-
-        <!-- Hero total -->
-        <div class="hero">
-          <div class="l" data-i18n="earn.net">Net earnings</div>
-          <div class="amount"><span id="hero-amount">272</span><span class="unit" data-i18n="unit.currency">LYD</span></div>
-          <span class="delta">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 17L17 7"/><path d="M9 7h8v8"/>
-            </svg>
-            <span id="hero-delta">+12% vs yesterday</span>
-          </span>
-        </div>
-
-        <!-- Bar chart -->
-        <div class="chart-card">
-          <div class="cap" id="chart-cap">Earnings by hour</div>
-          <div class="bars" id="bars"></div>
-        </div>
-
-        <!-- Stats grid -->
-        <div class="stat-grid">
-          <div class="stat-box">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>
-              </svg>
-            </span>
-            <div class="v" id="st-trips">15</div>
-            <div class="l" data-i18n="earn.trips">Trips</div>
+        <div class="stack stack-4" style="flex:1">
+          <div class="segment" id="period">
+            <button class="on" data-p="today" data-i18n="earn.today">Today</button>
+            <button data-p="week" data-i18n="earn.week">This week</button>
+            <button data-p="month" data-i18n="earn.month">This month</button>
           </div>
-          <div class="stat-box cash">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>
-              </svg>
-            </span>
-            <div class="v"><span id="st-cash">320</span><span class="unit" data-i18n="unit.currency">LYD</span></div>
-            <div class="l" data-i18n="earn.cash">Cash collected</div>
-          </div>
-          <div class="stat-box">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
-              </svg>
-            </span>
-            <div class="v"><span id="st-hours">6</span><span class="unit" data-i18n="unit.hours">hrs</span></div>
-            <div class="l" data-i18n="earn.hours">Online hours</div>
-          </div>
-          <div class="stat-box comm">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 5L5 19"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/>
-              </svg>
-            </span>
-            <div class="v">−<span id="st-comm">48</span><span class="unit" data-i18n="unit.currency">LYD</span></div>
-            <div class="l" data-i18n="earn.comm">Commission (15%)</div>
-          </div>
-        </div>
 
-        <!-- Breakdown list -->
-        <div class="section-head">
-          <h3 id="brk-title" data-i18n="earn.brk.day">Today's trips</h3>
-          <span class="meta" id="brk-meta">15 trips</span>
-        </div>
-        <div class="rows" id="rows"></div>
+          <div class="hero">
+            <div class="eyebrow" data-i18n="earn.net">Net earnings</div>
+            <div class="net"><span id="net">320</span><span class="u" data-i18n="unit.currency">LYD</span></div>
+            <span class="delta">↑ <span id="delta">+14% vs prev.</span></span>
+          </div>
 
-        <div style="text-align:center;">
-          <span class="todo-chip" data-i18n="earn.todo">TODO §5 — commission rate (15%) pending client confirmation</span>
+          <div class="card chart">
+            <div class="bars" id="bars"></div>
+            <div class="blabels" id="blabels"></div>
+          </div>
+
+          <div class="stats2">
+            <div class="card statc"><div class="eyebrow" data-i18n="dash.trips">trips</div><div class="v" id="st-trips">15</div></div>
+            <div class="card statc"><div class="eyebrow" data-i18n="earn.cash">Cash collected</div><div class="v"><span id="st-cash">376</span><span class="u" data-i18n="unit.currency">LYD</span></div></div>
+            <div class="card statc"><div class="eyebrow" data-i18n="earn.online">Online hours</div><div class="v"><span id="st-hours">6.2</span><span class="u" data-i18n="unit.hr">h</span></div></div>
+            <div class="card statc warn"><div class="eyebrow" data-i18n="earn.comm">Commission</div><div class="v"><span id="st-comm">56</span><span class="u" data-i18n="unit.currency">LYD</span></div></div>
+          </div>
+
+          <div>
+            <div class="brk-head">
+              <h3 class="h3" data-i18n="earn.breakdown">Trip breakdown</h3>
+              <a class="btn btn-ghost btn-sm" style="width:auto" href="../trip-history/index.html">
+                <span data-i18n="hist.title">Trip history</span>
+                <svg class="chev-end" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+            <div class="card brk-list" id="brk"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -326,202 +118,98 @@
 
   <script>
     I18N.register({
-      "earn.title":     { en: "Earnings",                ar: "الأرباح" },
-      "earn.tab.day":   { en: "Today",                   ar: "اليوم" },
-      "earn.tab.week":  { en: "This week",               ar: "هذا الأسبوع" },
-      "earn.tab.month": { en: "This month",              ar: "هذا الشهر" },
-      "earn.net":       { en: "Net earnings",            ar: "صافي الأرباح" },
-      "earn.trips":     { en: "Trips",                   ar: "الرحلات" },
-      "earn.cash":      { en: "Cash collected",          ar: "النقود المحصلة" },
-      "earn.hours":     { en: "Online hours",            ar: "ساعات الاتصال" },
-      "earn.comm":      { en: "Commission (15%)",        ar: "العمولة (15%)" },
-      "earn.brk.day":   { en: "Today's trips",           ar: "رحلات اليوم" },
-      "earn.brk.week":  { en: "Daily breakdown",         ar: "التفصيل اليومي" },
-      "earn.brk.month": { en: "Weekly breakdown",        ar: "التفصيل الأسبوعي" },
-      "earn.todo":      { en: "TODO §5 — commission rate (15%) pending client confirmation",
-                          ar: "TODO §5 — نسبة العمولة (15%) قيد تأكيد العميل" },
-      "unit.currency":  { en: "LYD",  ar: "د.ل" },
-      "unit.hours":     { en: "hrs",  ar: "ساعات" },
-
-      // dynamic strings
-      "earn.cap.day":   { en: "Earnings by hour",        ar: "الأرباح حسب الساعة" },
-      "earn.cap.week":  { en: "Earnings this week",       ar: "أرباح هذا الأسبوع" },
-      "earn.cap.month": { en: "Earnings this month",      ar: "أرباح هذا الشهر" },
-      "earn.delta.day":   { en: "+12% vs yesterday",      ar: "+12% عن أمس" },
-      "earn.delta.week":  { en: "+8% vs last week",       ar: "+8% عن الأسبوع الماضي" },
-      "earn.delta.month": { en: "+19% vs last month",     ar: "+19% عن الشهر الماضي" },
-      "unit.trips":     { en: "trips", ar: "رحلة" },
-
-      // day names (Libya week: Sat → Fri)
-      "day.sat": { en: "Sat", ar: "سبت" },
-      "day.sun": { en: "Sun", ar: "أحد" },
-      "day.mon": { en: "Mon", ar: "إثن" },
-      "day.tue": { en: "Tue", ar: "ثلا" },
-      "day.wed": { en: "Wed", ar: "أرب" },
-      "day.thu": { en: "Thu", ar: "خمي" },
-      "day.fri": { en: "Fri", ar: "جمع" },
-
-      // today's trip places
-      "p.andalus":   { en: "Hai al-Andalus",     ar: "حي الأندلس" },
-      "p.gargaresh": { en: "Gargaresh",          ar: "قرقارش" },
-      "p.souq":      { en: "Souq al-Juma",       ar: "سوق الجمعة" },
-      "p.oldcity":   { en: "Old City",           ar: "المدينة القديمة" },
-      "p.airport":   { en: "Tripoli Airport",    ar: "مطار طرابلس" },
-      "p.dahra":     { en: "Dahra",              ar: "الظهرة" },
-
-      // week labels
-      "w.full": { en: "trips · {h}h online", ar: "رحلة · {h} س اتصال" },
-      // month week ranges
-      "mw.1": { en: "May 1 – 7",   ar: "1 – 7 مايو" },
-      "mw.2": { en: "May 8 – 14",  ar: "8 – 14 مايو" },
-      "mw.3": { en: "May 15 – 21", ar: "15 – 21 مايو" },
-      "mw.4": { en: "May 22 – 27", ar: "22 – 27 مايو" },
+      "earn.title":     { en: "Earnings",        ar: "الأرباح" },
+      "earn.today":     { en: "Today",           ar: "اليوم" },
+      "earn.week":      { en: "This week",       ar: "هذا الأسبوع" },
+      "earn.month":     { en: "This month",      ar: "هذا الشهر" },
+      "earn.net":       { en: "Net earnings",    ar: "صافي الأرباح" },
+      "earn.cash":      { en: "Cash collected",  ar: "النقد المُحصّل" },
+      "earn.online":    { en: "Online hours",    ar: "ساعات العمل" },
+      "earn.comm":      { en: "Commission",      ar: "العمولة" },
+      "earn.breakdown": { en: "Trip breakdown",  ar: "تفصيل الرحلات" },
+      "earn.vs":        { en: "vs prev.",        ar: "عن السابق" },
+      "hist.title":     { en: "Trip history",    ar: "سجل الرحلات" },
+      "dash.trips":     { en: "trips",           ar: "رحلة" },
+      "unit.currency":  { en: "LYD",             ar: "د.ل" },
+      "unit.hr":        { en: "h",               ar: "س" },
+      "unit.km":        { en: "km",              ar: "كم" },
     });
 
-    // ── Period datasets ─────────────────────────────────────────────
     const DATA = {
-      day: {
-        net: 272, trips: 15, cash: 320, hours: 6, comm: 48,
-        cap: "earn.cap.day", delta: "earn.delta.day",
-        brkTitle: "earn.brk.day",
-        bars: [
-          { lbl: "8h",  v: 28 }, { lbl: "10h", v: 46 }, { lbl: "12h", v: 62 },
-          { lbl: "14h", v: 54, hi: true }, { lbl: "16h", v: 40 },
-          { lbl: "18h", v: 58 }, { lbl: "20h", v: 32 },
-        ],
+      today: { net: 320, prev: 14, trips: 15, cash: 376, hours: 6.2, comm: 56, hi: 6,
+        bars: [12,24,18,32,40,36,52,48,28,22,18,14],
+        labels: ["6","","8","","10","","12","","14","","16","18"],
         rows: [
-          { ic: "arrow", from: "p.andalus",   to: "p.gargaresh", sub: "14:30 · 8.5 km", amt: 25 },
-          { ic: "arrow", from: "p.souq",      to: "p.oldcity",   sub: "12:05 · 3.2 km", amt: 14 },
-          { ic: "arrow", from: "p.andalus",   to: "p.airport",   sub: "09:42 · 23.1 km", amt: 42 },
-          { ic: "arrow", from: "p.dahra",     to: "p.gargaresh", sub: "08:15 · 6.0 km", amt: 18 },
-        ],
-        metaTrips: 15,
-      },
-      week: {
-        net: 1564, trips: 84, cash: 1840, hours: 38, comm: 276,
-        cap: "earn.cap.week", delta: "earn.delta.week",
-        brkTitle: "earn.brk.week",
-        bars: [
-          { lbl: "day.sat", v: 210 }, { lbl: "day.sun", v: 285 },
-          { lbl: "day.mon", v: 240 }, { lbl: "day.tue", v: 320 },
-          { lbl: "day.wed", v: 268 }, { lbl: "day.thu", v: 197 },
-          { lbl: "day.fri", v: 320, hi: true },
-        ],
+          { from: "Hai al-Andalus", to: "Gargaresh", sub: "18:32 · 8.5 km", lyd: 25 },
+          { from: "Old City", to: "MJI Airport", sub: "16:14 · 14.2 km", lyd: 42 },
+          { from: "Dahra", to: "Janzour", sub: "13:45 · 11.0 km", lyd: 32 },
+          { from: "Souq al-Juma", to: "Hai al-Andalus", sub: "11:22 · 5.8 km", lyd: 18 },
+        ] },
+      week: { net: 1840, prev: 8, trips: 78, cash: 2165, hours: 38, comm: 325, hi: 5,
+        bars: [220,285,310,270,295,330,130],
+        labels: ["Sat","Sun","Mon","Tue","Wed","Thu","Fri"],
         rows: [
-          { day: "day.fri", trips: 16, h: 7, amt: 320, hi: true },
-          { day: "day.thu", trips: 10, h: 5, amt: 197 },
-          { day: "day.wed", trips: 13, h: 6, amt: 268 },
-          { day: "day.tue", trips: 17, h: 8, amt: 320 },
-          { day: "day.mon", trips: 12, h: 5, amt: 240 },
-          { day: "day.sun", trips: 14, h: 6, amt: 285 },
-          { day: "day.sat", trips: 12, h: 5, amt: 210 },
-        ],
-        metaTrips: 84,
-      },
-      month: {
-        net: 6120, trips: 332, cash: 7200, hours: 151, comm: 1080,
-        cap: "earn.cap.month", delta: "earn.delta.month",
-        brkTitle: "earn.brk.month",
-        bars: [
-          { lbl: "W1", v: 1620 }, { lbl: "W2", v: 1780 },
-          { lbl: "W3", v: 1456 }, { lbl: "W4", v: 1840, hi: true },
-        ],
+          { from: "Saturday", sub: "9 trips · 38 km", lyd: 220 },
+          { from: "Sunday", sub: "12 trips · 52 km", lyd: 285 },
+          { from: "Monday", sub: "14 trips · 61 km", lyd: 310 },
+          { from: "Tuesday", sub: "11 trips · 45 km", lyd: 270 },
+        ] },
+      month: { net: 7240, prev: 12, trips: 312, cash: 8520, hours: 156, comm: 1280, hi: 2,
+        bars: [1620,1840,1980,1800],
+        labels: ["W1","W2","W3","W4"],
         rows: [
-          { wk: "mw.4", trips: 84, amt: 1840, hi: true },
-          { wk: "mw.3", trips: 79, amt: 1456 },
-          { wk: "mw.2", trips: 88, amt: 1780 },
-          { wk: "mw.1", trips: 81, amt: 1620 },
-        ],
-        metaTrips: 332,
-      },
+          { from: "Week 1", sub: "72 trips · 308 km", lyd: 1620 },
+          { from: "Week 2", sub: "78 trips · 342 km", lyd: 1840 },
+          { from: "Week 3", sub: "84 trips · 364 km", lyd: 1980 },
+        ] },
     };
-
-    const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>';
 
     const $ = (id) => document.getElementById(id);
+    let period = 'today';
 
-    function render(period) {
+    function render() {
       const d = DATA[period];
+      $('net').textContent = d.net.toLocaleString();
+      $('delta').textContent = `+${d.prev}% ${I18N.t('earn.vs')}`;
+      $('st-trips').textContent = d.trips;
+      $('st-cash').textContent = d.cash.toLocaleString();
+      $('st-hours').textContent = d.hours;
+      $('st-comm').textContent = d.comm.toLocaleString();
 
-      $("hero-amount").textContent = d.net.toLocaleString();
-      $("st-trips").textContent = d.trips;
-      $("st-cash").textContent = d.cash.toLocaleString();
-      $("st-hours").textContent = d.hours;
-      $("st-comm").textContent = d.comm.toLocaleString();
+      const max = Math.max(...d.bars);
+      $('bars').innerHTML = d.bars.map((v, i) =>
+        `<div class="bar${i === d.hi ? ' hi' : ''}" style="height:${(v / max) * 100}%"></div>`).join('');
+      $('blabels').innerHTML = d.labels.map((l) => `<span>${l}</span>`).join('');
 
-      // i18n-bound dynamic strings: swap data-i18n keys then re-apply
-      $("hero-delta").setAttribute("data-i18n", d.delta);
-      $("chart-cap").setAttribute("data-i18n", d.cap);
-      $("brk-title").setAttribute("data-i18n", d.brkTitle);
-
-      // Bars
-      const max = Math.max(...d.bars.map((b) => b.v));
-      $("bars").innerHTML = d.bars.map((b) => {
-        const h = Math.round((b.v / max) * 100);
-        const lbl = b.lbl.startsWith("day.") ? `data-i18n="${b.lbl}"` : "";
-        const txt = b.lbl.startsWith("day.") ? "" : b.lbl;
-        return `<div class="bar-col ${b.hi ? "hi" : ""}">
-            <div class="track"><div class="fill" style="height:${h}%"></div></div>
-            <div class="lbl" ${lbl}>${txt}</div>
-          </div>`;
-      }).join("");
-
-      // Breakdown rows
-      $("rows").innerHTML = d.rows.map((r) => {
-        if (r.from) {
-          // a trip row
-          return `<div class="row">
-              <span class="av">${ARROW}</span>
-              <div class="info">
-                <div class="t"><span data-i18n="${r.from}"></span> → <span data-i18n="${r.to}"></span></div>
-                <div class="s">${r.sub}</div>
-              </div>
-              <div class="amt">${r.amt}<span class="unit" data-i18n="unit.currency"></span></div>
-            </div>`;
-        }
-        if (r.day) {
-          // a daily row (week view)
-          return `<div class="row">
-              <span class="av" data-i18n="${r.day}"></span>
-              <div class="info">
-                <div class="t"><span data-i18n="${r.day}"></span></div>
-                <div class="s">${r.trips} <span data-i18n="unit.trips"></span> · ${r.h}<span data-i18n="unit.hours"></span></div>
-              </div>
-              <div class="amt">${r.amt}<span class="unit" data-i18n="unit.currency"></span></div>
-            </div>`;
-        }
-        // a weekly row (month view)
-        return `<div class="row">
-            <span class="av">${r.wk.slice(-1)}</span>
-            <div class="info">
-              <div class="t" data-i18n="${r.wk}"></div>
-              <div class="s">${r.trips} <span data-i18n="unit.trips"></span></div>
-            </div>
-            <div class="amt">${r.amt.toLocaleString()}<span class="unit" data-i18n="unit.currency"></span></div>
-          </div>`;
-      }).join("");
-
-      $("brk-meta").textContent = `${d.metaTrips} ${I18N.t("unit.trips")}`;
-
-      I18N.apply();
+      const cur = I18N.t('unit.currency'), km = I18N.t('unit.km');
+      $('brk').innerHTML = d.rows.map((r) => {
+        const title = r.to ? `${r.from} <span class="arr">→</span> ${r.to}` : r.from;
+        const e = encodeURIComponent;
+        const href = (period === 'today' && r.to)
+          ? `../trip-history/detail.html?from=${e(r.from)}&to=${e(r.to)}&time=${e(r.sub.split(' · ')[0])}&km=${r.sub.split(' · ')[1].replace(' km','')}&lyd=${r.lyd}&rider=Khalid%20A.`
+          : null;
+        const tag = href ? 'a' : 'div';
+        const attr = href ? ` href="${href}"` : '';
+        return `<${tag} class="brk-row"${attr}>
+          <div style="flex:1;min-width:0">
+            <div class="t">${title}</div>
+            <div class="s">${r.sub}</div>
+          </div>
+          <div class="amt">${r.lyd.toLocaleString()}<span class="u">${cur}</span></div>
+        </${tag}>`;
+      }).join('');
     }
 
-    document.querySelectorAll(".period-tabs button").forEach((b) => {
-      b.addEventListener("click", () => {
-        document.querySelectorAll(".period-tabs button").forEach((x) => x.classList.toggle("on", x === b));
-        render(b.dataset.period);
+    document.querySelectorAll('#period button').forEach((b) => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#period button').forEach((x) => x.classList.toggle('on', x === b));
+        period = b.dataset.p;
+        render();
       });
     });
-
-    // Re-apply on language flip so brk-meta (built imperatively) updates too
-    const origSetLang = I18N.setLang.bind(I18N);
-    I18N.setLang = (l) => {
-      origSetLang(l);
-      const active = document.querySelector(".period-tabs button.on");
-      $("brk-meta").textContent = `${DATA[active.dataset.period].metaTrips} ${I18N.t("unit.trips")}`;
-    };
-
-    render("day");
+    const _setLang = I18N.setLang.bind(I18N);
+    I18N.setLang = (l) => { _setLang(l); render(); };
+    render();
   </script>
 </body>
 </html>
