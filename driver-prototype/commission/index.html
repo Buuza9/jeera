@@ -7,190 +7,44 @@
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
+  <script src="../_shared/navbar.js"></script>
   <style>
-    .comm-screen {
-      padding: 70px 20px 110px;   /* leave room for the sticky action bar */
-      gap: 14px;
+    .bal-hero {
+      padding: 22px; border-radius: var(--r-lg); position: relative; overflow: hidden;
+      background: linear-gradient(140deg, var(--accent-500), oklch(from var(--accent-700) calc(l - 0.05) c h) 90%);
+      color: var(--text-onbrand);
+      box-shadow: 0 12px 30px oklch(from var(--accent-600) l c h / .3);
     }
+    .bal-hero .eyebrow { color: oklch(1 0 0 / .8); }
+    .bal-hero .bal {
+      font-family: var(--font-display); font-size: 56px; font-weight: 600;
+      letter-spacing: -0.04em; line-height: 1.05; margin-top: 4px; font-variant-numeric: tabular-nums;
+    }
+    .bal-hero .bal .u { font-size: 18px; opacity: .75; margin-inline-start: 6px; }
+    .bal-hero .capbar { height: 6px; background: oklch(1 0 0 / .25); border-radius: 999px; overflow: hidden; margin-top: 14px; }
+    .bal-hero .capbar i { display: block; height: 100%; background: #fff; border-radius: 999px; }
+    .bal-hero .capnote { font-size: 11.5px; margin-top: 6px; opacity: .85; font-weight: 600; }
 
-    /* ── Header ──────────────────────────────────────────────── */
-    .comm-header {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 2px;
-    }
-    .back-btn {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: var(--surface); border: 1px solid var(--border);
-      display: inline-flex; align-items: center; justify-content: center;
-      color: var(--text); cursor: pointer;
-      flex: 0 0 auto;
-    }
-    .back-btn svg { width: 20px; height: 20px; }
-    [dir="rtl"] .back-btn svg { transform: scaleX(-1); }
-    .comm-header h1 {
-      margin: 0; font-size: 19px; font-weight: 700;
-      letter-spacing: -0.01em;
-      flex: 1; min-width: 0;
-    }
+    .info-top { display: flex; justify-content: space-between; padding: 4px 4px 12px; }
+    .info-top .v { font-size: 16px; font-weight: 700; margin-top: 4px; }
+    .info-policy { border-top: 1px solid var(--hairline); padding-top: 12px; color: var(--text-muted); font-size: 13px; line-height: 1.45; }
 
-    /* ── Balance hero ────────────────────────────────────────── */
-    .balance-card {
-      background:
-        radial-gradient(160px 120px at 100% 0%, oklch(from var(--accent-600) l c h / .18), transparent 70%),
-        var(--surface);
-      border: 1.5px solid oklch(from var(--accent-600) l c h / .35);
-      border-radius: 20px;
-      padding: 18px;
-      position: relative;
-      overflow: hidden;
+    .acc-list { padding: 4px; }
+    .acc-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+    .acc-row + .acc-row { border-top: 1px solid var(--hairline); }
+    .acc-row .ic {
+      width: 32px; height: 32px; border-radius: 8px; flex: 0 0 auto;
+      background: oklch(from var(--accent-600) l c h / .12); color: var(--accent-700);
+      display: flex; align-items: center; justify-content: center;
     }
-    .balance-card .label {
-      font-size: 11.5px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--accent-600);
-    }
-    .balance-card .amount {
-      margin: 6px 0 2px;
-      font-size: 44px; font-weight: 800;
-      letter-spacing: -0.03em;
-      font-variant-numeric: tabular-nums;
-      line-height: 1.1;
-    }
-    .balance-card .amount .unit {
-      font-size: 18px; font-weight: 700;
-      color: var(--text-muted);
-      margin-inline-start: 6px;
-    }
-    .balance-card .sub {
-      margin: 0 0 14px;
-      font-size: 12.5px; color: var(--text-muted);
-    }
-
-    /* Cap progress */
-    .cap-row {
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 11.5px; color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    .cap-row .l { font-weight: 600; }
-    .cap-row .v { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--text); }
-    .cap-bar {
-      position: relative;
-      width: 100%; height: 8px;
-      background: var(--surface-2);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .cap-bar .fill {
-      position: absolute; inset-block: 0; inset-inline-start: 0;
-      background: linear-gradient(90deg, var(--brand-500), var(--accent-600));
-      border-radius: 999px;
-      transition: width .5s ease;
-    }
-
-    /* ── Settlement info card ────────────────────────────────── */
-    .settle-info {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 4px 14px;
-    }
-    .settle-info .row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 0;
-    }
-    .settle-info .row + .row { border-top: 1px solid var(--border); }
-    .settle-info .row .ic {
-      width: 32px; height: 32px; border-radius: 10px;
-      background: var(--brand-50); color: var(--brand-700);
-      display: inline-flex; align-items: center; justify-content: center;
-      flex: 0 0 auto;
-    }
-    [data-theme="dark"] .settle-info .row .ic { background: oklch(from var(--brand-500) l c h / .15); }
-    .settle-info .row .ic svg { width: 16px; height: 16px; }
-    .settle-info .row .body { flex: 1; min-width: 0; }
-    .settle-info .row .l { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-    .settle-info .row .v {
-      font-size: 14px; font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      margin-top: 2px;
-    }
-    .settle-info .row .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-
-    /* ── Accrual list ────────────────────────────────────────── */
-    .section-head {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 4px;
-    }
-    .section-head h3 {
-      margin: 0; font-size: 12px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text-faint);
-    }
-    .section-head a {
-      font-size: 12.5px; color: var(--brand-600); font-weight: 600;
-    }
-    .accruals {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 4px 14px;
-    }
-    .accrual {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 0;
-    }
-    .accrual + .accrual { border-top: 1px solid var(--border); }
-    .accrual .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent-600);
-      box-shadow: 0 0 0 3px oklch(from var(--accent-600) l c h / .15);
-      flex: 0 0 auto;
-    }
-    .accrual .body { flex: 1; min-width: 0; }
-    .accrual .l {
-      font-size: 13.5px; font-weight: 600;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .accrual .t {
-      font-size: 11.5px; color: var(--text-muted);
-      margin-top: 1px;
-      font-variant-numeric: tabular-nums;
-    }
-    .accrual .amt {
-      font-size: 14px; font-weight: 700;
-      color: var(--accent-600);
-      font-variant-numeric: tabular-nums;
-    }
-    .accrual .amt .unit { font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-inline-start: 3px; }
-
-    /* ── Sticky bottom action bar ────────────────────────────── */
-    .action-bar {
-      position: absolute; bottom: 0; inset-inline: 0;
-      padding: 14px 20px 22px;
-      background: linear-gradient(180deg, transparent 0, var(--bg) 22%, var(--bg) 100%);
-      pointer-events: none;
-      z-index: 5;
-    }
-    .action-bar > * { pointer-events: auto; }
-    .action-bar .btn + .btn { margin-top: 8px; }
-
-    .todo-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin: 2px auto 0;
-      padding: 5px 11px;
-      background: oklch(from var(--accent-600) l c h / .12);
-      color: var(--accent-600);
-      border-radius: 999px;
-      font-size: 10.5px; font-weight: 600;
-    }
-    .todo-chip::before {
-      content: ""; width: 5px; height: 5px; border-radius: 50%;
-      background: var(--accent-600);
-    }
+    .acc-row .body { flex: 1; min-width: 0; }
+    .acc-row .body .t { font-size: 13.5px; font-weight: 600; }
+    .acc-row .body .s { font-size: 11.5px; color: var(--text-faint); margin-top: 2px; }
+    .acc-row .amt { font-size: 14px; font-weight: 700; color: var(--accent-700); font-variant-numeric: tabular-nums; }
+    .acc-row .amt .u { font-size: 10px; margin-inline-start: 3px; font-weight: 600; }
   </style>
 </head>
-<body>
+<body data-nav="home">
   <div class="toolbar">
     <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
     <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
@@ -201,156 +55,90 @@
 
   <div class="stage">
     <div class="phone">
-      <div class="screen comm-screen">
-        <!-- Header -->
-        <div class="comm-header">
-          <a class="back-btn" href="../dashboard/index.html" aria-label="Back">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 6l-6 6 6 6"/>
-            </svg>
+      <div class="screen">
+        <div class="appbar">
+          <a class="ab-btn" href="../dashboard/index.html" aria-label="Back">
+            <svg class="chev chev-end" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
           </a>
-          <h1 data-i18n="comm.title">Commission</h1>
+          <div style="flex:1;min-width:0"><div class="ab-title" data-i18n="com.title">Commission</div></div>
         </div>
 
-        <!-- Balance hero -->
-        <div class="balance-card">
-          <div class="label" data-i18n="comm.outstanding">Outstanding commission</div>
-          <div class="amount">48<span class="unit" data-i18n="unit.currency">LYD</span></div>
-          <p class="sub" data-i18n="comm.balance.sub">Accrued across 15 trips this week.</p>
+        <div class="stack stack-4" style="flex:1">
+          <!-- Balance hero -->
+          <div class="bal-hero">
+            <div class="eyebrow" data-i18n="com.outstanding">Outstanding balance</div>
+            <div class="bal">48<span class="u" data-i18n="unit.currency">LYD</span></div>
+            <div class="capbar"><i style="width:24%"></i></div>
+            <div class="capnote" data-i18n="com.cap">48 of 200 LYD cap</div>
+          </div>
 
-          <div class="cap-row">
-            <span class="l" data-i18n="comm.cap">Settlement cap</span>
-            <span class="v">48 / 200 <span data-i18n="unit.currency">LYD</span></span>
+          <!-- Settlement info -->
+          <div class="card">
+            <div class="info-top">
+              <div>
+                <div class="eyebrow" data-i18n="com.next">Next settlement</div>
+                <div class="v" data-i18n="com.next.val">Sunday · in 4 days</div>
+              </div>
+              <span class="badge badge-warn" data-i18n="com.rate">Rate · 15%</span>
+            </div>
+            <div class="info-policy">
+              <span data-i18n="com.policy">Auto-suspend after 200 LYD cap</span>
+              <span class="todo-chip" style="margin-inline-start:4px">TODO §5</span>
+            </div>
           </div>
-          <div class="cap-bar">
-            <div class="fill" style="width: 24%;"></div>
-          </div>
-        </div>
 
-        <!-- Settlement info -->
-        <div class="settle-info">
-          <div class="row">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 1v22"/>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/>
-              </svg>
-            </span>
-            <div class="body">
-              <div class="l" data-i18n="comm.rate">Commission rate</div>
-              <div class="v">15%</div>
-            </div>
-          </div>
-          <div class="row">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="5" width="18" height="16" rx="2"/>
-                <path d="M3 9h18"/>
-                <path d="M8 3v4M16 3v4"/>
-              </svg>
-            </span>
-            <div class="body">
-              <div class="l" data-i18n="comm.due">Next settlement due</div>
-              <div class="v" data-i18n="comm.due.v">Sunday · in 4 days</div>
-            </div>
-          </div>
-          <div class="row">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 7v5l3 2"/>
-              </svg>
-            </span>
-            <div class="body">
-              <div class="l" data-i18n="comm.policy">Auto-suspend if overdue</div>
-              <div class="v" data-i18n="comm.policy.v">Account is paused until balance is cleared.</div>
-            </div>
+          <!-- Recent accruals -->
+          <div>
+            <h3 class="h3" style="margin-bottom:10px" data-i18n="com.recent">Recent accruals</h3>
+            <div class="card acc-list" id="acc"></div>
           </div>
         </div>
 
-        <!-- Recent accruals -->
-        <div class="section-head">
-          <h3 data-i18n="comm.recent">Recent accruals</h3>
-          <a href="history.html" data-i18n="comm.history">View all</a>
-        </div>
-        <div class="accruals">
-          <div class="accrual">
-            <span class="dot" aria-hidden="true"></span>
-            <div class="body">
-              <div class="l" data-i18n="comm.acc.1.l">Gargaresh → Hai al-Andalus</div>
-              <div class="t" data-i18n="comm.acc.1.t">Today · 14:30 · fare 25 LYD</div>
-            </div>
-            <div class="amt">+3.75<span class="unit" data-i18n="unit.currency">LYD</span></div>
-          </div>
-          <div class="accrual">
-            <span class="dot" aria-hidden="true"></span>
-            <div class="body">
-              <div class="l" data-i18n="comm.acc.2.l">Souq al-Juma → Old City</div>
-              <div class="t" data-i18n="comm.acc.2.t">Today · 12:05 · fare 14 LYD</div>
-            </div>
-            <div class="amt">+2.10<span class="unit" data-i18n="unit.currency">LYD</span></div>
-          </div>
-          <div class="accrual">
-            <span class="dot" aria-hidden="true"></span>
-            <div class="body">
-              <div class="l" data-i18n="comm.acc.3.l">Hai al-Andalus → Tripoli Airport (MJI)</div>
-              <div class="t" data-i18n="comm.acc.3.t">Today · 09:42 · fare 42 LYD</div>
-            </div>
-            <div class="amt">+6.30<span class="unit" data-i18n="unit.currency">LYD</span></div>
-          </div>
-          <div class="accrual">
-            <span class="dot" aria-hidden="true"></span>
-            <div class="body">
-              <div class="l" data-i18n="comm.acc.4.l">Gargaresh → Hai al-Andalus</div>
-              <div class="t" data-i18n="comm.acc.4.t">Yesterday · 21:18 · fare 26 LYD</div>
-            </div>
-            <div class="amt">+3.90<span class="unit" data-i18n="unit.currency">LYD</span></div>
+        <div class="action-bar">
+          <div class="btn-row">
+            <a class="btn btn-secondary" href="history.html" data-i18n="com.history">Settlement history</a>
+            <a class="btn btn-primary" style="flex:1.3" href="settle.html" data-i18n="com.settle">Settle now</a>
           </div>
         </div>
-
-        <div style="text-align:center; margin-top: 4px;">
-          <span class="todo-chip" data-i18n="comm.todo">TODO §5 — confirm commission rate + settlement cap with client</span>
-        </div>
-      </div>
-
-      <!-- Sticky action bar -->
-      <div class="action-bar">
-        <a class="btn btn-primary" href="settle.html" data-i18n="comm.cta.settle">Settle now</a>
-        <a class="btn btn-secondary" href="history.html" data-i18n="comm.cta.history">View settlement history</a>
       </div>
     </div>
   </div>
 
   <script>
     I18N.register({
-      "comm.title":         { en: "Commission",                         ar: "العمولة" },
-      "comm.outstanding":   { en: "Outstanding commission",             ar: "العمولة المستحقّة" },
-      "comm.balance.sub":   { en: "Accrued across 15 trips this week.",
-                              ar: "متراكمة من 15 رحلة هذا الأسبوع." },
-      "comm.cap":           { en: "Settlement cap",                     ar: "حد التسوية" },
-      "comm.rate":          { en: "Commission rate",                    ar: "نسبة العمولة" },
-      "comm.due":           { en: "Next settlement due",                ar: "موعد التسوية القادمة" },
-      "comm.due.v":         { en: "Sunday · in 4 days",                 ar: "الأحد · بعد 4 أيام" },
-      "comm.policy":        { en: "Auto-suspend if overdue",            ar: "إيقاف تلقائي عند التأخّر" },
-      "comm.policy.v":      { en: "Account is paused until balance is cleared.",
-                              ar: "يتم إيقاف الحساب حتى يتم تسوية الرصيد." },
-      "comm.recent":        { en: "Recent accruals",                    ar: "آخر العمولات" },
-      "comm.history":       { en: "View all",                           ar: "عرض الكل" },
-      "comm.acc.1.l":       { en: "Gargaresh → Hai al-Andalus",         ar: "قرقارش ← حي الأندلس" },
-      "comm.acc.1.t":       { en: "Today · 14:30 · fare 25 LYD",        ar: "اليوم · 14:30 · أجرة 25 د.ل" },
-      "comm.acc.2.l":       { en: "Souq al-Juma → Old City",            ar: "سوق الجمعة ← المدينة القديمة" },
-      "comm.acc.2.t":       { en: "Today · 12:05 · fare 14 LYD",        ar: "اليوم · 12:05 · أجرة 14 د.ل" },
-      "comm.acc.3.l":       { en: "Hai al-Andalus → Tripoli Airport (MJI)",
-                              ar: "حي الأندلس ← مطار طرابلس" },
-      "comm.acc.3.t":       { en: "Today · 09:42 · fare 42 LYD",        ar: "اليوم · 09:42 · أجرة 42 د.ل" },
-      "comm.acc.4.l":       { en: "Gargaresh → Hai al-Andalus",         ar: "قرقارش ← حي الأندلس" },
-      "comm.acc.4.t":       { en: "Yesterday · 21:18 · fare 26 LYD",    ar: "أمس · 21:18 · أجرة 26 د.ل" },
-      "comm.cta.settle":    { en: "Settle now",                         ar: "تسوية الآن" },
-      "comm.cta.history":   { en: "View settlement history",            ar: "عرض سجل التسويات" },
-      "comm.todo":          { en: "TODO §5 — confirm commission rate + settlement cap with client",
-                              ar: "TODO §5 — تأكيد نسبة العمولة وحد التسوية مع العميل" },
-      "unit.currency":      { en: "LYD",                                ar: "د.ل" },
+      "com.title":       { en: "Commission",                 ar: "العمولة" },
+      "com.outstanding": { en: "Outstanding balance",        ar: "الرصيد المستحق" },
+      "com.cap":         { en: "48 of 200 LYD cap",          ar: "48 من سقف 200 د.ل" },
+      "com.next":        { en: "Next settlement",            ar: "التسوية القادمة" },
+      "com.next.val":    { en: "Sunday · in 4 days",         ar: "الأحد · خلال 4 أيام" },
+      "com.rate":        { en: "Rate · 15%",                 ar: "النسبة · ١٥٪" },
+      "com.policy":      { en: "Auto-suspend after 200 LYD cap", ar: "تعليق تلقائي عند تجاوز ٢٠٠ د.ل" },
+      "com.recent":      { en: "Recent accruals",            ar: "أحدث الاستحقاقات" },
+      "com.settle":      { en: "Settle now",                 ar: "سدّد الآن" },
+      "com.history":     { en: "Settlement history",         ar: "سجل التسويات" },
+      "com.fare":        { en: "fare",                       ar: "أجرة" },
+      "unit.currency":   { en: "LYD",                        ar: "د.ل" },
     });
+
+    const PLUS = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+    const ACC = [
+      { trip: "Hai al-Andalus → Gargaresh", fare: 25, com: 3.75, time: "Today 18:32" },
+      { trip: "Old City → MJI Airport", fare: 42, com: 6.30, time: "Today 16:14" },
+      { trip: "Dahra → Janzour", fare: 32, com: 4.80, time: "Today 13:45" },
+      { trip: "Souq al-Juma → Hai al-Andalus", fare: 18, com: 2.70, time: "Today 11:22" },
+    ];
+    function renderAcc() {
+      const cur = I18N.t('unit.currency'), fare = I18N.t('com.fare');
+      document.getElementById('acc').innerHTML = ACC.map((it) =>
+        `<div class="acc-row">
+          <span class="ic">${PLUS}</span>
+          <div class="body"><div class="t">${it.trip}</div><div class="s">${it.time} · ${it.fare} ${cur} ${fare}</div></div>
+          <div class="amt">+${it.com.toFixed(2)}<span class="u">${cur}</span></div>
+        </div>`).join('');
+    }
+    const _setLang = I18N.setLang.bind(I18N);
+    I18N.setLang = (l) => { _setLang(l); renderAcc(); };
+    renderAcc();
   </script>
 </body>
 </html>
