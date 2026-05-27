@@ -37,13 +37,14 @@
       font-variant-numeric: tabular-nums;
     }
     .summary .s .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-    .summary .s .l { font-size: 11px; color: var(--text-muted); margin-top: 2px; letter-spacing: .04em; text-transform: uppercase; font-weight: 600; }
+    .summary .s .l { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 4px; letter-spacing: .14em; text-transform: uppercase; font-weight: 500; }
 
     .month-head {
       padding: 4px 4px; margin-top: 4px;
-      font-size: 12px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text-faint);
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted);
     }
 
     .settlements { display: flex; flex-direction: column; gap: 10px; }
@@ -102,13 +103,11 @@
   <div class="stage">
     <div class="phone">
       <div class="screen sh-screen">
-        <div class="sh-header">
-          <a class="back-btn" href="index.html" aria-label="Back">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 6l-6 6 6 6"/>
-            </svg>
+        <div class="appbar">
+          <a class="ab-btn" href="index.html" aria-label="Back">
+            <svg class="chev chev-end" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
           </a>
-          <h1 data-i18n="sh.title">Settlement history</h1>
+          <div style="flex:1;min-width:0"><div class="ab-title" data-i18n="sh.title">Settlement history</div></div>
         </div>
 
         <div class="summary">
