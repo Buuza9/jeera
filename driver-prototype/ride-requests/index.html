@@ -58,18 +58,19 @@
       font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums;
     }
 
-    /* Route card */
-    .route { position: relative; padding: 18px; margin-bottom: 14px; }
-    .route .track-line { position: absolute; inset-inline-start: 24px; top: 34px; bottom: 34px; width: 2px; background: var(--border); }
-    .route .stop { display: flex; gap: 14px; align-items: flex-start; padding-block: 4px; }
-    .route .stop .pin { width: 14px; height: 14px; margin-top: 4px; flex: 0 0 auto; }
-    .route .stop .pin.from { border-radius: 50%; background: var(--brand-600); box-shadow: 0 0 0 4px var(--brand-50); }
-    .route .stop .pin.to { border-radius: 3px; background: var(--terra-500); box-shadow: 0 0 0 4px oklch(from var(--terra-500) l c h / .15); }
-    [data-theme="dark"] .route .stop .pin.from { box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .18); }
-    .route .stop .info { flex: 1; min-width: 0; }
+    /* Route card — rail column (dot · line · square) keeps everything aligned */
+    .route { display: flex; gap: 14px; padding: 18px; margin-bottom: 14px; }
+    .route .rail { display: flex; flex-direction: column; align-items: center; flex: 0 0 auto; padding-top: 5px; }
+    .route .rail .pin { width: 13px; height: 13px; flex: 0 0 auto; }
+    .route .rail .pin.from { border-radius: 50%; background: var(--brand-600); box-shadow: 0 0 0 4px var(--brand-50); }
+    .route .rail .pin.to { border-radius: 3px; background: var(--terra-500); box-shadow: 0 0 0 4px oklch(from var(--terra-500) l c h / .15); }
+    [data-theme="dark"] .route .rail .pin.from { box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .18); }
+    .route .rail .line { width: 2px; flex: 1; min-height: 24px; background: var(--border); margin: 6px 0; }
+    .route .stops { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 26px; }
+    .route .stop { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .route .stop .info { min-width: 0; }
     .route .stop .info .addr { font-size: 14.5px; font-weight: 600; margin-top: 2px; }
-    .route .stop .dist { font-size: 11.5px; font-weight: 600; color: var(--text-faint); }
-    .route .gap { height: 16px; }
+    .route .stop .dist { font-size: 11.5px; font-weight: 600; color: var(--text-faint); flex: 0 0 auto; }
 
     /* Metrics */
     .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
@@ -128,23 +129,26 @@
 
           <!-- Route card -->
           <div class="card route">
-            <div class="track-line"></div>
-            <div class="stop">
+            <div class="rail">
               <span class="pin from"></span>
-              <div class="info">
-                <div class="eyebrow" data-i18n="req.pickup">Pickup</div>
-                <div class="addr" data-i18n="req.pickup.addr">Hai al-Andalus, Tripoli</div>
-              </div>
-              <span class="dist">1.5 <span data-i18n="unit.km">km</span></span>
-            </div>
-            <div class="gap"></div>
-            <div class="stop">
+              <span class="line"></span>
               <span class="pin to"></span>
-              <div class="info">
-                <div class="eyebrow" data-i18n="req.dest">Destination</div>
-                <div class="addr" data-i18n="req.dest.addr">Gargaresh, Tripoli</div>
+            </div>
+            <div class="stops">
+              <div class="stop">
+                <div class="info">
+                  <div class="eyebrow" data-i18n="req.pickup">Pickup</div>
+                  <div class="addr" data-i18n="req.pickup.addr">Hai al-Andalus, Tripoli</div>
+                </div>
+                <span class="dist">1.5 <span data-i18n="unit.km">km</span></span>
               </div>
-              <span class="dist">8.5 <span data-i18n="unit.km">km</span></span>
+              <div class="stop">
+                <div class="info">
+                  <div class="eyebrow" data-i18n="req.dest">Destination</div>
+                  <div class="addr" data-i18n="req.dest.addr">Gargaresh, Tripoli</div>
+                </div>
+                <span class="dist">8.5 <span data-i18n="unit.km">km</span></span>
+              </div>
             </div>
           </div>
 

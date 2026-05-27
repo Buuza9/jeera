@@ -9,282 +9,43 @@
   <script src="../_shared/frame.js"></script>
   <script src="../_shared/navbar.js"></script>
   <style>
-    .hist-screen {
-      padding: 70px 20px 28px;
-      gap: 14px;
-    }
+    .stats3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .statc { padding: 14px; }
+    .statc .v { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .statc .v .u { font-size: 11px; color: var(--text-muted); margin-inline-start: 4px; font-weight: 600; }
 
-    /* ── Header (back chevron + title) ────────────────────────── */
-    .hist-header {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 2px;
+    .searchbar { position: relative; }
+    .searchbar .ic { position: absolute; inset-inline-start: 14px; top: 50%; transform: translateY(-50%); color: var(--text-faint); display: flex; }
+    .searchbar input {
+      width: 100%; padding: 12px 14px; padding-inline-start: 42px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--r-md); font-size: 14px; font-family: inherit; color: var(--text); outline: none;
     }
-    .back-btn {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: var(--surface); border: 1px solid var(--border);
-      display: inline-flex; align-items: center; justify-content: center;
-      color: var(--text); cursor: pointer;
-      flex: 0 0 auto;
-    }
-    .back-btn svg { width: 20px; height: 20px; }
-    [dir="rtl"] .back-btn svg { transform: scaleX(-1); }
-    .hist-header h1 {
-      margin: 0; font-size: 19px; font-weight: 700;
-      letter-spacing: -0.01em;
-      flex: 1; min-width: 0;
-    }
+    .searchbar input::placeholder { color: var(--text-faint); }
 
-    /* ── Stats strip ─────────────────────────────────────────── */
-    .stats {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      padding: 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-    .stat { padding: 4px 6px; }
-    .stat + .stat { border-inline-start: 1px solid var(--border); }
-    .stat .v {
-      font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
-      font-variant-numeric: tabular-nums;
-    }
-    .stat .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-    .stat .l {
-      font-size: 11px; color: var(--text-muted); margin-top: 2px;
-      letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600;
-    }
+    .day-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; padding: 0 4px; }
+    .day-head .tot { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .day-head .tot .u { font-size: 10px; color: var(--text-muted); margin-inline-start: 3px; font-weight: 600; }
 
-    /* ── Search bar ──────────────────────────────────────────── */
-    .search-bar {
-      display: flex; align-items: center;
-      gap: 10px;
-      padding: 0 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      transition: border-color .15s, box-shadow .15s;
-    }
-    .search-bar:focus-within {
-      border-color: var(--brand-500);
-      box-shadow: 0 0 0 3px oklch(from var(--brand-500) l c h / .15);
-    }
-    .search-bar .ic {
-      width: 18px; height: 18px;
-      color: var(--text-faint);
-      flex: 0 0 auto;
-    }
-    .search-bar input {
-      flex: 1; min-width: 0;
-      padding: 12px 0;
-      border: 0; outline: none;
-      background: transparent;
-      color: var(--text);
-      font-size: 14px; font-family: inherit;
-    }
-    .search-bar input::placeholder { color: var(--text-faint); }
-    .search-bar .clear {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      background: var(--surface-2);
-      color: var(--text-muted);
-      border: 0; cursor: pointer;
-      display: none;
-      align-items: center; justify-content: center;
-      flex: 0 0 auto;
-    }
-    .search-bar .clear svg { width: 12px; height: 12px; }
-    .search-bar.has-value .clear { display: inline-flex; }
+    .tcard { display: flex; flex-direction: column; gap: 8px; padding: 14px; cursor: pointer; color: var(--text); text-decoration: none; }
+    .tcard.cancelled { opacity: .7; cursor: default; }
+    .tcard .top { display: flex; align-items: stretch; gap: 12px; }
+    .tcard .pins { display: flex; flex-direction: column; align-items: center; flex: 0 0 auto; padding: 4px 0; }
+    .tcard .pins .from { width: 10px; height: 10px; border-radius: 50%; background: var(--brand-600); flex: 0 0 auto; }
+    .tcard .pins .line { width: 2px; flex: 1; min-height: 14px; background: var(--border); margin: 4px 0; }
+    .tcard .pins .to { width: 10px; height: 10px; border-radius: 2px; background: var(--terra-500); flex: 0 0 auto; }
+    .tcard .addrs { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
+    .tcard .addrs .a { font-size: 14px; font-weight: 600; line-height: 1.35; }
+    .tcard .end { text-align: end; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; flex: 0 0 auto; }
+    .tcard .fare { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .tcard.cancelled .fare { text-decoration: line-through; color: var(--text-faint); }
+    .tcard .fare .u { font-size: 10px; color: var(--text-muted); margin-inline-start: 3px; font-weight: 600; }
+    .tcard .end .chev { color: var(--text-faint); }
+    [dir="rtl"] .tcard .end .chev svg { transform: scaleX(-1); }
+    .tcard .meta { padding-inline-start: 22px; display: flex; gap: 8px; font-size: 11.5px; color: var(--text-faint); }
 
-    /* ── Filter chips ────────────────────────────────────────── */
-    .filters {
-      display: flex; gap: 6px;
-      overflow-x: auto;
-      padding: 2px;
-      margin: -2px;        /* compensate so focus ring isn't clipped */
-      scrollbar-width: none;
-    }
-    .filters::-webkit-scrollbar { display: none; }
-    .chip {
-      flex: 0 0 auto;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 7px 13px;
-      border-radius: 999px;
-      font-size: 12.5px; font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background .15s, border-color .15s, color .15s;
-    }
-    .chip:hover { background: var(--surface-2); }
-    .chip.on {
-      background: var(--brand-500);
-      border-color: var(--brand-500);
-      color: white;
-      box-shadow: 0 4px 10px oklch(from var(--brand-500) l c h / .25);
-    }
-
-    /* Empty state */
-    .empty-day {
-      padding: 22px;
-      text-align: center;
-      color: var(--text-muted);
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: var(--radius);
-      font-size: 13px;
-    }
-    .day-block.hidden { display: none; }
-
-    /* ── Day-group label ─────────────────────────────────────── */
-    .day-head {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 4px 4px;
-      margin-top: 4px;
-    }
-    .day-head h3 {
-      margin: 0; font-size: 12px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text-faint);
-    }
-    .day-head .meta {
-      font-size: 12px; color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* ── Cancelled trip variant ──────────────────────────────── */
-    .trip-card.cancelled { cursor: default; }
-    .trip-card.cancelled:hover { border-color: var(--border); box-shadow: none; }
-    .trip-card.cancelled .trip-route .stop .a { color: var(--text-muted); }
-    .trip-card.cancelled .fare {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-    .cancelled-reason {
-      display: flex; align-items: center; gap: 8px;
-      padding-top: 8px;
-      margin-top: -2px;
-      border-top: 1px dashed var(--border);
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .badge-cancel {
-      background: oklch(from var(--danger) l c h / .12);
-      color: var(--danger);
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-size: 10.5px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-    }
-
-    /* ── Trip card ───────────────────────────────────────────── */
-    .trips { display: flex; flex-direction: column; gap: 10px; }
-    .trip-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-      display: flex; flex-direction: column; gap: 10px;
-      color: inherit;
-      text-decoration: none;
-      cursor: pointer;
-      transition: transform .08s ease, border-color .15s ease, box-shadow .15s ease;
-    }
-    .trip-card:active { transform: scale(.99); }
-    .trip-card:hover {
-      border-color: var(--brand-500);
-      box-shadow: 0 4px 14px oklch(from var(--brand-500) l c h / .12);
-    }
-    .trip-route {
-      display: flex; align-items: flex-start; gap: 12px;
-    }
-    .trip-route .pin-stack {
-      display: flex; flex-direction: column; align-items: center;
-      gap: 4px; padding-top: 4px;
-      flex: 0 0 auto;
-    }
-    .trip-route .pin-stack .pin {
-      width: 10px; height: 10px; border-radius: 50%;
-      box-shadow: 0 0 0 1px var(--border);
-    }
-    .trip-route .pin-stack .pin.from { background: var(--brand-500); box-shadow: 0 0 0 1px var(--brand-500); }
-    .trip-route .pin-stack .pin.to   { background: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
-    .trip-route .pin-stack .track {
-      width: 2px; flex: 1; min-height: 14px;
-      background: var(--border);
-      border-radius: 2px;
-    }
-    .trip-route .stops { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-    .trip-route .stop .l {
-      font-size: 10.5px; font-weight: 600; color: var(--text-muted);
-      letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    .trip-route .stop .a {
-      font-size: 13.5px; font-weight: 600;
-      margin-top: 2px; line-height: 1.35;
-    }
-
-    .trip-meta {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-    }
-    .trip-meta .left {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 12.5px; color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-    .trip-meta .left .sep {
-      width: 3px; height: 3px; border-radius: 50%;
-      background: var(--text-faint);
-    }
-    .trip-meta .right {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .trip-meta .fare {
-      font-size: 14.5px; font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
-    .trip-meta .fare .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-    .trip-meta .rider {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 3px 8px 3px 3px;
-      background: var(--surface-2);
-      border-radius: 999px;
-    }
-    [dir="rtl"] .trip-meta .rider { padding: 3px 3px 3px 8px; }
-    .trip-meta .rider .av {
-      width: 22px; height: 22px; border-radius: 50%;
-      background: linear-gradient(135deg, #fcd34d, var(--accent-500));
-      color: white; font-size: 10.5px; font-weight: 700;
-      display: inline-flex; align-items: center; justify-content: center;
-      flex: 0 0 auto;
-    }
-    .trip-meta .rider .n {
-      font-size: 12px; font-weight: 600;
-    }
-
-    /* Cash-pill — small visual cue that the fare was cash */
-    .cash-pill {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 2px 7px; border-radius: 999px;
-      background: var(--brand-50); color: var(--brand-700);
-      font-size: 10.5px; font-weight: 600;
-    }
-    [data-theme="dark"] .cash-pill { background: oklch(from var(--brand-500) l c h / .15); }
-    .cash-pill svg { width: 11px; height: 11px; }
-
-    /* Empty state (if no trips at all — not currently shown but kept) */
-    .empty {
-      padding: 36px 20px;
-      text-align: center;
-      color: var(--text-muted);
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: var(--radius);
-    }
+    .empty { text-align: center; padding: 40px 0; color: var(--text-faint); }
+    .empty .t { margin-top: 12px; font-size: 14px; }
   </style>
 </head>
 <body data-nav="trips">
@@ -298,400 +59,130 @@
 
   <div class="stage">
     <div class="phone">
-      <div class="screen hist-screen">
-        <!-- Header -->
-        <div class="hist-header">
-          <a class="back-btn" href="../dashboard/index.html" aria-label="Back">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 6l-6 6 6 6"/>
-            </svg>
+      <div class="screen">
+        <div class="appbar">
+          <a class="ab-btn" href="../dashboard/index.html" aria-label="Back">
+            <svg class="chev chev-end" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
           </a>
-          <h1 data-i18n="hist.title">Trip history</h1>
+          <div style="flex:1;min-width:0"><div class="ab-title" data-i18n="hist.title">Trip history</div></div>
         </div>
 
-        <!-- Stats -->
-        <div class="stats">
-          <div class="stat">
-            <div class="v">15</div>
-            <div class="l" data-i18n="hist.trips">Trips today</div>
+        <div class="stack stack-4" style="flex:1">
+          <div class="stats3">
+            <div class="card statc"><div class="eyebrow" style="font-size:10" data-i18n="dash.trips">trips</div><div class="v">15</div></div>
+            <div class="card statc"><div class="eyebrow" style="font-size:10" data-i18n="earn.cash">Cash collected</div><div class="v">376<span class="u" data-i18n="unit.currency">LYD</span></div></div>
+            <div class="card statc"><div class="eyebrow" style="font-size:10" data-i18n="earn.online">Online hours</div><div class="v">6.2<span class="u" data-i18n="unit.hr">h</span></div></div>
           </div>
-          <div class="stat">
-            <div class="v">320<span class="unit" data-i18n="unit.currency">LYD</span></div>
-            <div class="l" data-i18n="hist.earnings">Earnings</div>
+
+          <div class="searchbar">
+            <span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+            <input id="q" type="search" autocomplete="off" placeholder="Search rider, place…" data-i18n-placeholder="hist.search.ph" />
           </div>
-          <div class="stat">
-            <div class="v">6<span class="unit" data-i18n="unit.hours">hrs</span></div>
-            <div class="l" data-i18n="hist.hours">Hours</div>
+
+          <div class="segment" id="filter">
+            <button class="on" data-f="all" data-i18n="hist.all">All</button>
+            <button data-f="today" data-i18n="hist.today">Today</button>
+            <button data-f="yesterday" data-i18n="hist.yesterday">Yesterday</button>
           </div>
+
+          <div id="list" class="stack stack-4"></div>
         </div>
-
-        <!-- Search -->
-        <div class="search-bar" id="search-bar">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="7"/>
-            <path d="M21 21l-4.3-4.3"/>
-          </svg>
-          <input type="search" id="search" autocomplete="off"
-                 placeholder="Search rider or place" data-i18n-placeholder="hist.search.ph" />
-          <button class="clear" id="clear-search" aria-label="Clear">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-              <path d="M6 6l12 12M18 6L6 18"/>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Filters -->
-        <div class="filters" role="tablist">
-          <button class="chip on" data-filter="all"      data-i18n="hist.f.all">All</button>
-          <button class="chip"    data-filter="today"    data-i18n="hist.f.today">Today</button>
-          <button class="chip"    data-filter="yesterday" data-i18n="hist.f.yesterday">Yesterday</button>
-        </div>
-
-        <p class="empty-day" id="empty" hidden data-i18n="hist.empty">No trips match this filter.</p>
-
-        <!-- Today -->
-        <div class="day-block" data-day="today">
-        <div class="day-head">
-          <h3 data-i18n="hist.today">Today</h3>
-          <span class="meta">5 · 92 LYD</span>
-        </div>
-        <div class="trips">
-          <!-- Trip 1 -->
-          <div class="trip-card">
-            <div class="trip-route">
-              <div class="pin-stack">
-                <span class="pin from" aria-hidden="true"></span>
-                <span class="track" aria-hidden="true"></span>
-                <span class="pin to"   aria-hidden="true"></span>
-              </div>
-              <div class="stops">
-                <div class="stop">
-                  <div class="l" data-i18n="hist.from">From</div>
-                  <div class="a" data-i18n="hist.t1.from">Hai al-Andalus, Tripoli</div>
-                </div>
-                <div class="stop">
-                  <div class="l" data-i18n="hist.to">To</div>
-                  <div class="a" data-i18n="hist.t1.to">Gargaresh, Tripoli</div>
-                </div>
-              </div>
-            </div>
-            <div class="trip-meta">
-              <div class="left">
-                <span data-i18n="hist.time.today">Today · 14:30</span>
-                <span class="sep" aria-hidden="true"></span>
-                <span>8.5 <span data-i18n="unit.km">km</span></span>
-              </div>
-              <div class="right">
-                <span class="rider">
-                  <span class="av">KA</span>
-                  <span class="n" data-i18n="hist.rider.khalid">Khalid Ahmad</span>
-                </span>
-                <span class="fare">25<span class="unit" data-i18n="unit.currency">LYD</span></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Trip 2 -->
-          <div class="trip-card">
-            <div class="trip-route">
-              <div class="pin-stack">
-                <span class="pin from" aria-hidden="true"></span>
-                <span class="track" aria-hidden="true"></span>
-                <span class="pin to" aria-hidden="true"></span>
-              </div>
-              <div class="stops">
-                <div class="stop">
-                  <div class="l" data-i18n="hist.from">From</div>
-                  <div class="a" data-i18n="hist.t2.from">Souq al-Juma, Tripoli</div>
-                </div>
-                <div class="stop">
-                  <div class="l" data-i18n="hist.to">To</div>
-                  <div class="a" data-i18n="hist.t2.to">Old City (Medina), Tripoli</div>
-                </div>
-              </div>
-            </div>
-            <div class="trip-meta">
-              <div class="left">
-                <span data-i18n="hist.time.today2">Today · 12:05</span>
-                <span class="sep" aria-hidden="true"></span>
-                <span>3.2 <span data-i18n="unit.km">km</span></span>
-              </div>
-              <div class="right">
-                <span class="rider">
-                  <span class="av" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">SM</span>
-                  <span class="n" data-i18n="hist.rider.sara">Sara Mansour</span>
-                </span>
-                <span class="fare">14<span class="unit" data-i18n="unit.currency">LYD</span></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Trip 3 -->
-          <div class="trip-card">
-            <div class="trip-route">
-              <div class="pin-stack">
-                <span class="pin from" aria-hidden="true"></span>
-                <span class="track" aria-hidden="true"></span>
-                <span class="pin to" aria-hidden="true"></span>
-              </div>
-              <div class="stops">
-                <div class="stop">
-                  <div class="l" data-i18n="hist.from">From</div>
-                  <div class="a" data-i18n="hist.t3.from">Hai al-Andalus, Tripoli</div>
-                </div>
-                <div class="stop">
-                  <div class="l" data-i18n="hist.to">To</div>
-                  <div class="a" data-i18n="hist.t3.to">Tripoli Airport (MJI)</div>
-                </div>
-              </div>
-            </div>
-            <div class="trip-meta">
-              <div class="left">
-                <span data-i18n="hist.time.today3">Today · 09:42</span>
-                <span class="sep" aria-hidden="true"></span>
-                <span>23.1 <span data-i18n="unit.km">km</span></span>
-              </div>
-              <div class="right">
-                <span class="rider">
-                  <span class="av" style="background:linear-gradient(135deg,#34d399,var(--brand-600))">OB</span>
-                  <span class="n" data-i18n="hist.rider.omar">Omar Belhaj</span>
-                </span>
-                <span class="fare">42<span class="unit" data-i18n="unit.currency">LYD</span></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Trip 6 — cancelled (rider no-show) -->
-          <div class="trip-card cancelled">
-            <div class="trip-route">
-              <div class="pin-stack">
-                <span class="pin from" aria-hidden="true"></span>
-                <span class="track" aria-hidden="true"></span>
-                <span class="pin to" aria-hidden="true"></span>
-              </div>
-              <div class="stops">
-                <div class="stop">
-                  <div class="l" data-i18n="hist.from">From</div>
-                  <div class="a" data-i18n="hist.t6.from">Dahra, Tripoli</div>
-                </div>
-                <div class="stop">
-                  <div class="l" data-i18n="hist.to">To</div>
-                  <div class="a" data-i18n="hist.t6.to">Janzour, Tripoli</div>
-                </div>
-              </div>
-            </div>
-            <div class="trip-meta">
-              <div class="left">
-                <span data-i18n="hist.time.today4">Today · 08:15</span>
-                <span class="sep" aria-hidden="true"></span>
-                <span>— <span data-i18n="unit.km">km</span></span>
-              </div>
-              <div class="right">
-                <span class="rider">
-                  <span class="av" style="background:linear-gradient(135deg,#94a3b8,#475569)">RA</span>
-                  <span class="n" data-i18n="hist.rider.rami">Rami Ali</span>
-                </span>
-                <span class="fare">14<span class="unit" data-i18n="unit.currency">LYD</span></span>
-              </div>
-            </div>
-            <div class="cancelled-reason">
-              <span class="badge-cancel" data-i18n="hist.cancelled">Cancelled</span>
-              <span data-i18n="hist.cancelled.reason">Rider no-show after 5 min wait</span>
-            </div>
-          </div>
-        </div>
-
-        </div><!-- /today -->
-
-        <!-- Yesterday -->
-        <div class="day-block" data-day="yesterday">
-        <div class="day-head">
-          <h3 data-i18n="hist.yesterday">Yesterday</h3>
-          <span class="meta">10 · 228 LYD</span>
-        </div>
-        <div class="trips">
-          <!-- Trip 4 -->
-          <div class="trip-card">
-            <div class="trip-route">
-              <div class="pin-stack">
-                <span class="pin from" aria-hidden="true"></span>
-                <span class="track" aria-hidden="true"></span>
-                <span class="pin to" aria-hidden="true"></span>
-              </div>
-              <div class="stops">
-                <div class="stop">
-                  <div class="l" data-i18n="hist.from">From</div>
-                  <div class="a" data-i18n="hist.t4.from">Gargaresh, Tripoli</div>
-                </div>
-                <div class="stop">
-                  <div class="l" data-i18n="hist.to">To</div>
-                  <div class="a" data-i18n="hist.t4.to">Hai al-Andalus, Tripoli</div>
-                </div>
-              </div>
-            </div>
-            <div class="trip-meta">
-              <div class="left">
-                <span data-i18n="hist.time.yest1">Yesterday · 21:18</span>
-                <span class="sep" aria-hidden="true"></span>
-                <span>8.7 <span data-i18n="unit.km">km</span></span>
-              </div>
-              <div class="right">
-                <span class="rider">
-                  <span class="av" style="background:linear-gradient(135deg,#f472b6,#db2777)">NA</span>
-                  <span class="n" data-i18n="hist.rider.nadia">Nadia Ali</span>
-                </span>
-                <span class="fare">26<span class="unit" data-i18n="unit.currency">LYD</span></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Trip 5 -->
-          <div class="trip-card">
-            <div class="trip-route">
-              <div class="pin-stack">
-                <span class="pin from" aria-hidden="true"></span>
-                <span class="track" aria-hidden="true"></span>
-                <span class="pin to" aria-hidden="true"></span>
-              </div>
-              <div class="stops">
-                <div class="stop">
-                  <div class="l" data-i18n="hist.from">From</div>
-                  <div class="a" data-i18n="hist.t5.from">Tripoli Central, Martyrs' Square</div>
-                </div>
-                <div class="stop">
-                  <div class="l" data-i18n="hist.to">To</div>
-                  <div class="a" data-i18n="hist.t5.to">Souq al-Juma, Tripoli</div>
-                </div>
-              </div>
-            </div>
-            <div class="trip-meta">
-              <div class="left">
-                <span data-i18n="hist.time.yest2">Yesterday · 18:54</span>
-                <span class="sep" aria-hidden="true"></span>
-                <span>5.4 <span data-i18n="unit.km">km</span></span>
-              </div>
-              <div class="right">
-                <span class="rider">
-                  <span class="av" style="background:linear-gradient(135deg,#60a5fa,#2563eb)">YH</span>
-                  <span class="n" data-i18n="hist.rider.yousef">Yousef Hadi</span>
-                </span>
-                <span class="fare">18<span class="unit" data-i18n="unit.currency">LYD</span></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        </div><!-- /yesterday -->
       </div>
     </div>
   </div>
 
   <script>
     I18N.register({
-      "hist.title":         { en: "Trip history",                       ar: "سجل الرحلات" },
-      "hist.trips":         { en: "Trips today",                        ar: "رحلات اليوم" },
-      "hist.earnings":      { en: "Earnings",                           ar: "الأرباح" },
-      "hist.hours":         { en: "Hours",                              ar: "ساعات" },
-      "hist.today":         { en: "Today",                              ar: "اليوم" },
-      "hist.yesterday":     { en: "Yesterday",                          ar: "أمس" },
-      "hist.from":          { en: "From",                               ar: "من" },
-      "hist.to":            { en: "To",                                 ar: "إلى" },
-
-      "hist.t1.from":       { en: "Hai al-Andalus, Tripoli",            ar: "حي الأندلس، طرابلس" },
-      "hist.t1.to":         { en: "Gargaresh, Tripoli",                 ar: "قرقارش، طرابلس" },
-      "hist.t2.from":       { en: "Souq al-Juma, Tripoli",              ar: "سوق الجمعة، طرابلس" },
-      "hist.t2.to":         { en: "Old City (Medina), Tripoli",         ar: "المدينة القديمة، طرابلس" },
-      "hist.t3.from":       { en: "Hai al-Andalus, Tripoli",            ar: "حي الأندلس، طرابلس" },
-      "hist.t3.to":         { en: "Tripoli Airport (MJI)",              ar: "مطار طرابلس الدولي" },
-      "hist.t4.from":       { en: "Gargaresh, Tripoli",                 ar: "قرقارش، طرابلس" },
-      "hist.t4.to":         { en: "Hai al-Andalus, Tripoli",            ar: "حي الأندلس، طرابلس" },
-      "hist.t5.from":       { en: "Tripoli Central, Martyrs' Square",   ar: "وسط طرابلس، ساحة الشهداء" },
-      "hist.t5.to":         { en: "Souq al-Juma, Tripoli",              ar: "سوق الجمعة، طرابلس" },
-
-      "hist.rider.khalid":  { en: "Khalid Ahmad",                       ar: "خالد أحمد" },
-      "hist.rider.sara":    { en: "Sara Mansour",                       ar: "سارة منصور" },
-      "hist.rider.omar":    { en: "Omar Belhaj",                        ar: "عمر بالحاج" },
-      "hist.rider.nadia":   { en: "Nadia Ali",                          ar: "نادية علي" },
-      "hist.rider.yousef":  { en: "Yousef Hadi",                        ar: "يوسف هادي" },
-
-      "hist.time.today":    { en: "Today · 14:30",                      ar: "اليوم · 14:30" },
-      "hist.time.today2":   { en: "Today · 12:05",                      ar: "اليوم · 12:05" },
-      "hist.time.today3":   { en: "Today · 09:42",                      ar: "اليوم · 09:42" },
-      "hist.time.yest1":    { en: "Yesterday · 21:18",                  ar: "أمس · 21:18" },
-      "hist.time.yest2":    { en: "Yesterday · 18:54",                  ar: "أمس · 18:54" },
-
-      "unit.currency":      { en: "LYD",                                ar: "د.ل" },
-      "unit.km":            { en: "km",                                 ar: "كم" },
-      "unit.hours":         { en: "hrs",                                ar: "ساعات" },
-
-      "hist.f.all":         { en: "All",                                ar: "الكل" },
-      "hist.f.today":       { en: "Today",                              ar: "اليوم" },
-      "hist.f.yesterday":   { en: "Yesterday",                          ar: "أمس" },
-      "hist.empty":         { en: "No trips match.",                    ar: "لا توجد رحلات مطابقة." },
-      "hist.search.ph":     { en: "Search rider or place",              ar: "ابحث عن راكب أو موقع" },
-
-      "hist.t6.from":       { en: "Dahra, Tripoli",                     ar: "الظهرة، طرابلس" },
-      "hist.t6.to":         { en: "Janzour, Tripoli",                   ar: "جنزور، طرابلس" },
-      "hist.time.today4":   { en: "Today · 08:15",                      ar: "اليوم · 08:15" },
-      "hist.rider.rami":    { en: "Rami Ali",                           ar: "رامي علي" },
-      "hist.cancelled":     { en: "Cancelled",                          ar: "ملغاة" },
-      "hist.cancelled.reason": { en: "Rider no-show after 5 min wait",
-                                 ar: "الراكب لم يحضر بعد 5 دقائق انتظار" },
+      "hist.title":      { en: "Trip history",          ar: "سجل الرحلات" },
+      "hist.search.ph":  { en: "Search rider, place…",  ar: "ابحث عن راكب أو مكان…" },
+      "hist.all":        { en: "All",                   ar: "الكل" },
+      "hist.today":      { en: "Today",                 ar: "اليوم" },
+      "hist.yesterday":  { en: "Yesterday",             ar: "أمس" },
+      "hist.empty":      { en: "No trips match",        ar: "لا توجد رحلات مطابقة" },
+      "hist.cancelled":  { en: "Cancelled",             ar: "ملغاة" },
+      "dash.trips":      { en: "trips",                 ar: "رحلة" },
+      "earn.cash":       { en: "Cash collected",        ar: "النقد المُحصّل" },
+      "earn.online":     { en: "Online hours",          ar: "ساعات العمل" },
+      "unit.currency":   { en: "LYD",                   ar: "د.ل" },
+      "unit.km":         { en: "km",                    ar: "كم" },
+      "unit.hr":         { en: "h",                     ar: "س" },
     });
 
-    // Tap a card → trip detail. Cancelled trips aren't clickable. Cards
-    // keep their original 1..N index even when some are cancelled (matches
-    // the data IDs in detail.html).
-    document.querySelectorAll('.trip-card').forEach((card, i) => {
-      if (card.classList.contains('cancelled')) return;
-      card.addEventListener('click', () => {
-        location.href = `detail.html?id=${i + 1}`;
-      });
-    });
+    const TRIPS = [
+      { day: "today", time: "18:32", from: "Hai al-Andalus", to: "Gargaresh", rider: "Khalid A.", km: 8.5, lyd: 25 },
+      { day: "today", time: "16:14", from: "Old City", to: "MJI Airport", rider: "Mariam S.", km: 14.2, lyd: 42 },
+      { day: "today", time: "13:45", from: "Dahra", to: "Janzour", rider: "Omar B.", km: 11.0, lyd: 32 },
+      { day: "today", time: "11:22", from: "Souq al-Juma", to: "Hai al-Andalus", rider: "Yousef R.", km: 5.8, lyd: 18 },
+      { day: "today", time: "10:08", from: "Sidi Husayn", to: "Tajura", rider: "Faisal M.", km: 12.5, lyd: 36, cancelled: true },
+      { day: "yesterday", time: "20:11", from: "Gargaresh", to: "Old City", rider: "Layla N.", km: 9.2, lyd: 28 },
+      { day: "yesterday", time: "17:30", from: "MJI Airport", to: "Hai al-Andalus", rider: "Ibrahim T.", km: 17.5, lyd: 48 },
+      { day: "yesterday", time: "14:55", from: "Janzour", to: "Dahra", rider: "Salim K.", km: 10.8, lyd: 30 },
+    ];
 
-    // ── Filter + search compose into a single applyView() ──────────────
-    const chips    = document.querySelectorAll('.chip');
-    const blocks   = document.querySelectorAll('.day-block');
-    const emptyEl  = document.getElementById('empty');
-    const search   = document.getElementById('search');
-    const searchBar = document.getElementById('search-bar');
-    const clearBtn = document.getElementById('clear-search');
-    let currentFilter = 'all';
+    const CHEV = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+    const listEl = document.getElementById('list');
+    const qEl = document.getElementById('q');
+    let filter = 'all';
 
-    function applyView() {
-      const q = search.value.trim().toLowerCase();
-      let total = 0;
-      blocks.forEach((b) => {
-        const dayMatch = currentFilter === 'all' || b.dataset.day === currentFilter;
-        let visible = 0;
-        b.querySelectorAll('.trip-card').forEach((card) => {
-          const cardMatch = dayMatch &&
-                            (!q || card.textContent.toLowerCase().includes(q));
-          card.style.display = cardMatch ? '' : 'none';
-          if (cardMatch) visible += 1;
-        });
-        b.classList.toggle('hidden', visible === 0);
-        total += visible;
+    function dayLabel(d) { return d === 'today' ? I18N.t('hist.today') : I18N.t('hist.yesterday'); }
+
+    function render() {
+      const query = qEl.value.trim().toLowerCase();
+      const rows = TRIPS.filter((tr) => {
+        if (filter !== 'all' && tr.day !== filter) return false;
+        if (query && !`${tr.from} ${tr.to} ${tr.rider}`.toLowerCase().includes(query)) return false;
+        return true;
       });
-      emptyEl.hidden = total > 0;
+      const days = [...new Set(rows.map((tr) => tr.day))];
+      if (rows.length === 0) {
+        listEl.innerHTML = `<div class="empty"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><div class="t">${I18N.t('hist.empty')}</div></div>`;
+        return;
+      }
+      const cur = I18N.t('unit.currency'), km = I18N.t('unit.km');
+      listEl.innerHTML = days.map((day) => {
+        const dt = rows.filter((tr) => tr.day === day);
+        const total = dt.reduce((s, tr) => s + (tr.cancelled ? 0 : tr.lyd), 0);
+        const cards = dt.map((tr) => {
+          const e = encodeURIComponent;
+          const href = `detail.html?from=${e(tr.from)}&to=${e(tr.to)}&time=${e(tr.time)}&km=${tr.km}&lyd=${tr.lyd}&rider=${e(tr.rider)}`;
+          const right = tr.cancelled
+            ? `<span class="badge badge-danger" style="font-size:10">${I18N.t('hist.cancelled')}</span>`
+            : `<span class="chev">${CHEV}</span>`;
+          const tag = tr.cancelled ? 'div' : 'a';
+          const attr = tr.cancelled ? '' : ` href="${href}"`;
+          return `<${tag} class="card tcard${tr.cancelled ? ' cancelled' : ''}"${attr}>
+            <div class="top">
+              <div class="pins"><span class="from"></span><span class="line"></span><span class="to"></span></div>
+              <div class="addrs">
+                <div class="a">${tr.from}</div>
+                <div class="a">${tr.to}</div>
+              </div>
+              <div class="end">
+                <div class="fare">${tr.lyd}<span class="u">${cur}</span></div>
+                ${right}
+              </div>
+            </div>
+            <div class="meta"><span>${tr.time}</span><span>·</span><span>${tr.km} ${km}</span><span>·</span><span>${tr.rider}</span></div>
+          </${tag}>`;
+        }).join('');
+        return `<div>
+          <div class="day-head"><span class="eyebrow">${dayLabel(day)} · ${dt.length}</span><span class="tot">${total}<span class="u">${cur}</span></span></div>
+          <div class="stack stack-2">${cards}</div>
+        </div>`;
+      }).join('');
     }
 
-    chips.forEach((c) => {
-      c.addEventListener('click', () => {
-        chips.forEach((x) => x.classList.toggle('on', x === c));
-        currentFilter = c.dataset.filter;
-        applyView();
+    document.querySelectorAll('#filter button').forEach((b) => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#filter button').forEach((x) => x.classList.toggle('on', x === b));
+        filter = b.dataset.f;
+        render();
       });
     });
-    search.addEventListener('input', () => {
-      searchBar.classList.toggle('has-value', search.value.length > 0);
-      applyView();
-    });
-    clearBtn.addEventListener('click', () => {
-      search.value = '';
-      searchBar.classList.remove('has-value');
-      search.focus();
-      applyView();
-    });
+    qEl.addEventListener('input', render);
+    const _setLang = I18N.setLang.bind(I18N);
+    I18N.setLang = (l) => { _setLang(l); render(); };
+    render();
   </script>
 </body>
 </html>
