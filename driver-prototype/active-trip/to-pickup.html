@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jeera Driver — On the way to rider</title>
+  <title>Djera Driver — On the way to rider</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
@@ -87,16 +87,16 @@
       font-size: 12px; font-weight: 600;
       align-self: flex-start;
     }
-    [data-theme="dark"] .stage-banner { background: rgba(16,185,129,.15); color: var(--brand-500); }
+    [data-theme="dark"] .stage-banner { background: oklch(from var(--brand-500) l c h / .15); color: var(--brand-500); }
     .stage-banner .dot {
       width: 7px; height: 7px; border-radius: 50%;
       background: var(--brand-500);
       animation: pulse 1.3s ease-out infinite;
     }
     @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0 rgba(16,185,129,.45); }
-      70%  { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
-      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+      0%   { box-shadow: 0 0 0 0 oklch(from var(--brand-500) l c h / .45); }
+      70%  { box-shadow: 0 0 0 8px oklch(from var(--brand-500) l c h / 0); }
+      100% { box-shadow: 0 0 0 0 oklch(from var(--brand-500) l c h / 0); }
     }
 
     .rider-card {
@@ -108,7 +108,7 @@
     }
     .rider-avatar {
       width: 48px; height: 48px; border-radius: 50%;
-      background: linear-gradient(135deg, #fcd34d, #f59e0b);
+      background: linear-gradient(135deg, #fcd34d, var(--accent-500));
       color: white;
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 16px;
@@ -228,24 +228,24 @@
     const driverStart = [32.8780, 13.1700];
     const ROUTE_WP = [
       driverStart, [32.872, 13.165], [32.868, 13.158],
-      [32.864, 13.152], JeeraMap.TRIPOLI.andalus,
+      [32.864, 13.152], DjeraMap.TRIPOLI.andalus,
     ];
     const RIDE_DUR_MS = 12000;
 
-    JeeraMap.create('trip-map-el', {
+    DjeraMap.create('trip-map-el', {
       center: [32.872, 13.160],
       zoom: 14,
       onReady(map, L) {
-        const driver = JeeraMap.pin(L, driverStart, 'driver',
+        const driver = DjeraMap.pin(L, driverStart, 'driver',
                                     { pulse: true }).addTo(map);
-        JeeraMap.pin(L, JeeraMap.TRIPOLI.andalus, 'rider',
+        DjeraMap.pin(L, DjeraMap.TRIPOLI.andalus, 'rider',
                      { label: 'Pickup' }).addTo(map);
-        const route = JeeraMap.route(L, ROUTE_WP).addTo(map);
+        const route = DjeraMap.route(L, ROUTE_WP).addTo(map);
         map.fitBounds(route.getBounds().pad(0.25));
         // Wait for the route line to finish drawing before the bike starts
         // moving so the animations don't overlap awkwardly.
         setTimeout(() => {
-          JeeraMap.animateAlong(driver, ROUTE_WP, {
+          DjeraMap.animateAlong(driver, ROUTE_WP, {
             map,
             durationMs: RIDE_DUR_MS,
           });

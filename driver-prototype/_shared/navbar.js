@@ -8,22 +8,22 @@
     {
       id: "home", href: "../dashboard/index.html",
       label: { en: "Home", ar: "الرئيسية" },
-      icon: '<path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
+      icon: '<path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2v-9z"/>',
     },
     {
       id: "trips", href: "../trip-history/index.html",
       label: { en: "Trips", ar: "الرحلات" },
-      icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+      icon: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/>',
     },
     {
       id: "earnings", href: "../earnings/index.html",
       label: { en: "Earnings", ar: "الأرباح" },
-      icon: '<path d="M4 19V10"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M21 19H3"/>',
+      icon: '<path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/><path d="M16 12h3"/><path d="M3 9h18"/>',
     },
     {
       id: "profile", href: "../profile/index.html",
       label: { en: "Profile", ar: "حسابي" },
-      icon: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+      icon: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
     },
   ];
 
@@ -44,7 +44,7 @@
         <a class="nav-item${t.id === active ? " on" : ""}" href="${t.href}">
           <span class="nav-ic">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg>
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg>
           </span>
           <span class="nav-lbl" data-i18n="nav.${t.id}">${t.label.en}</span>
         </a>`).join("");

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jeera Driver — Trip history</title>
+  <title>Djera Driver — Trip history</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
@@ -67,7 +67,7 @@
     }
     .search-bar:focus-within {
       border-color: var(--brand-500);
-      box-shadow: 0 0 0 3px rgba(16,185,129,.15);
+      box-shadow: 0 0 0 3px oklch(from var(--brand-500) l c h / .15);
     }
     .search-bar .ic {
       width: 18px; height: 18px;
@@ -122,7 +122,7 @@
       background: var(--brand-500);
       border-color: var(--brand-500);
       color: white;
-      box-shadow: 0 4px 10px rgba(16,185,129,.25);
+      box-shadow: 0 4px 10px oklch(from var(--brand-500) l c h / .25);
     }
 
     /* Empty state */
@@ -170,8 +170,8 @@
       color: var(--text-muted);
     }
     .badge-cancel {
-      background: rgba(220,38,38,.12);
-      color: #dc2626;
+      background: oklch(from var(--danger) l c h / .12);
+      color: var(--danger);
       padding: 3px 9px;
       border-radius: 999px;
       font-size: 10.5px; font-weight: 700;
@@ -194,7 +194,7 @@
     .trip-card:active { transform: scale(.99); }
     .trip-card:hover {
       border-color: var(--brand-500);
-      box-shadow: 0 4px 14px rgba(16,185,129,.12);
+      box-shadow: 0 4px 14px oklch(from var(--brand-500) l c h / .12);
     }
     .trip-route {
       display: flex; align-items: flex-start; gap: 12px;
@@ -209,7 +209,7 @@
       box-shadow: 0 0 0 1px var(--border);
     }
     .trip-route .pin-stack .pin.from { background: var(--brand-500); box-shadow: 0 0 0 1px var(--brand-500); }
-    .trip-route .pin-stack .pin.to   { background: #dc2626; box-shadow: 0 0 0 1px #dc2626; }
+    .trip-route .pin-stack .pin.to   { background: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
     .trip-route .pin-stack .track {
       width: 2px; flex: 1; min-height: 14px;
       background: var(--border);
@@ -257,7 +257,7 @@
     [dir="rtl"] .trip-meta .rider { padding: 3px 3px 3px 8px; }
     .trip-meta .rider .av {
       width: 22px; height: 22px; border-radius: 50%;
-      background: linear-gradient(135deg, #fcd34d, #f59e0b);
+      background: linear-gradient(135deg, #fcd34d, var(--accent-500));
       color: white; font-size: 10.5px; font-weight: 700;
       display: inline-flex; align-items: center; justify-content: center;
       flex: 0 0 auto;
@@ -273,7 +273,7 @@
       background: var(--brand-50); color: var(--brand-700);
       font-size: 10.5px; font-weight: 600;
     }
-    [data-theme="dark"] .cash-pill { background: rgba(16,185,129,.15); }
+    [data-theme="dark"] .cash-pill { background: oklch(from var(--brand-500) l c h / .15); }
     .cash-pill svg { width: 11px; height: 11px; }
 
     /* Empty state (if no trips at all — not currently shown but kept) */
@@ -453,7 +453,7 @@
               </div>
               <div class="right">
                 <span class="rider">
-                  <span class="av" style="background:linear-gradient(135deg,#34d399,#059669)">OB</span>
+                  <span class="av" style="background:linear-gradient(135deg,#34d399,var(--brand-600))">OB</span>
                   <span class="n" data-i18n="hist.rider.omar">Omar Belhaj</span>
                 </span>
                 <span class="fare">42<span class="unit" data-i18n="unit.currency">LYD</span></span>

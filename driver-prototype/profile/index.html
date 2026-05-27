@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jeera Driver — Profile</title>
+  <title>Djera Driver — Profile</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
@@ -22,7 +22,7 @@
       cursor: pointer;
       transition: border-color .15s, box-shadow .15s;
     }
-    .id-card:hover { border-color: var(--brand-500); box-shadow: 0 4px 14px rgba(16,185,129,.12); }
+    .id-card:hover { border-color: var(--brand-500); box-shadow: 0 4px 14px oklch(from var(--brand-500) l c h / .12); }
     .id-card .edit { color: var(--text-faint); flex: 0 0 auto; }
     .id-card .edit svg { width: 18px; height: 18px; }
     [dir="rtl"] .id-card .edit svg { transform: scaleX(-1); }
@@ -39,7 +39,7 @@
     .id-card .rate {
       display: inline-flex; align-items: center; gap: 5px;
       margin-top: 7px; padding: 3px 9px; border-radius: 999px;
-      background: rgba(245,158,11,.14); color: var(--accent-600);
+      background: oklch(from var(--accent-600) l c h / .14); color: var(--accent-600);
       font-size: 12px; font-weight: 700;
     }
     .id-card .rate svg { width: 13px; height: 13px; }
@@ -85,10 +85,10 @@
     .pill-ok {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 3px 9px; border-radius: 999px;
-      background: rgba(16,185,129,.12); color: var(--brand-700);
+      background: oklch(from var(--brand-500) l c h / .12); color: var(--brand-700);
       font-size: 11px; font-weight: 700; flex: 0 0 auto;
     }
-    [data-theme="dark"] .pill-ok { background: rgba(16,185,129,.18); }
+    [data-theme="dark"] .pill-ok { background: oklch(from var(--brand-500) l c h / .18); }
     .pill-ok svg { width: 12px; height: 12px; }
 
     /* Segmented control (language / appearance) */
@@ -119,14 +119,14 @@
     .switch.on { background: var(--brand-500); border-color: var(--brand-500); }
     .switch.on::after { inset-inline-start: 20px; }
 
-    .signout { color: #dc2626; }
-    .signout .ic { background: rgba(220,38,38,.1); color: #dc2626; }
-    .signout .t { color: #dc2626; }
+    .signout { color: var(--danger); }
+    .signout .ic { background: oklch(from var(--danger) l c h / .1); color: var(--danger); }
+    .signout .t { color: var(--danger); }
 
     .todo-chip {
       display: inline-flex; align-items: center; gap: 6px;
       margin: 8px auto 0; padding: 5px 11px;
-      background: rgba(245,158,11,.12); color: var(--accent-600);
+      background: oklch(from var(--accent-600) l c h / .12); color: var(--accent-600);
       border-radius: 999px; font-size: 10.5px; font-weight: 600;
     }
     .todo-chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-600); }
@@ -153,7 +153,7 @@
           <div class="avatar-lg">AM</div>
           <div class="who">
             <h2 data-i18n="prof.name">Ahmad Mohammed</h2>
-            <p class="role" data-i18n="prof.role">Jeera driver · Tripoli</p>
+            <p class="role" data-i18n="prof.role">Djera driver · Tripoli</p>
             <span class="rate">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.2 6.8.6-5.1 4.5 1.5 6.7L12 17l-6 3.5 1.5-6.7L2.4 8.8l6.8-.6z"/></svg>
               4.9 · <span data-i18n="prof.rate.count">1,204 trips</span>
@@ -176,7 +176,7 @@
           </div>
           <div class="s">
             <div class="v">14<span style="font-size:12px"> mo</span></div>
-            <div class="l" data-i18n="prof.s.tenure">With Jeera</div>
+            <div class="l" data-i18n="prof.s.tenure">With Djera</div>
           </div>
         </div>
 
@@ -328,7 +328,7 @@
           </a>
         </div>
 
-        <div class="ver" data-i18n="prof.version">Jeera Driver · v0.1 (prototype)</div>
+        <div class="ver" data-i18n="prof.version">Djera Driver · v0.1 (prototype)</div>
       </div>
     </div>
   </div>
@@ -337,11 +337,11 @@
     I18N.register({
       "prof.title":       { en: "Profile",                  ar: "حسابي" },
       "prof.name":        { en: "Ahmad Mohammed",           ar: "أحمد محمد" },
-      "prof.role":        { en: "Jeera driver · Tripoli",   ar: "سائق جيرا · طرابلس" },
+      "prof.role":        { en: "Djera driver · Tripoli",   ar: "سائق دجيرا · طرابلس" },
       "prof.rate.count":  { en: "1,204 trips",              ar: "1٬204 رحلة" },
       "prof.s.trips":     { en: "Total trips",              ar: "إجمالي الرحلات" },
       "prof.s.accept":    { en: "Acceptance",               ar: "القبول" },
-      "prof.s.tenure":    { en: "With Jeera",               ar: "مع جيرا" },
+      "prof.s.tenure":    { en: "With Djera",               ar: "مع دجيرا" },
 
       "prof.sec.vehicle": { en: "Vehicle",                  ar: "المركبة" },
       "prof.v.model":     { en: "Honda CG 125 · Red",       ar: "هوندا CG 125 · أحمر" },
@@ -370,7 +370,7 @@
       "prof.more.support":{ en: "Help & support",           ar: "المساعدة والدعم" },
       "prof.more.privacy":{ en: "Privacy & terms",          ar: "الخصوصية والشروط" },
       "prof.more.signout":{ en: "Sign out",                 ar: "تسجيل الخروج" },
-      "prof.version":     { en: "Jeera Driver · v0.1 (prototype)", ar: "جيرا للسائق · v0.1 (نموذج)" },
+      "prof.version":     { en: "Djera Driver · v0.1 (prototype)", ar: "دجيرا للسائق · v0.1 (نموذج)" },
     });
 
     // Language + appearance segmented controls reflect and drive I18N.

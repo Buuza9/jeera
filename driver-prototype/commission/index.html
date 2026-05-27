@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jeera Driver — Commission</title>
+  <title>Djera Driver — Commission</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
@@ -36,9 +36,9 @@
     /* ── Balance hero ────────────────────────────────────────── */
     .balance-card {
       background:
-        radial-gradient(160px 120px at 100% 0%, rgba(245,158,11,.18), transparent 70%),
+        radial-gradient(160px 120px at 100% 0%, oklch(from var(--accent-600) l c h / .18), transparent 70%),
         var(--surface);
-      border: 1.5px solid rgba(245,158,11,.35);
+      border: 1.5px solid oklch(from var(--accent-600) l c h / .35);
       border-radius: 20px;
       padding: 18px;
       position: relative;
@@ -106,7 +106,7 @@
       display: inline-flex; align-items: center; justify-content: center;
       flex: 0 0 auto;
     }
-    [data-theme="dark"] .settle-info .row .ic { background: rgba(16,185,129,.15); }
+    [data-theme="dark"] .settle-info .row .ic { background: oklch(from var(--brand-500) l c h / .15); }
     .settle-info .row .ic svg { width: 16px; height: 16px; }
     .settle-info .row .body { flex: 1; min-width: 0; }
     .settle-info .row .l { font-size: 12px; color: var(--text-muted); font-weight: 600; }
@@ -144,7 +144,7 @@
     .accrual .dot {
       width: 8px; height: 8px; border-radius: 50%;
       background: var(--accent-600);
-      box-shadow: 0 0 0 3px rgba(245,158,11,.15);
+      box-shadow: 0 0 0 3px oklch(from var(--accent-600) l c h / .15);
       flex: 0 0 auto;
     }
     .accrual .body { flex: 1; min-width: 0; }
@@ -179,7 +179,7 @@
       display: inline-flex; align-items: center; gap: 6px;
       margin: 2px auto 0;
       padding: 5px 11px;
-      background: rgba(245,158,11,.12);
+      background: oklch(from var(--accent-600) l c h / .12);
       color: var(--accent-600);
       border-radius: 999px;
       font-size: 10.5px; font-weight: 600;

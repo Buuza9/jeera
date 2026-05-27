@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jeera Driver — Settlement history</title>
+  <title>Djera Driver — Settlement history</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
@@ -60,7 +60,7 @@
       display: inline-flex; align-items: center; justify-content: center;
       flex: 0 0 auto;
     }
-    [data-theme="dark"] .stl .ic { background: rgba(16,185,129,.15); }
+    [data-theme="dark"] .stl .ic { background: oklch(from var(--brand-500) l c h / .15); }
     .stl .ic svg { width: 20px; height: 20px; }
     .stl .body { flex: 1; min-width: 0; }
     .stl .body .top {
@@ -82,11 +82,11 @@
     .stl .body .meta .ref { font-weight: 600; }
     .badge-paid {
       display: inline-flex; align-items: center; gap: 4px;
-      background: rgba(16,185,129,.12); color: var(--brand-700);
+      background: oklch(from var(--brand-500) l c h / .12); color: var(--brand-700);
       padding: 2px 8px; border-radius: 999px;
       font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
     }
-    [data-theme="dark"] .badge-paid { background: rgba(16,185,129,.18); }
+    [data-theme="dark"] .badge-paid { background: oklch(from var(--brand-500) l c h / .18); }
     .badge-paid svg { width: 11px; height: 11px; }
   </style>
 </head>

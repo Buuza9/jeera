@@ -55,13 +55,13 @@
         .jm-pin { position: relative; display: inline-flex; }
         .jm-pin-driver {
           width: 40px; height: 40px; border-radius: 50%;
-          background: var(--brand-500, #10b981); color: white;
-          box-shadow: 0 0 0 4px rgba(16,185,129,.25), 0 6px 14px rgba(16,185,129,.45);
+          background: var(--brand-500); color: white;
+          box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .25), 0 6px 14px oklch(from var(--brand-500) l c h / .45);
           align-items: center; justify-content: center;
         }
         .jm-pin-driver.pulse::before {
           content: ""; position: absolute; inset: -10px;
-          border-radius: 50%; border: 2px solid var(--brand-500, #10b981);
+          border-radius: 50%; border: 2px solid var(--brand-500);
           animation: jm-pulse 1.8s ease-out infinite;
           pointer-events: none;
         }
@@ -73,13 +73,13 @@
 
         .jm-pin-rider, .jm-pin-dest {
           width: 36px; height: 36px; border-radius: 50%;
-          background: white; color: #dc2626;
-          box-shadow: 0 0 0 3px #dc2626, 0 6px 14px rgba(220,38,38,.45);
+          background: white; color: var(--danger);
+          box-shadow: 0 0 0 3px var(--danger), 0 6px 14px oklch(from var(--danger) l c h / .45);
           align-items: center; justify-content: center;
         }
         .jm-pin-rider::after, .jm-pin-dest::after {
           content: ""; position: absolute; bottom: -6px; left: 50%;
-          width: 10px; height: 10px; background: #dc2626;
+          width: 10px; height: 10px; background: var(--danger);
           transform: translateX(-50%) rotate(45deg);
           border-bottom-right-radius: 2px;
         }
@@ -88,7 +88,7 @@
           position: absolute; top: -22px; left: 50%;
           transform: translateX(-50%);
           padding: 3px 8px;
-          background: white; color: #dc2626;
+          background: white; color: var(--danger);
           border-radius: 999px;
           font-size: 10.5px; font-weight: 600;
           white-space: nowrap;
@@ -230,7 +230,7 @@
 
     route(L, waypoints, opts = {}) {
       return L.polyline(waypoints, {
-        color: "#10b981",
+        color: "oklch(0.54 0.105 150)",
         weight: 5,
         opacity: 0.92,
         lineCap: "round",

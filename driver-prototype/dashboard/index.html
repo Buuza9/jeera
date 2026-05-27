@@ -3,125 +3,123 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jeera Driver — Dashboard</title>
+  <title>Djera Driver — Dashboard</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
   <script src="../_shared/navbar.js"></script>
   <script src="../_shared/map.js"></script>
   <style>
-    /* Full-bleed map dashboard — map fills the phone, controls float on top. */
+    /* Full-bleed map dashboard — matches claude-design-mockups (switch variant). */
     .dash-screen { padding: 0; gap: 0; position: relative; overflow: hidden; }
 
-    /* Map fills everything. isolation:isolate keeps Leaflet's panes (z 200–700)
-       inside their own stacking context, BELOW the status bar (z 31). */
-    .map-fill {
-      position: absolute; inset: 0; z-index: 0;
-      isolation: isolate;
-    }
+    /* Map fills everything; isolation keeps Leaflet panes below the status bar. */
+    .map-fill { position: absolute; inset: 0; z-index: 0; isolation: isolate; }
     .map-fill .leaflet-container { width: 100%; height: 100%; }
 
-    /* ── Top-left controls ───────────────────────────────────── */
-    .map-corner {
-      position: absolute; top: 64px; inset-inline-start: 14px; z-index: 20;
-      display: flex; gap: 8px;
+    /* Top overlay row: avatar (start) · bell (end) */
+    .dash-top {
+      position: absolute; top: 64px; inset-inline: 16px; z-index: 10;
+      display: flex; align-items: center; gap: 10px;
     }
-
-    /* Online control — single status pill, absolutely centred at top.
-       Default Offline; tapping animates it to Online (label slides up,
-       pill morphs grey → green). Only one status shows at a time. */
-    .go-pill {
-      position: absolute; top: 62px; left: 50%;
-      transform: translateX(-50%); z-index: 20;
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 20px; border: 0; border-radius: 999px;
-      background: rgba(255,255,255,.96);
-      box-shadow: 0 8px 20px rgba(15,23,42,.2);
-      backdrop-filter: blur(10px);
-      color: var(--text); cursor: pointer; font-family: inherit;
-      transition: background .35s, color .35s, box-shadow .35s, transform .12s;
+    .dash-top .grow { flex: 1; }
+    .av-fab {
+      width: 44px; height: 44px; border-radius: 50%; flex: 0 0 auto;
+      background: var(--brand-600); color: var(--text-onbrand);
+      border: 0; font-family: var(--font-display); font-weight: 700; font-size: 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-md); cursor: pointer; text-decoration: none;
     }
-    [data-theme="dark"] .go-pill { background: rgba(31,41,55,.96); color: #f8fafc; }
-    .go-pill:active { transform: translateX(-50%) scale(.95); }
-
-    .go-pill .go-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto;
-      background: var(--text-faint);
-      transition: background .35s, box-shadow .35s;
-    }
-    /* a fixed-height window; the track slides to reveal one label at a time */
-    .go-pill .go-label {
-      height: 18px; overflow: hidden;
-      font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em;
-    }
-    .go-pill .go-track {
-      display: flex; flex-direction: column;
-      transition: transform .35s cubic-bezier(.34,1.25,.5,1);
-    }
-    .go-pill .go-track > span {
-      height: 18px; line-height: 18px; text-align: center;
-    }
-
-    /* ON state */
-    .go-pill[data-state="on"] {
-      background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
-      color: #fff;
-      box-shadow: 0 10px 26px rgba(16,185,129,.45);
-    }
-    .go-pill[data-state="on"] .go-track { transform: translateY(-18px); }
-    .go-pill[data-state="on"] .go-dot {
-      background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.35);
-      animation: godot 1.7s ease-out infinite;
-    }
-    @keyframes godot {
-      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,.6); }
-      70%  { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
-      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-    }
-
-    .bell-dot { position: relative; }
-    .bell-dot::after {
-      content: ""; position: absolute; top: 9px; inset-inline-end: 11px;
+    .bell-wrap { position: relative; flex: 0 0 auto; }
+    .bell-wrap .dot {
+      position: absolute; top: 8px; inset-inline-end: 10px;
       width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent-600); border: 2px solid white;
+      background: var(--accent-600); border: 2px solid var(--bg);
     }
-    [data-theme="dark"] .bell-dot::after { border-color: #1f2937; }
 
-    /* ── Bottom dock (earnings + commission) above the navbar ── */
-    .map-dock {
-      position: absolute; inset-inline: 14px; bottom: 88px; z-index: 20;
-      display: flex; align-items: stretch;
-      background: rgba(255,255,255,.96);
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(15,23,42,.18);
+    /* Greeting card with the online toggle inside */
+    .greet-card {
+      position: absolute; top: 120px; inset-inline: 16px; z-index: 10;
+      padding: 16px;
+    }
+    .greet-head { margin-bottom: 12px; }
+    .greet-head .eyebrow { margin-bottom: 2px; }
+    .greet-head .h2 { font-size: 20px; }
+
+    /* Online toggle — "switch" variant (labeled row + switch) */
+    .go-switch {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; cursor: pointer;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .go-switch .dot {
+      width: 12px; height: 12px; border-radius: 50%; flex: 0 0 auto;
+      background: var(--text-faint);
+      transition: background .2s;
+    }
+    .go-switch.on .dot {
+      background: var(--brand-500);
+      box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .25);
+      animation: pulse-ring 2s var(--ease-out) infinite;
+    }
+    .go-switch .txt { flex: 1; min-width: 0; }
+    .go-switch .txt .t { font-size: 15px; font-weight: 600; }
+    .go-switch .txt .s { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    .sw {
+      position: relative; flex: 0 0 auto;
+      width: 50px; height: 30px; border-radius: 999px;
+      background: var(--surface-3); border: 0;
+      transition: background .2s;
+    }
+    .sw::after {
+      content: ""; position: absolute; top: 3px; inset-inline-start: 3px;
+      width: 24px; height: 24px; border-radius: 50%; background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,.2);
+      transition: inset-inline-start .2s var(--ease-out);
+    }
+    .go-switch.on .sw { background: var(--brand-600); }
+    .go-switch.on .sw::after { inset-inline-start: 23px; }
+
+    /* Map controls (end side) */
+    .map-ctrls {
+      position: absolute; top: 130px; inset-inline-end: 16px; z-index: 11;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+
+    /* Bottom dock: today + commission */
+    .dock {
+      position: absolute; inset-inline: 16px; bottom: 100px; z-index: 10;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-md);
       backdrop-filter: blur(8px);
-      overflow: hidden;
+      display: flex; overflow: hidden;
     }
-    [data-theme="dark"] .map-dock { background: rgba(31,41,55,.96); }
     .dock-cell {
-      flex: 1; min-width: 0;
-      padding: 13px 15px; text-decoration: none; color: var(--text);
-      display: flex; flex-direction: column; gap: 2px;
+      flex: 1; padding: 14px 16px; border: 0; background: transparent;
+      color: var(--text); text-align: start; cursor: pointer;
+      font-family: inherit; text-decoration: none;
     }
-    .dock-cell + .dock-cell { border-inline-start: 1px solid var(--border); }
-    [data-theme="dark"] .dock-cell { color: #f8fafc; }
-    .dock-cell .l {
-      font-size: 10.5px; font-weight: 700; color: var(--text-muted);
-      letter-spacing: 0.05em; text-transform: uppercase;
-      display: flex; align-items: center; gap: 6px;
+    .dock-cell .lbl {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;
     }
     .dock-cell .v {
-      font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+      font-size: 22px; font-weight: 700; letter-spacing: -0.02em;
       font-variant-numeric: tabular-nums;
     }
-    .dock-cell .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-    .dock-cell .sub { font-size: 11px; color: var(--text-muted); }
-    .dock-cell.comm .l { color: var(--accent-600); }
-    .dock-cell.comm .chev {
-      margin-inline-start: auto; color: var(--text-faint);
-    }
-    .dock-cell.comm .chev svg { width: 15px; height: 15px; vertical-align: middle; }
-    [dir="rtl"] .dock-cell.comm .chev svg { transform: scaleX(-1); }
+    .dock-cell .v .unit { font-size: 12px; color: var(--text-muted); margin-inline-start: 4px; font-weight: 600; }
+    .dock-cell .sub { font-size: 11.5px; color: var(--text-faint); margin-top: 2px; }
+    .dock-cell.comm .lbl { color: var(--accent-700); }
+    .dock-cell.comm .v   { color: var(--accent-700); }
+    .dock-cell.comm .lbl svg { width: 12px; height: 12px; }
+    [dir="rtl"] .dock-cell.comm .lbl svg { transform: scaleX(-1); }
+    .dock-div { width: 1px; background: var(--border); }
   </style>
 </head>
 <body data-nav="home">
@@ -141,45 +139,64 @@
           <div id="map" style="width:100%;height:100%;"></div>
         </div>
 
-        <!-- Top-left: notifications -->
-        <div class="map-corner">
-          <button class="fab bell-dot" aria-label="Notifications">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Top overlay: avatar (start) · bell (end) -->
+        <div class="dash-top">
+          <a class="av-fab" href="../profile/index.html" aria-label="Profile">AM</a>
+          <div class="grow"></div>
+          <button class="fab bell-wrap" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+            </svg>
+            <span class="dot"></span>
+          </button>
+        </div>
+
+        <!-- Greeting card + online toggle -->
+        <div class="greet-card card card-elev">
+          <div class="greet-head">
+            <div class="eyebrow" data-i18n="dash.weather">Tripoli · 26°</div>
+            <h2 class="h2" data-i18n="dash.greet">Salaam, Ahmad</h2>
+          </div>
+          <div class="go-switch" id="online-switch" role="switch" aria-checked="false">
+            <span class="dot"></span>
+            <div class="txt">
+              <div class="t" id="go-title" data-i18n="dash.online">Go online</div>
+              <div class="s" id="go-sub" data-i18n="dash.online.tap">Tap to start receiving requests</div>
+            </div>
+            <span class="sw" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <!-- Map controls -->
+        <div class="map-ctrls">
+          <button class="fab" aria-label="Layers">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 18l9 5 9-5"/>
+            </svg>
+          </button>
+          <button class="fab" aria-label="Recenter">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M3 11l18-8-8 18-2-8-8-2z"/>
             </svg>
           </button>
         </div>
 
-        <!-- Online control (top-centre) — single status pill, Offline by default -->
-        <button class="go-pill" id="online-switch" data-state="off" role="switch" aria-checked="false">
-          <span class="go-dot"></span>
-          <span class="go-label">
-            <span class="go-track">
-              <span data-i18n="dash.status.off">Offline</span>
-              <span data-i18n="dash.status.on">Online</span>
-            </span>
-          </span>
-        </button>
-
         <!-- Bottom dock: today's earnings + outstanding commission (§2.10) -->
-        <div class="map-dock">
+        <div class="dock">
           <a class="dock-cell" href="../earnings/index.html">
-            <span class="l" data-i18n="dash.today.short">Today</span>
-            <span class="v">320<span class="unit" data-i18n="unit.currency">LYD</span></span>
-            <span class="sub"><span>15</span> <span data-i18n="dash.trips.short">trips · 6h</span></span>
+            <div class="lbl"><span data-i18n="dash.today">Today</span></div>
+            <div class="v">320<span class="unit" data-i18n="unit.currency">LYD</span></div>
+            <div class="sub">15 <span data-i18n="dash.trips">trips</span> · 6<span data-i18n="unit.hr">h</span></div>
           </a>
+          <div class="dock-div"></div>
           <a class="dock-cell comm" href="../commission/index.html">
-            <span class="l">
-              <span data-i18n="dash.commission.l">Commission</span>
-              <span class="chev">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 6l6 6-6 6"/>
-                </svg>
-              </span>
-            </span>
-            <span class="v">48<span class="unit" data-i18n="unit.currency">LYD</span></span>
-            <span class="sub" data-i18n="dash.commission.due">Due Sunday</span>
+            <div class="lbl">
+              <span data-i18n="dash.commission">Commission</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            </div>
+            <div class="v">48<span class="unit" data-i18n="unit.currency">LYD</span></div>
+            <div class="sub" data-i18n="dash.due">Due Sunday</div>
           </a>
         </div>
       </div>
@@ -188,17 +205,24 @@
 
   <script>
     I18N.register({
-      "dash.status.off":   { en: "Offline",                  ar: "غير متصل" },
-      "dash.status.on":    { en: "Online",                   ar: "متصل" },
-      "dash.today.short":  { en: "Today",                    ar: "اليوم" },
-      "dash.trips.short":  { en: "trips · 6h",               ar: "رحلة · 6 س" },
-      "dash.commission.l": { en: "Commission",               ar: "العمولة" },
-      "dash.commission.due": { en: "Due Sunday",             ar: "تستحق الأحد" },
-      "unit.currency":     { en: "LYD",                      ar: "د.ل" },
+      "dash.weather":    { en: "Tripoli · 26°",                    ar: "طرابلس · 26°" },
+      "dash.greet":      { en: "Salaam, Ahmad",                    ar: "مرحباً، أحمد" },
+      "dash.online":     { en: "Go online",                        ar: "ابدأ العمل" },
+      "dash.online.on":  { en: "You're online",                    ar: "أنت متصل الآن" },
+      "dash.online.tap": { en: "Tap to start receiving requests",  ar: "اضغط لبدء استقبال الطلبات" },
+      "dash.online.lstn":{ en: "Listening for requests…",          ar: "جارٍ استقبال الطلبات…" },
+      "dash.today":      { en: "Today",                            ar: "اليوم" },
+      "dash.trips":      { en: "trips",                            ar: "رحلة" },
+      "dash.commission": { en: "Commission",                       ar: "العمولة" },
+      "dash.due":        { en: "Due Sunday",                       ar: "تستحق الأحد" },
+      "unit.currency":   { en: "LYD",                              ar: "د.ل" },
+      "unit.hr":         { en: "h",                                ar: "س" },
     });
 
-    // Online control wiring — single pill ⇄ driver-pin pulse ⇄ mock request.
-    const sw = document.getElementById('online-switch');
+    // Online toggle wiring — switch row ⇄ driver-pin pulse ⇄ mock request.
+    const sw    = document.getElementById('online-switch');
+    const title = document.getElementById('go-title');
+    const sub   = document.getElementById('go-sub');
 
     let driverMarker = null;
     JeeraMap.create('map', {
@@ -210,8 +234,11 @@
     });
 
     function setOnline(on) {
-      sw.dataset.state = on ? 'on' : 'off';
+      sw.classList.toggle('on', on);
       sw.setAttribute('aria-checked', String(on));
+      title.setAttribute('data-i18n', on ? 'dash.online.on' : 'dash.online');
+      sub.setAttribute('data-i18n',   on ? 'dash.online.lstn' : 'dash.online.tap');
+      I18N.apply();
 
       const el = driverMarker && driverMarker.getElement && driverMarker.getElement();
       const inner = el && el.querySelector('.jm-pin-driver');
@@ -220,11 +247,11 @@
       clearTimeout(window._pingT);
       if (on) {
         window._pingT = setTimeout(() => {
-          if (sw.dataset.state === 'on') location.href = '../ride-requests/index.html';
-        }, 3500);
+          if (sw.classList.contains('on')) location.href = '../ride-requests/index.html';
+        }, 3000);
       }
     }
-    sw.addEventListener('click', () => setOnline(sw.dataset.state !== 'on'));
+    sw.addEventListener('click', () => setOnline(!sw.classList.contains('on')));
   </script>
 </body>
 </html>

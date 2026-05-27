@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jeera Driver — Trip details</title>
+  <title>Djera Driver — Trip details</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
@@ -44,7 +44,7 @@
       letter-spacing: 0.04em;
       box-shadow: 0 4px 12px rgba(15,23,42,.12);
     }
-    [data-theme="dark"] .det-status { background: rgba(16,185,129,.18); }
+    [data-theme="dark"] .det-status { background: oklch(from var(--brand-500) l c h / .18); }
     .det-status::before {
       content: ""; width: 7px; height: 7px; border-radius: 50%;
       background: var(--brand-500);
@@ -102,7 +102,7 @@
       box-shadow: 0 0 0 1px var(--border);
     }
     .route-card .pin-stack .pin.from { background: var(--brand-500); box-shadow: 0 0 0 1px var(--brand-500); }
-    .route-card .pin-stack .pin.to   { background: #dc2626; box-shadow: 0 0 0 1px #dc2626; }
+    .route-card .pin-stack .pin.to   { background: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
     .route-card .pin-stack .track {
       width: 2px; flex: 1; min-height: 14px;
       background: var(--border);
@@ -200,7 +200,7 @@
       margin-top: 4px;
       font-size: 12px; color: var(--text-muted);
     }
-    .rider-row .who .rating svg { width: 13px; height: 13px; fill: #f59e0b; color: #f59e0b; }
+    .rider-row .who .rating svg { width: 13px; height: 13px; fill: var(--accent-500); color: var(--accent-500); }
 
     /* ── Trip timeline ───────────────────────────────────────── */
     .timeline {
@@ -253,7 +253,7 @@
     .tl-item:last-child .tl-dot {
       width: 16px; height: 16px; margin-top: 2px;
       background: var(--brand-500);
-      box-shadow: 0 0 0 4px rgba(16,185,129,.18);
+      box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .18);
     }
     .tl-body { flex: 1; min-width: 0; }
     .tl-label {
@@ -358,7 +358,7 @@
             </div>
             <div class="row minus">
               <span class="l">
-                <span data-i18n="det.commission">Jeera commission</span>
+                <span data-i18n="det.commission">Djera commission</span>
                 <span style="color:var(--text-faint);font-weight:500;"> · 15%</span>
               </span>
               <span class="v">−<span id="d-comm">3.75</span><span class="unit" data-i18n="unit.currency">LYD</span></span>
@@ -370,7 +370,7 @@
           </div>
 
           <div class="rider-row">
-            <span class="av" id="d-av" style="background:linear-gradient(135deg,#fcd34d,#f59e0b)">KA</span>
+            <span class="av" id="d-av" style="background:linear-gradient(135deg,#fcd34d,var(--accent-500))">KA</span>
             <div class="who">
               <div class="l" data-i18n="det.rider">Rider</div>
               <div class="n" id="d-rider">Khalid Ahmad</div>
@@ -430,7 +430,7 @@
       "det.duration":  { en: "Duration",                               ar: "المدة" },
       "det.breakdown": { en: "Fare breakdown",                         ar: "تفصيل الأجرة" },
       "det.fare":      { en: "Trip fare (cash)",                       ar: "أجرة الرحلة (نقدًا)" },
-      "det.commission":{ en: "Jeera commission",                       ar: "عمولة جيرا" },
+      "det.commission":{ en: "Djera commission",                       ar: "عمولة دجيرا" },
       "det.net":       { en: "Net to you",                             ar: "صافي ربحك" },
       "det.rider":     { en: "Rider",                                  ar: "الراكب" },
       "det.rating":    { en: "rated by you",                           ar: "تقييمك له" },
@@ -454,7 +454,7 @@
              when: "Today", time: "14:30",
              km: 8.5, min: 14, fare: 25,
              rider: "Khalid Ahmad", initials: "KA",
-             rating: 4.8, avBg: "linear-gradient(135deg,#fcd34d,#f59e0b)" },
+             rating: 4.8, avBg: "linear-gradient(135deg,#fcd34d,var(--accent-500))" },
       "2": { from: "Souq al-Juma, Tripoli", to: "Old City (Medina), Tripoli",
              fromCoord: [32.8964,13.2126], toCoord: [32.8990,13.1797],
              waypoints: [[32.8964,13.2126],[32.898,13.205],[32.901,13.195],[32.8990,13.1797]],
@@ -468,7 +468,7 @@
              when: "Today", time: "09:42",
              km: 23.1, min: 28, fare: 42,
              rider: "Omar Belhaj", initials: "OB",
-             rating: 4.7, avBg: "linear-gradient(135deg,#34d399,#059669)" },
+             rating: 4.7, avBg: "linear-gradient(135deg,#34d399,var(--brand-600))" },
       "4": { from: "Gargaresh, Tripoli", to: "Hai al-Andalus, Tripoli",
              fromCoord: [32.8467,13.1158], toCoord: [32.8615,13.1497],
              waypoints: [[32.8467,13.1158],[32.850,13.122],[32.852,13.130],[32.856,13.140],[32.8615,13.1497]],
@@ -517,13 +517,13 @@
     document.getElementById('tl-ended').textContent    = addMin(t.time, t.min);
 
     // Map: render the trip's route on a real Tripoli map.
-    JeeraMap.create('det-map-el', {
+    DjeraMap.create('det-map-el', {
       center: t.waypoints[Math.floor(t.waypoints.length / 2)],
       zoom: 13,
       onReady(map, L) {
-        JeeraMap.pin(L, t.fromCoord, 'rider', { label: 'Pickup' }).addTo(map);
-        JeeraMap.pin(L, t.toCoord,   'dest',  { label: 'Drop-off' }).addTo(map);
-        const route = JeeraMap.route(L, t.waypoints).addTo(map);
+        DjeraMap.pin(L, t.fromCoord, 'rider', { label: 'Pickup' }).addTo(map);
+        DjeraMap.pin(L, t.toCoord,   'dest',  { label: 'Drop-off' }).addTo(map);
+        const route = DjeraMap.route(L, t.waypoints).addTo(map);
         map.fitBounds(route.getBounds().pad(0.22));
       },
     });

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jeera Driver — Sign in</title>
+  <title>Djera Driver — Sign in</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
@@ -11,7 +11,7 @@
     .auth-screen {
       padding: 88px 28px 32px;
       background:
-        radial-gradient(420px 220px at 50% 0%, rgba(16,185,129,.16), transparent 70%),
+        radial-gradient(420px 220px at 50% 0%, oklch(from var(--brand-500) l c h / .16), transparent 70%),
         var(--bg);
     }
     .auth-head { text-align: center; }
@@ -60,7 +60,7 @@
     }
     .phone-input:focus-within {
       border-color: var(--brand-500);
-      box-shadow: 0 0 0 3px rgba(16,185,129,.15);
+      box-shadow: 0 0 0 3px oklch(from var(--brand-500) l c h / .15);
     }
     .phone-prefix {
       display: flex; align-items: center; gap: 8px;
@@ -98,11 +98,11 @@
     .email-input::placeholder { color: var(--text-faint); }
     .email-input:focus {
       border-color: var(--brand-500);
-      box-shadow: 0 0 0 3px rgba(16,185,129,.15);
+      box-shadow: 0 0 0 3px oklch(from var(--brand-500) l c h / .15);
     }
     .field-err {
       display: none;
-      font-size: 12px; color: #dc2626;
+      font-size: 12px; color: var(--danger);
       margin-top: 6px;
     }
     .field-err.show { display: block; }
@@ -129,7 +129,7 @@
       display: inline-flex; align-items: center; gap: 6px;
       margin: 18px auto 0;
       padding: 6px 12px;
-      background: rgba(245,158,11,.12);
+      background: oklch(from var(--accent-600) l c h / .12);
       color: var(--accent-600);
       border-radius: 999px;
       font-size: 11.5px; font-weight: 600;
@@ -159,7 +159,7 @@
               <path d="M22 8 L36 8" opacity=".75"/>
             </svg>
           </div>
-          <h1 class="auth-title" data-i18n="auth.title">Jeera Driver</h1>
+          <h1 class="auth-title" data-i18n="auth.title">Djera Driver</h1>
           <p class="auth-tag" data-i18n="auth.tag">Start your journey with us.</p>
         </div>
 
@@ -225,7 +225,7 @@
 
   <script>
     I18N.register({
-      "auth.title":       { en: "Jeera Driver",                          ar: "سائقي جيرا" },
+      "auth.title":       { en: "Djera Driver",                          ar: "سائقي دجيرا" },
       "auth.tag":         { en: "Start your journey with us.",           ar: "ابدأ رحلتك معنا." },
       "auth.method.phone":{ en: "Phone",                                 ar: "الهاتف" },
       "auth.method.email":{ en: "Email",                                 ar: "البريد الإلكتروني" },
