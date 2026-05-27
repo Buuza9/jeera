@@ -34,14 +34,16 @@
       text-align: center;
     }
     .amount-card .l {
-      font-size: 11.5px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text-faint);
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted);
     }
     .amount-card .big {
       margin: 8px 0 2px;
-      font-size: 40px; font-weight: 800;
-      letter-spacing: -0.03em;
+      font-family: var(--font-display);
+      font-size: 44px; font-weight: 600;
+      letter-spacing: -0.04em;
       font-variant-numeric: tabular-nums;
       line-height: 1.05;
     }
@@ -93,9 +95,10 @@
 
     /* Channel picker */
     .section-label {
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text-faint);
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted);
       padding: 0 4px; margin-top: 2px;
     }
     .channels { display: flex; flex-direction: column; gap: 10px; }
@@ -210,13 +213,11 @@
   <div class="stage">
     <div class="phone">
       <div class="screen settle-screen">
-        <div class="settle-header">
-          <a class="back-btn" href="index.html" aria-label="Back">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 6l-6 6 6 6"/>
-            </svg>
+        <div class="appbar">
+          <a class="ab-btn" href="index.html" aria-label="Back">
+            <svg class="chev chev-end" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
           </a>
-          <h1 data-i18n="set.title">Settle commission</h1>
+          <div style="flex:1;min-width:0"><div class="ab-title" data-i18n="set.title">Settle commission</div></div>
         </div>
 
         <!-- Amount -->
@@ -225,7 +226,7 @@
           <div class="big"><span id="amt">48</span><span class="unit" data-i18n="unit.currency">LYD</span></div>
           <div class="of" data-i18n="set.outOf">of 48 LYD outstanding</div>
 
-          <div class="seg">
+          <div class="segment" style="margin-top:14px">
             <button id="seg-full" class="on" data-i18n="set.full">Full balance</button>
             <button id="seg-partial" data-i18n="set.partial">Partial</button>
           </div>
