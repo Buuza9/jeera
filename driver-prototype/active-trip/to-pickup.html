@@ -3,140 +3,54 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Djera Driver — On the way to rider</title>
+  <title>Djera Driver — Heading to pickup</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
   <script src="../_shared/map.js"></script>
   <style>
-    .trip-screen {
-      padding: 58px 0 0;
-      position: relative;
-      overflow: hidden;
-    }
+    .trip-screen { padding: 0; position: relative; overflow: hidden; }
+    .map-fill { position: absolute; inset: 0; z-index: 0; isolation: isolate; }
+    .map-fill .leaflet-container { width: 100%; height: 100%; }
 
-    /* ── Metrics strip (top, over the map) ───────────────────── */
-    .metrics-strip {
-      position: absolute;
-      top: 70px; inset-inline: 16px;
-      z-index: 1100;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 12px;
-      background: rgba(255,255,255,.94);
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(15,23,42,.18);
-      backdrop-filter: blur(6px);
-      animation: drop-in .3s ease-out both;
+    /* Top metrics strip */
+    .mstrip { position: absolute; top: 70px; inset-inline: 18px; z-index: 30; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mcard {
+      padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-md); box-shadow: var(--shadow-sm); backdrop-filter: blur(8px);
     }
-    [data-theme="dark"] .metrics-strip { background: rgba(17,24,39,.92); color: #f8fafc; }
-    @keyframes drop-in {
-      from { transform: translateY(-10px); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
-    .metrics-strip .m {
-      display: flex; flex-direction: column;
-      padding: 4px 6px;
-    }
-    .metrics-strip .m + .m { border-inline-start: 1px solid var(--border); }
-    .metrics-strip .m .l {
-      font-size: 10.5px; color: var(--text-muted);
-      font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    .metrics-strip .m .v {
-      margin-top: 2px;
-      font-size: 19px; font-weight: 700; letter-spacing: -0.01em;
-      font-variant-numeric: tabular-nums;
-    }
-    .metrics-strip .m .v .unit { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+    .mcard .v { font-size: 18px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .mcard .v .u { font-size: 11px; color: var(--text-muted); margin-inline-start: 3px; font-weight: 600; }
 
-    /* ── Real Leaflet map — driver → rider route ─────────────── */
-    .trip-map {
-      position: absolute; inset: 0;
-      z-index: 0;
+    /* Bottom sheet */
+    .sheet {
+      position: absolute; inset-inline: 0; bottom: 0; z-index: 20;
+      background: var(--bg); border-radius: 28px 28px 0 0;
+      padding: 8px 22px 30px; box-shadow: 0 -16px 40px rgba(20,18,12,.18);
+      animation: sheet-up .42s var(--ease-spring) both;
     }
-    .trip-map #trip-map-el { width: 100%; height: 100%; }
-
-    /* ── Bottom sheet (rider + actions) ─────────────────────── */
-    .trip-sheet {
-      position: absolute; bottom: 0; inset-inline: 0;
-      z-index: 1100;
-      background: var(--bg);
-      border-radius: 28px 28px 0 0;
-      padding: 8px 22px 22px;
-      box-shadow: 0 -16px 40px rgba(15,23,42,.25);
-      display: flex; flex-direction: column; gap: 14px;
-      animation: sheet-up .35s cubic-bezier(.2,.7,.3,1.05) both;
-    }
-    @keyframes sheet-up {
-      from { transform: translateY(30%); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
-    .sheet-handle {
-      width: 44px; height: 5px; border-radius: 999px;
-      background: var(--surface-2);
-      margin: 4px auto 4px;
-    }
+    .grabber { width: 44px; height: 5px; border-radius: 999px; background: var(--surface-3); margin: 4px auto 12px; }
 
     .stage-banner {
-      display: flex; align-items: center; gap: 8px;
-      padding: 7px 12px;
-      background: var(--brand-50);
-      color: var(--brand-700);
-      border-radius: 999px;
-      font-size: 12px; font-weight: 600;
-      align-self: flex-start;
+      padding: 10px 14px; margin-bottom: 14px; border-radius: var(--r-md);
+      font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+      background: var(--brand-50); color: var(--brand-700);
     }
-    [data-theme="dark"] .stage-banner { background: oklch(from var(--brand-500) l c h / .15); color: var(--brand-500); }
-    .stage-banner .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--brand-500);
-      animation: pulse 1.3s ease-out infinite;
-    }
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0 oklch(from var(--brand-500) l c h / .45); }
-      70%  { box-shadow: 0 0 0 8px oklch(from var(--brand-500) l c h / 0); }
-      100% { box-shadow: 0 0 0 0 oklch(from var(--brand-500) l c h / 0); }
-    }
+    [data-theme="dark"] .stage-banner { background: oklch(from var(--brand-500) l c h / .14); }
+    .stage-banner .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-600); animation: pulse-ring 1.6s infinite; }
 
-    .rider-card {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-    .rider-avatar {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: linear-gradient(135deg, #fcd34d, var(--accent-500));
-      color: white;
+    .rider-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .rider-card .av {
+      width: 48px; height: 48px; border-radius: 50%; flex: 0 0 auto;
+      background: var(--accent-500); color: var(--text-onbrand);
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 16px;
-      flex: 0 0 auto;
+      font-size: 16px; font-weight: 700; font-family: var(--font-display);
     }
     .rider-card .who { flex: 1; min-width: 0; }
-    .rider-card .who .label { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
-    .rider-card .who .name { font-size: 15px; font-weight: 700; margin-top: 2px; }
-    .rider-card .who .addr { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
-    .rider-card .who .addr svg { width: 11px; height: 11px; vertical-align: -1px; margin-inline-end: 3px; color: var(--brand-500); }
-
-    .trip-actions {
-      display: grid; grid-template-columns: auto 1fr; gap: 10px;
-    }
-    .call-btn {
-      width: 52px; height: 52px;
-      border-radius: 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--brand-600);
-      display: inline-flex; align-items: center; justify-content: center;
-      cursor: pointer;
-    }
-    .call-btn svg { width: 22px; height: 22px; }
-    .btn[disabled] {
-      opacity: .55; cursor: not-allowed; box-shadow: none;
-      pointer-events: none;
-    }
+    .rider-card .who .n { font-size: 15.5px; font-weight: 600; }
+    .rider-card .who .a { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .rider-card .call { background: var(--brand-50); border: 0; color: var(--brand-700); }
+    [data-theme="dark"] .rider-card .call { background: oklch(from var(--brand-500) l c h / .15); }
   </style>
 </head>
 <body>
@@ -145,62 +59,53 @@
     <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
     <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
     <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
-    <a class="back" href="../dashboard/index.html">←</a>
+    <a class="back" href="../ride-requests/index.html">←</a>
   </div>
 
   <div class="stage">
     <div class="phone">
       <div class="screen trip-screen">
-        <!-- Real map: Leaflet + OSM/CARTO. Driver pin + rider pin +
-             animated route polyline are added in the page script below. -->
-        <div class="trip-map" aria-hidden="true">
-          <div id="trip-map-el"></div>
-        </div>
+        <div class="map-fill"><div id="trip-map-el" style="width:100%;height:100%;"></div></div>
 
         <!-- Top metrics -->
-        <div class="metrics-strip">
-          <div class="m">
-            <span class="l" data-i18n="trip.remaining">Remaining</span>
-            <span class="v" id="dist"><span id="dist-v">800</span><span class="unit" data-i18n="unit.m">m</span></span>
+        <div class="mstrip">
+          <div class="mcard">
+            <div class="eyebrow" data-i18n="req.toRider">To rider</div>
+            <div class="v"><span id="dist-v">800</span><span class="u">m</span></div>
           </div>
-          <div class="m">
-            <span class="l" data-i18n="trip.eta">ETA</span>
-            <span class="v" id="eta"><span id="eta-v">2</span><span class="unit" data-i18n="unit.min">min</span></span>
+          <div class="mcard">
+            <div class="eyebrow">ETA</div>
+            <div class="v"><span id="eta-v">5</span><span class="u" data-i18n="unit.min">min</span></div>
           </div>
         </div>
 
         <!-- Bottom sheet -->
-        <div class="trip-sheet">
-          <div class="sheet-handle" aria-hidden="true"></div>
-
+        <div class="sheet">
+          <div class="grabber"></div>
           <div class="stage-banner">
-            <span class="dot" aria-hidden="true"></span>
-            <span id="banner-text" data-i18n="trip.banner.away">Heading to pickup</span>
+            <span class="dot"></span>
+            <span data-i18n="trip.pickup.head">Heading to pickup</span>
           </div>
 
-          <div class="rider-card">
-            <div class="rider-avatar">KA</div>
+          <div class="card rider-card">
+            <span class="av">KA</span>
             <div class="who">
-              <div class="label" data-i18n="trip.rider">Rider</div>
-              <div class="name" data-i18n="trip.rider.name">Khalid Ahmad</div>
-              <div class="addr">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/>
-                  <circle cx="12" cy="9" r="2.5"/>
-                </svg>
-                <span data-i18n="trip.pickup.addr">Hai al-Andalus, Tripoli</span>
-              </div>
+              <div class="n" data-i18n="trip.pickup.rider">Khalid Al-Asmari</div>
+              <div class="a" data-i18n="req.pickup.addr">Hai al-Andalus, Tripoli</div>
             </div>
+            <button class="fab call" aria-label="Call">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2.2z"/>
+              </svg>
+            </button>
           </div>
 
-          <div class="trip-actions">
-            <a class="call-btn" href="tel:" aria-label="Call rider">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>
-              </svg>
+          <div class="btn-row">
+            <button class="btn btn-secondary" data-i18n="trip.call">Call</button>
+            <a class="btn btn-primary" id="arrived" style="flex:1.3;opacity:.5;pointer-events:none" href="in-trip.html">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+              <span data-i18n="trip.arrived">I've arrived</span>
             </a>
-            <button type="button" class="btn btn-primary" id="arrived" disabled
-                    data-i18n="trip.arrived">Arrived</button>
           </div>
         </div>
       </div>
@@ -209,75 +114,41 @@
 
   <script>
     I18N.register({
-      "trip.remaining":    { en: "Remaining",                           ar: "المسافة المتبقية" },
-      "trip.eta":          { en: "ETA",                                 ar: "الوقت المتوقع" },
-      "trip.rider":        { en: "Rider",                               ar: "الراكب" },
-      "trip.rider.lbl":    { en: "Rider",                               ar: "الراكب" },
-      "trip.rider.name":   { en: "Khalid Ahmad",                        ar: "خالد أحمد" },
-      "trip.pickup.addr":  { en: "Hai al-Andalus, Tripoli",             ar: "حي الأندلس، طرابلس" },
-      "trip.banner.away":  { en: "Heading to pickup",                   ar: "في الطريق إلى الراكب" },
-      "trip.banner.near":  { en: "You're near the pickup",              ar: "اقتربت من نقطة الانطلاق" },
-      "trip.arrived":      { en: "Arrived",                             ar: "وصلت" },
-      "unit.m":            { en: "m",                                   ar: "م" },
-      "unit.min":          { en: "min",                                 ar: "د" },
+      "trip.pickup.head":  { en: "Heading to pickup",        ar: "في الطريق إلى الراكب" },
+      "trip.pickup.rider": { en: "Khalid Al-Asmari",         ar: "خالد العسماري" },
+      "req.pickup.addr":   { en: "Hai al-Andalus, Tripoli",  ar: "حي الأندلس، طرابلس" },
+      "req.toRider":       { en: "To rider",                 ar: "إلى الراكب" },
+      "trip.call":         { en: "Call",                     ar: "اتصال" },
+      "trip.arrived":      { en: "I've arrived",             ar: "وصلت" },
+      "unit.min":          { en: "min",                      ar: "دق" },
     });
 
-    // Real Tripoli map: driver pin + rider pin (pickup) + animated route.
-    // The driver actually moves along the polyline — duration matches the
-    // ETA countdown (800m / 70m-per-tick ≈ 12s).
+    // Real Tripoli map: driver animates toward the pickup along the route.
     const driverStart = [32.8780, 13.1700];
-    const ROUTE_WP = [
-      driverStart, [32.872, 13.165], [32.868, 13.158],
-      [32.864, 13.152], DjeraMap.TRIPOLI.andalus,
-    ];
-    const RIDE_DUR_MS = 12000;
-
-    DjeraMap.create('trip-map-el', {
-      center: [32.872, 13.160],
-      zoom: 14,
+    const ROUTE_WP = [driverStart, [32.872, 13.165], [32.868, 13.158], [32.864, 13.152], JeeraMap.TRIPOLI.andalus];
+    JeeraMap.create('trip-map-el', {
+      center: [32.872, 13.160], zoom: 14,
       onReady(map, L) {
-        const driver = DjeraMap.pin(L, driverStart, 'driver',
-                                    { pulse: true }).addTo(map);
-        DjeraMap.pin(L, DjeraMap.TRIPOLI.andalus, 'rider',
-                     { label: 'Pickup' }).addTo(map);
-        const route = DjeraMap.route(L, ROUTE_WP).addTo(map);
+        const driver = JeeraMap.pin(L, driverStart, 'driver', { pulse: true }).addTo(map);
+        JeeraMap.pin(L, JeeraMap.TRIPOLI.andalus, 'rider', { label: I18N.t('req.pickup.addr') }).addTo(map);
+        const route = JeeraMap.route(L, ROUTE_WP).addTo(map);
         map.fitBounds(route.getBounds().pad(0.25));
-        // Wait for the route line to finish drawing before the bike starts
-        // moving so the animations don't overlap awkwardly.
-        setTimeout(() => {
-          DjeraMap.animateAlong(driver, ROUTE_WP, {
-            map,
-            durationMs: RIDE_DUR_MS,
-          });
-        }, 900);
+        setTimeout(() => JeeraMap.animateAlong(driver, ROUTE_WP, { map, durationMs: 12000 }), 900);
       },
     });
 
-    // Simulate approach: distance ticks down from 800 m → 0; ETA from 2 min.
-    // "Arrived" enables when remaining drops below ~120 m (§2.5: enabled at/near pickup).
+    // Distance 800m → 0; "I've arrived" enables under ~150 m.
     const distV = document.getElementById('dist-v');
     const etaV  = document.getElementById('eta-v');
     const arrived = document.getElementById('arrived');
-    const banner = document.getElementById('banner-text');
-
     let dist = 800;
-    function tickDist() {
+    (function tick() {
       dist = Math.max(0, dist - 70);
       distV.textContent = String(dist);
-      etaV.textContent = String(Math.max(1, Math.ceil(dist / 400)));
-      if (dist <= 120) {
-        arrived.disabled = false;
-        banner.setAttribute('data-i18n', 'trip.banner.near');
-        I18N.apply();
-      }
-      if (dist > 0) setTimeout(tickDist, 1000);
-    }
-    setTimeout(tickDist, 700);
-
-    arrived.addEventListener('click', () => {
-      if (arrived.disabled) return;
-      location.href = 'in-trip.html';
-    });
+      etaV.textContent = String(Math.max(1, Math.ceil(dist / 180)));
+      if (dist <= 150) { arrived.style.opacity = '1'; arrived.style.pointerEvents = ''; }
+      if (dist > 0) setTimeout(tick, 800);
+    })();
   </script>
 </body>
 </html>

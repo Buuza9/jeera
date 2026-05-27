@@ -517,13 +517,13 @@
     document.getElementById('tl-ended').textContent    = addMin(t.time, t.min);
 
     // Map: render the trip's route on a real Tripoli map.
-    DjeraMap.create('det-map-el', {
+    JeeraMap.create('det-map-el', {
       center: t.waypoints[Math.floor(t.waypoints.length / 2)],
       zoom: 13,
       onReady(map, L) {
-        DjeraMap.pin(L, t.fromCoord, 'rider', { label: 'Pickup' }).addTo(map);
-        DjeraMap.pin(L, t.toCoord,   'dest',  { label: 'Drop-off' }).addTo(map);
-        const route = DjeraMap.route(L, t.waypoints).addTo(map);
+        JeeraMap.pin(L, t.fromCoord, 'rider', { label: 'Pickup' }).addTo(map);
+        JeeraMap.pin(L, t.toCoord,   'dest',  { label: 'Drop-off' }).addTo(map);
+        const route = JeeraMap.route(L, t.waypoints).addTo(map);
         map.fitBounds(route.getBounds().pad(0.22));
       },
     });

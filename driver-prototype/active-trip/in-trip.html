@@ -3,143 +3,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Djera Driver — In trip</title>
+  <title>Djera Driver — Trip in progress</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
   <script src="../_shared/map.js"></script>
   <style>
-    .trip-screen {
-      padding: 58px 0 0;
-      position: relative;
-      overflow: hidden;
-    }
+    .trip-screen { padding: 0; position: relative; overflow: hidden; }
+    .map-fill { position: absolute; inset: 0; z-index: 0; isolation: isolate; }
+    .map-fill .leaflet-container { width: 100%; height: 100%; }
 
-    /* Top metrics strip */
-    .metrics-strip {
-      position: absolute;
-      top: 70px; inset-inline: 16px;
-      z-index: 1100;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 12px;
-      background: rgba(255,255,255,.94);
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(15,23,42,.18);
-      backdrop-filter: blur(6px);
-      animation: drop-in .3s ease-out both;
+    .mstrip { position: absolute; top: 70px; inset-inline: 18px; z-index: 30; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mcard {
+      padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-md); box-shadow: var(--shadow-sm); backdrop-filter: blur(8px);
     }
-    [data-theme="dark"] .metrics-strip { background: rgba(17,24,39,.92); color: #f8fafc; }
-    @keyframes drop-in {
-      from { transform: translateY(-10px); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
-    .metrics-strip .m { display: flex; flex-direction: column; padding: 4px 6px; }
-    .metrics-strip .m + .m { border-inline-start: 1px solid var(--border); }
-    .metrics-strip .m .l {
-      font-size: 10.5px; color: var(--text-muted);
-      font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    .metrics-strip .m .v {
-      margin-top: 2px;
-      font-size: 19px; font-weight: 700; letter-spacing: -0.01em;
-      font-variant-numeric: tabular-nums;
-    }
-    .metrics-strip .m .v .unit { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+    .mcard .v { font-size: 18px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .mcard .v .u { font-size: 11px; color: var(--text-muted); margin-inline-start: 3px; font-weight: 600; }
 
-    /* ── Real Leaflet map — driver → destination route ──────── */
-    .trip-map { position: absolute; inset: 0; z-index: 0; }
-    .trip-map #trip-map-el { width: 100%; height: 100%; }
+    .sheet {
+      position: absolute; inset-inline: 0; bottom: 0; z-index: 20;
+      background: var(--bg); border-radius: 28px 28px 0 0;
+      padding: 8px 22px 30px; box-shadow: 0 -16px 40px rgba(20,18,12,.18);
+      animation: sheet-up .42s var(--ease-spring) both;
+    }
+    .grabber { width: 44px; height: 5px; border-radius: 999px; background: var(--surface-3); margin: 4px auto 12px; }
 
-    /* Bottom sheet */
-    .trip-sheet {
-      position: absolute; bottom: 0; inset-inline: 0;
-      z-index: 1100;
-      background: var(--bg);
-      border-radius: 28px 28px 0 0;
-      padding: 8px 22px 22px;
-      box-shadow: 0 -16px 40px rgba(15,23,42,.25);
-      display: flex; flex-direction: column; gap: 14px;
-      animation: sheet-up .35s cubic-bezier(.2,.7,.3,1.05) both;
-    }
-    @keyframes sheet-up {
-      from { transform: translateY(30%); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
-    .sheet-handle {
-      width: 44px; height: 5px; border-radius: 999px;
-      background: var(--surface-2);
-      margin: 4px auto 4px;
-    }
     .stage-banner {
-      display: flex; align-items: center; gap: 8px;
-      padding: 7px 12px;
-      background: var(--brand-50);
-      color: var(--brand-700);
-      border-radius: 999px;
-      font-size: 12px; font-weight: 600;
-      align-self: flex-start;
+      padding: 10px 14px; margin-bottom: 14px; border-radius: var(--r-md);
+      font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+      background: var(--brand-600); color: var(--text-onbrand);
     }
-    [data-theme="dark"] .stage-banner { background: oklch(from var(--brand-500) l c h / .15); color: var(--brand-500); }
-    .stage-banner .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--brand-500);
-      animation: pulse 1.3s ease-out infinite;
-    }
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0 oklch(from var(--brand-500) l c h / .45); }
-      70%  { box-shadow: 0 0 0 8px oklch(from var(--brand-500) l c h / 0); }
-      100% { box-shadow: 0 0 0 0 oklch(from var(--brand-500) l c h / 0); }
-    }
+    .stage-banner .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: pulse-ring 1.6s infinite; }
 
-    /* Destination + fare card */
-    .dest-card {
-      display: flex; align-items: stretch; gap: 0;
-      padding: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
+    .dest-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .dest-row .addr { font-size: 15.5px; font-weight: 600; margin-top: 2px; }
+    .dest-row .fare { text-align: end; }
+    .dest-row .fare .amt { font-size: 22px; font-weight: 700; color: var(--brand-700); font-variant-numeric: tabular-nums; }
+    .dest-row .fare .amt .u { font-size: 12px; color: var(--text-muted); margin-inline-start: 3px; font-weight: 600; }
+    .rider-mini { display: flex; gap: 12px; align-items: center; padding-top: 10px; border-top: 1px solid var(--hairline); }
+    .rider-mini .av {
+      width: 36px; height: 36px; border-radius: 50%; flex: 0 0 auto;
+      background: var(--accent-500); color: var(--text-onbrand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; font-family: var(--font-display);
     }
-    .dest-card .dest {
-      flex: 1; min-width: 0;
-      padding: 14px;
-      display: flex; flex-direction: column; gap: 4px;
-    }
-    .dest-card .dest .label {
-      font-size: 11px; color: var(--text-muted);
-      font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    .dest-card .dest .addr {
-      font-size: 15px; font-weight: 700; line-height: 1.35;
-      display: flex; align-items: flex-start; gap: 6px;
-    }
-    .dest-card .dest .addr svg {
-      width: 14px; height: 14px; color: var(--danger);
-      margin-top: 3px; flex: 0 0 auto;
-    }
-    .dest-card .fare {
-      padding: 14px 16px;
-      background: var(--brand-50);
-      border-inline-start: 1px solid var(--border);
-      display: flex; flex-direction: column;
-      align-items: flex-end; justify-content: center;
-    }
-    [data-theme="dark"] .dest-card .fare {
-      background: oklch(from var(--brand-500) l c h / .12);
-    }
-    .dest-card .fare .label {
-      font-size: 11px; color: var(--brand-700);
-      font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    .dest-card .fare .v {
-      font-size: 20px; font-weight: 700; color: var(--brand-700);
-      font-variant-numeric: tabular-nums;
-      margin-top: 2px;
-    }
-    .dest-card .fare .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-
-    .trip-actions .btn { width: 100%; }
   </style>
 </head>
 <body>
@@ -154,51 +62,44 @@
   <div class="stage">
     <div class="phone">
       <div class="screen trip-screen">
-        <!-- Real map: Leaflet + OSM/CARTO. Driver pin (current) + destination
-             pin + animated route polyline added via the page script. -->
-        <div class="trip-map" aria-hidden="true">
-          <div id="trip-map-el"></div>
-        </div>
+        <div class="map-fill"><div id="trip-map-el" style="width:100%;height:100%;"></div></div>
 
-        <div class="metrics-strip">
-          <div class="m">
-            <span class="l" data-i18n="trip.remaining">Remaining</span>
-            <span class="v"><span id="dist-v">5.2</span><span class="unit" data-i18n="unit.km">km</span></span>
+        <div class="mstrip">
+          <div class="mcard">
+            <div class="eyebrow" data-i18n="trip.remaining">Remaining</div>
+            <div class="v"><span id="km-v">5.2</span><span class="u" data-i18n="unit.km">km</span></div>
           </div>
-          <div class="m">
-            <span class="l" data-i18n="trip.eta">ETA</span>
-            <span class="v"><span id="eta-v">12</span><span class="unit" data-i18n="unit.min">min</span></span>
+          <div class="mcard">
+            <div class="eyebrow">ETA</div>
+            <div class="v"><span id="eta-v">13</span><span class="u" data-i18n="unit.min">min</span></div>
           </div>
         </div>
 
-        <div class="trip-sheet">
-          <div class="sheet-handle" aria-hidden="true"></div>
-
+        <div class="sheet">
+          <div class="grabber"></div>
           <div class="stage-banner">
-            <span class="dot" aria-hidden="true"></span>
-            <span id="banner-text" data-i18n="trip.banner.inTrip">On the way to destination</span>
+            <span class="dot"></span>
+            <span data-i18n="trip.intrip.head">Trip in progress</span>
           </div>
 
-          <div class="dest-card">
-            <div class="dest">
-              <div class="label" data-i18n="trip.dest">Destination</div>
-              <div class="addr">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/>
-                  <circle cx="12" cy="9" r="2.5"/>
-                </svg>
-                <span data-i18n="trip.dest.addr">Gargaresh, Tripoli</span>
+          <div class="card">
+            <div class="dest-row">
+              <div>
+                <div class="eyebrow" data-i18n="req.dest">Destination</div>
+                <div class="addr" data-i18n="req.dest.addr">Gargaresh, Tripoli</div>
+              </div>
+              <div class="fare">
+                <div class="eyebrow" data-i18n="req.fare">Fare</div>
+                <div class="amt">25<span class="u" data-i18n="unit.currency">LYD</span></div>
               </div>
             </div>
-            <div class="fare">
-              <div class="label" data-i18n="trip.fare">Fare</div>
-              <div class="v">25<span class="unit" data-i18n="unit.currency">LYD</span></div>
+            <div class="rider-mini">
+              <span class="av">KA</span>
+              <span class="small" data-i18n="trip.pickup.rider">Khalid Al-Asmari</span>
             </div>
           </div>
 
-          <div class="trip-actions">
-            <button type="button" class="btn btn-primary" id="end-trip" data-i18n="trip.end">End trip</button>
-          </div>
+          <button class="btn btn-primary" style="margin-top:14px" onclick="location.href='complete.html'" data-i18n="trip.end">End trip</button>
         </div>
       </div>
     </div>
@@ -206,69 +107,41 @@
 
   <script>
     I18N.register({
-      "trip.remaining":     { en: "Remaining",                          ar: "المسافة المتبقية" },
-      "trip.eta":           { en: "ETA",                                ar: "الوقت المتوقع" },
-      "trip.dest":          { en: "Destination",                        ar: "الوجهة" },
-      "trip.dest.lbl":      { en: "Destination",                        ar: "الوجهة" },
-      "trip.dest.addr":     { en: "Gargaresh, Tripoli",                 ar: "قرقارش، طرابلس" },
-      "trip.fare":          { en: "Fare",                               ar: "الأجرة" },
-      "trip.banner.inTrip": { en: "On the way to destination",          ar: "في الطريق إلى الوجهة" },
-      "trip.banner.arrive": { en: "Almost there",                       ar: "اقتربت من الوجهة" },
-      "trip.end":           { en: "End trip",                           ar: "إنهاء الرحلة" },
-      "unit.km":            { en: "km",                                 ar: "كم" },
-      "unit.min":           { en: "min",                                ar: "د" },
-      "unit.currency":      { en: "LYD",                                ar: "د.ل" },
+      "trip.intrip.head":  { en: "Trip in progress",      ar: "الرحلة جارية" },
+      "trip.remaining":    { en: "Remaining",             ar: "المتبقّي" },
+      "req.dest":          { en: "Destination",           ar: "الوجهة" },
+      "req.dest.addr":     { en: "Gargaresh, Tripoli",    ar: "قرقارش، طرابلس" },
+      "req.fare":          { en: "Fare",                  ar: "الأجرة" },
+      "trip.pickup.rider": { en: "Khalid Al-Asmari",      ar: "خالد العسماري" },
+      "trip.end":          { en: "End trip",              ar: "إنهاء الرحلة" },
+      "unit.km":           { en: "km",                    ar: "كم" },
+      "unit.min":          { en: "min",                   ar: "دق" },
+      "unit.currency":     { en: "LYD",                   ar: "د.ل" },
     });
 
-    // Real Tripoli map: driver leaves pickup (Hai al-Andalus) and
-    // animates along the route to Gargaresh. Duration matches the in-trip
-    // distance countdown (5.2km → 0 at 0.4km/s = 13s).
-    const ROUTE_WP = [
-      DjeraMap.TRIPOLI.andalus,
-      [32.856, 13.140], [32.852, 13.130], [32.850, 13.122],
-      DjeraMap.TRIPOLI.gargaresh,
-    ];
-    const TRIP_DUR_MS = 13000;
-
-    DjeraMap.create('trip-map-el', {
-      center: [32.853, 13.135],
-      zoom: 14,
+    // Driver animates Hai al-Andalus → Gargaresh along the route.
+    const ROUTE_WP = [JeeraMap.TRIPOLI.andalus, [32.861, 13.158], [32.853, 13.155], [32.845, 13.150], JeeraMap.TRIPOLI.gargaresh];
+    JeeraMap.create('trip-map-el', {
+      center: [32.855, 13.155], zoom: 14,
       onReady(map, L) {
-        const driver = DjeraMap.pin(L, DjeraMap.TRIPOLI.andalus, 'driver',
-                                    { pulse: true }).addTo(map);
-        DjeraMap.pin(L, DjeraMap.TRIPOLI.gargaresh, 'dest',
-                     { label: 'Destination' }).addTo(map);
-        const route = DjeraMap.route(L, ROUTE_WP).addTo(map);
-        map.fitBounds(route.getBounds().pad(0.22));
-        setTimeout(() => {
-          DjeraMap.animateAlong(driver, ROUTE_WP, {
-            map,
-            durationMs: TRIP_DUR_MS,
-          });
-        }, 900);
+        const driver = JeeraMap.pin(L, JeeraMap.TRIPOLI.andalus, 'driver', { pulse: true }).addTo(map);
+        JeeraMap.pin(L, JeeraMap.TRIPOLI.gargaresh, 'dest', { label: I18N.t('req.dest') }).addTo(map);
+        const route = JeeraMap.route(L, ROUTE_WP).addTo(map);
+        map.fitBounds(route.getBounds().pad(0.25));
+        setTimeout(() => JeeraMap.animateAlong(driver, ROUTE_WP, { map, durationMs: 13000 }), 900);
       },
     });
 
-    // Distance ticks 5.2 km → 0 (faster than to-pickup since the trip is moving).
-    const distV = document.getElementById('dist-v');
-    const etaV  = document.getElementById('eta-v');
-    const banner = document.getElementById('banner-text');
-    let dist = 5.2;
-    function tick() {
-      dist = Math.max(0, +(dist - 0.4).toFixed(1));
-      distV.textContent = String(dist);
-      etaV.textContent = String(Math.max(1, Math.round(dist * 2.3)));
-      if (dist <= 0.8) {
-        banner.setAttribute('data-i18n', 'trip.banner.arrive');
-        I18N.apply();
-      }
-      if (dist > 0) setTimeout(tick, 1000);
-    }
-    setTimeout(tick, 700);
-
-    document.getElementById('end-trip').addEventListener('click', () => {
-      location.href = 'complete.html';
-    });
+    // Remaining 5.2 km → 0.
+    const kmV = document.getElementById('km-v');
+    const etaV = document.getElementById('eta-v');
+    let km = 5.2;
+    (function tick() {
+      km = Math.max(0, +(km - 0.4).toFixed(1));
+      kmV.textContent = km.toFixed(1);
+      etaV.textContent = String(Math.max(1, Math.ceil(km * 2.4)));
+      if (km > 0) setTimeout(tick, 800);
+    })();
   </script>
 </body>
 </html>

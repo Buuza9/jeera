@@ -8,179 +8,31 @@
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
   <style>
-    .done-screen {
-      padding: 88px 24px 28px;
-      align-items: center;
-      text-align: center;
-      background:
-        radial-gradient(420px 220px at 50% 0%, oklch(from var(--brand-500) l c h / .18), transparent 70%),
-        var(--bg);
-    }
+    .done-screen { padding-top: 80px; align-items: center; text-align: center; }
+    .done-title { font-family: var(--font-display); font-size: 32px; font-weight: 600; letter-spacing: -0.035em; margin: 22px 0 0; }
 
-    /* Animated check ring (matches auth/success.html) */
-    .ok-ring {
-      width: 96px; height: 96px;
-      border-radius: 50%;
-      background: var(--brand-50);
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-      margin: 4px 0 8px;
-      animation: ok-pop .45s cubic-bezier(.2,.7,.3,1.2) both;
-    }
-    [data-theme="dark"] .ok-ring { background: oklch(from var(--brand-500) l c h / .15); }
-    .ok-ring::before {
-      content: "";
-      position: absolute; inset: -6px;
-      border-radius: 50%;
-      border: 2px solid var(--brand-500);
-      opacity: 0;
-      animation: ok-pulse 1.4s ease-out .35s infinite;
-    }
-    .ok-ring .disc {
-      width: 66px; height: 66px; border-radius: 50%;
-      background: var(--brand-500);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 10px 24px oklch(from var(--brand-500) l c h / .45);
-    }
-    .ok-ring svg {
-      width: 36px; height: 36px;
-      stroke: white; stroke-width: 3.5;
-      fill: none; stroke-linecap: round; stroke-linejoin: round;
-      stroke-dasharray: 36; stroke-dashoffset: 36;
-      animation: ok-draw .45s ease-out .25s forwards;
-    }
-    @keyframes ok-pop {
-      0%   { transform: scale(.55); opacity: 0; }
-      60%  { transform: scale(1.06); opacity: 1; }
-      100% { transform: scale(1);    opacity: 1; }
-    }
-    @keyframes ok-draw { to { stroke-dashoffset: 0; } }
-    @keyframes ok-pulse {
-      0%   { transform: scale(1);    opacity: .55; }
-      100% { transform: scale(1.18); opacity: 0; }
-    }
-
-    .done-title {
-      font-size: 24px; font-weight: 700; letter-spacing: -0.02em;
-      margin: 14px 0 6px;
-      opacity: 0; animation: fade-up .4s ease-out .45s forwards;
-    }
-    .done-tag {
-      font-size: 14.5px; color: var(--text-muted);
-      margin: 0 0 18px;
-      opacity: 0; animation: fade-up .4s ease-out .55s forwards;
-    }
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Big fare-due card */
     .fare-card {
-      width: 100%;
-      background: var(--surface);
-      border: 1.5px solid var(--brand-500);
-      border-radius: 18px;
-      padding: 18px;
-      text-align: center;
-      box-shadow: 0 10px 28px oklch(from var(--brand-500) l c h / .18);
-      opacity: 0; animation: fade-up .4s ease-out .65s forwards;
-    }
-    .fare-card .label {
-      font-size: 11.5px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--brand-700);
-    }
-    .fare-card .amount {
-      margin: 6px 0 4px;
-      font-size: 44px; font-weight: 800;
-      letter-spacing: -0.03em; color: var(--text);
-      font-variant-numeric: tabular-nums;
-      line-height: 1.1;
-    }
-    .fare-card .amount .unit {
-      font-size: 18px; font-weight: 700;
-      color: var(--text-muted);
-      margin-inline-start: 6px;
-    }
-    .fare-card .cash-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 12px;
+      width: 100%; margin-top: 28px; padding: 22px; text-align: center;
       background: var(--brand-50);
-      color: var(--brand-700);
-      border-radius: 999px;
-      font-size: 12px; font-weight: 600;
-      margin-top: 4px;
+      border: 1px solid oklch(from var(--brand-500) l c h / .35);
+      border-radius: var(--r-md);
     }
-    [data-theme="dark"] .fare-card .cash-pill { background: oklch(from var(--brand-500) l c h / .15); }
-    .fare-card .cash-pill svg { width: 13px; height: 13px; }
-
-    /* Meta row (distance + duration) */
-    .meta-row {
-      width: 100%;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-      opacity: 0; animation: fade-up .4s ease-out .75s forwards;
-    }
-    .meta-row .m {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .meta-row .m .ic {
-      width: 32px; height: 32px; border-radius: 10px;
-      background: var(--surface-2);
-      color: var(--text-muted);
-      display: inline-flex; align-items: center; justify-content: center;
-      flex: 0 0 auto;
-    }
-    .meta-row .m .ic svg { width: 16px; height: 16px; }
-    .meta-row .m .body { flex: 1; text-align: start; }
-    .meta-row .m .l { font-size: 11px; color: var(--text-muted); }
-    .meta-row .m .v {
-      font-size: 15px; font-weight: 700;
+    [data-theme="dark"] .fare-card { background: oklch(from var(--brand-500) l c h / .12); }
+    .fare-card .eyebrow { margin-bottom: 6px; color: var(--brand-700); }
+    .fare-card .amt {
+      font-family: var(--font-display);
+      font-size: 48px; font-weight: 600; letter-spacing: -0.04em; color: var(--brand-700);
       font-variant-numeric: tabular-nums;
     }
-    .meta-row .m .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+    .fare-card .amt .u { font-size: 18px; margin-inline-start: 6px; color: var(--text-muted); }
 
-    /* Commission notice (§2.10 accrual on completion) */
-    .commission-note {
-      width: 100%;
-      display: flex; align-items: center; gap: 10px;
-      margin-top: 12px;
-      padding: 10px 14px;
-      background: oklch(from var(--accent-600) l c h / .10);
-      border: 1px solid oklch(from var(--accent-600) l c h / .25);
-      border-radius: var(--radius);
-      color: var(--accent-600);
-      font-size: 12.5px; text-align: start;
-      opacity: 0; animation: fade-up .4s ease-out .85s forwards;
-    }
-    .commission-note svg { width: 18px; height: 18px; flex: 0 0 auto; }
-    .commission-note b { font-weight: 700; }
+    .meta2 { width: 100%; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mcard { padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: var(--shadow-sm); text-align: start; }
+    .mcard .v { font-size: 18px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .mcard .v .u { font-size: 11px; color: var(--text-muted); margin-inline-start: 3px; font-weight: 600; }
 
-    .done-actions {
-      width: 100%;
-      opacity: 0; animation: fade-up .4s ease-out .95s forwards;
-    }
-    .done-actions .btn + .btn { margin-top: 10px; }
-
-    .todo-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin: 14px auto 0;
-      padding: 5px 11px;
-      background: oklch(from var(--accent-600) l c h / .12);
-      color: var(--accent-600);
-      border-radius: 999px;
-      font-size: 11px; font-weight: 600;
-    }
-    .todo-chip::before {
-      content: ""; width: 5px; height: 5px; border-radius: 50%;
-      background: var(--accent-600);
-    }
+    .comm-row { width: 100%; margin-top: 12px; background: var(--surface-2); border: 1px dashed var(--border); }
+    .comm-row .row-ic { background: oklch(from var(--accent-600) l c h / .15); color: var(--accent-700); }
   </style>
 </head>
 <body>
@@ -195,75 +47,51 @@
   <div class="stage">
     <div class="phone">
       <div class="screen done-screen">
-        <div class="ok-ring">
-          <div class="disc">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12.5l4.5 4.5L19 7.5"/>
-            </svg>
-          </div>
-        </div>
+        <!-- Animated check ring -->
+        <svg width="104" height="104" viewBox="0 0 104 104" style="display:block">
+          <circle cx="52" cy="52" r="43.7" fill="none" stroke="var(--brand-100)" stroke-width="6.2"/>
+          <circle cx="52" cy="52" r="43.7" fill="none" stroke="var(--brand-600)" stroke-width="6.2"
+                  stroke-linecap="round" transform="rotate(-90 52 52)"
+                  stroke-dasharray="274.6" style="--len:274.6; animation: draw-stroke .9s var(--ease-out) both"/>
+          <path d="M 33.3 54.1 L 46.8 67.6 L 72.8 39.5" fill="none" stroke="var(--brand-600)" stroke-width="7.3"
+                stroke-linecap="round" stroke-linejoin="round"
+                stroke-dasharray="80" style="--len:80; animation: draw-stroke .35s .7s var(--ease-out) both"/>
+        </svg>
 
-        <h1 class="done-title" data-i18n="done.title">Trip completed</h1>
-        <p class="done-tag"    data-i18n="done.tag">Safe trip!</p>
+        <h1 class="done-title" data-i18n="trip.done.title">Trip complete</h1>
+        <p class="body" style="margin-top:6px" data-i18n="trip.done.sub">Safe trip, Ahmad.</p>
 
+        <!-- Fare due -->
         <div class="fare-card">
-          <div class="label" data-i18n="done.fare.label">Fare due</div>
-          <div class="amount">25<span class="unit" data-i18n="unit.currency">LYD</span></div>
-          <div class="cash-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2.5" y="6" width="19" height="12" rx="2"/>
-              <circle cx="12" cy="12" r="2.5"/>
-              <path d="M6 9.5v.01M18 14.5v.01"/>
-            </svg>
-            <span data-i18n="done.cash">Cash</span>
-          </div>
-        </div>
-
-        <div class="meta-row">
-          <div class="m">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 12h3l3-9 6 18 3-9h3"/>
-              </svg>
-            </span>
-            <div class="body">
-              <div class="l" data-i18n="done.distance">Distance</div>
-              <div class="v">8.5<span class="unit" data-i18n="unit.km">km</span></div>
-            </div>
-          </div>
-          <div class="m">
-            <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
-              </svg>
-            </span>
-            <div class="body">
-              <div class="l" data-i18n="done.duration">Duration</div>
-              <div class="v">14<span class="unit" data-i18n="unit.min">min</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="commission-note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>
-          </svg>
-          <span>
-            <span data-i18n="done.commission.prefix">Confirming cash adds</span>
-            <b><span id="c-amount">3.75</span> <span data-i18n="unit.currency">LYD</span></b>
-            <span data-i18n="done.commission.suffix">to your commission balance.</span>
+          <div class="eyebrow" data-i18n="trip.due">Collect from rider</div>
+          <div class="amt">25<span class="u" data-i18n="unit.currency">LYD</span></div>
+          <span class="badge badge-brand" style="margin-top:8px">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9.5h.01M18 14.5h.01"/></svg>
+            <span data-i18n="trip.cash">Cash</span>
           </span>
         </div>
 
-        <div class="spacer"></div>
-
-        <div class="done-actions">
-          <button type="button" class="btn btn-primary" id="confirm" data-i18n="done.confirm">Confirm cash received</button>
-          <a class="btn btn-secondary" href="../dashboard/index.html" data-i18n="done.back">Back to home</a>
+        <!-- Distance + duration -->
+        <div class="meta2">
+          <div class="mcard"><div class="eyebrow" data-i18n="trip.distance">Distance</div><div class="v">8.5<span class="u" data-i18n="unit.km">km</span></div></div>
+          <div class="mcard"><div class="eyebrow" data-i18n="trip.duration">Duration</div><div class="v">18<span class="u" data-i18n="unit.min">min</span></div></div>
         </div>
 
-        <div style="text-align:center;">
-          <span class="todo-chip" data-i18n="done.todo">TODO §5 — commission rate default (15% placeholder)</span>
+        <!-- Commission accrual -->
+        <div class="row comm-row">
+          <div class="row-ic">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18h.01"/></svg>
+          </div>
+          <div class="row-text">
+            <h4 data-i18n="trip.commission">Djera commission (−15%)</h4>
+            <p><span data-i18n="trip.commission.amt">3.75 LYD added to outstanding</span></p>
+          </div>
+        </div>
+
+        <div class="spacer"></div>
+        <div class="stack stack-3" style="width:100%;margin-top:20px">
+          <a class="btn btn-primary" href="../dashboard/index.html" data-i18n="trip.cash.received">Confirm cash received</a>
+          <a class="btn btn-ghost" href="../trip-history/detail.html?id=1" data-i18n="trip.receipt">View trip receipt</a>
         </div>
       </div>
     </div>
@@ -271,28 +99,19 @@
 
   <script>
     I18N.register({
-      "done.title":             { en: "Trip completed",                 ar: "تم إنهاء الرحلة" },
-      "done.tag":               { en: "Safe trip!",                     ar: "رحلة موفقة!" },
-      "done.fare.label":        { en: "Fare due",                       ar: "الأجرة المستحقّة" },
-      "done.cash":              { en: "Cash",                           ar: "نقدًا" },
-      "done.distance":          { en: "Distance",                       ar: "المسافة" },
-      "done.duration":          { en: "Duration",                       ar: "المدة" },
-      "done.commission.prefix": { en: "Confirming cash adds",           ar: "بتأكيد الاستلام تضاف" },
-      "done.commission.suffix": { en: "to your commission balance.",    ar: "إلى رصيد العمولة الخاص بك." },
-      "done.confirm":           { en: "Confirm cash received",          ar: "تأكيد استلام النقود" },
-      "done.back":              { en: "Back to home",                   ar: "العودة للرئيسية" },
-      "done.todo":              { en: "TODO §5 — commission rate default (15% placeholder)",
-                                  ar: "TODO §5 — نسبة العمولة الافتراضية (15% مبدئيًا)" },
-      "unit.currency":          { en: "LYD",                            ar: "د.ل" },
-      "unit.km":                { en: "km",                             ar: "كم" },
-      "unit.min":               { en: "min",                            ar: "د" },
-    });
-
-    // Confirm cash → settle trip + accrue commission, then back to dashboard.
-    document.getElementById('confirm').addEventListener('click', () => {
-      // Real impl: POST /trips/:id/confirm-cash → server records the cash
-      // collection and accrues fare × commission_rate to the driver's balance.
-      location.href = '../dashboard/index.html';
+      "trip.done.title":    { en: "Trip complete",          ar: "اكتملت الرحلة" },
+      "trip.done.sub":      { en: "Safe trip, Ahmad.",       ar: "رحلة موفّقة، أحمد." },
+      "trip.due":           { en: "Collect from rider",      ar: "استلام من الراكب" },
+      "trip.cash":          { en: "Cash",                    ar: "نقدًا" },
+      "trip.distance":      { en: "Distance",                ar: "المسافة" },
+      "trip.duration":      { en: "Duration",                ar: "المدة" },
+      "trip.commission":    { en: "Djera commission (−15%)", ar: "عمولة دجيرا (−15%)" },
+      "trip.commission.amt":{ en: "3.75 LYD added to outstanding", ar: "أُضيفت 3.75 د.ل إلى المستحقّ" },
+      "trip.cash.received": { en: "Confirm cash received",   ar: "تأكيد استلام النقود" },
+      "trip.receipt":       { en: "View trip receipt",       ar: "عرض إيصال الرحلة" },
+      "unit.currency":      { en: "LYD",                     ar: "د.ل" },
+      "unit.km":            { en: "km",                      ar: "كم" },
+      "unit.min":           { en: "min",                     ar: "دق" },
     });
   </script>
 </body>
