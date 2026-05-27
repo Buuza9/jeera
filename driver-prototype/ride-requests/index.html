@@ -3,221 +3,83 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Djera Driver — New trip request</title>
+  <title>Djera Driver — Incoming request</title>
   <link rel="stylesheet" href="../_shared/app.css" />
   <script src="../_shared/i18n.js"></script>
   <script src="../_shared/frame.js"></script>
   <script src="../_shared/map.js"></script>
   <style>
-    .req-screen {
-      padding: 58px 0 0;        /* sheet sits flush with the bottom */
-      position: relative;
-      overflow: hidden;
-    }
+    .req-screen { padding: 0; position: relative; overflow: hidden; }
+    .map-fill { position: absolute; inset: 0; z-index: 0; isolation: isolate; }
+    .map-fill .leaflet-container { width: 100%; height: 100%; }
 
-    /* ── Map backdrop — real Leaflet + OSM/CARTO tiles ──────── */
-    .req-map {
-      position: absolute; inset: 0;
-      z-index: 0;
-    }
-    .req-map #req-map-el { width: 100%; height: 100%; }
-    /* Dim the live map so the bottom sheet pops. */
-    .req-map::after {
-      content: "";
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,.35) 65%, rgba(15,23,42,.55) 100%);
-      pointer-events: none;
-      z-index: 1050;
-    }
-
-    /* Top-bar incoming notice */
-    .req-notice {
-      position: absolute;
-      top: 70px; inset-inline: 16px;
-      z-index: 1100;
+    /* Notice pill */
+    .notice {
+      position: absolute; top: 70px; inset-inline: 18px; z-index: 30;
       display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px;
-      background: rgba(255,255,255,.92);
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(15,23,42,.18);
-      backdrop-filter: blur(6px);
-      animation: notice-in .35s cubic-bezier(.2,.7,.3,1.2) both;
+      padding: 11px 14px;
+      background: var(--surface); border-radius: var(--r-md);
+      box-shadow: var(--shadow-md); backdrop-filter: blur(8px);
+      animation: notice-in .35s var(--ease-spring) both;
     }
-    [data-theme="dark"] .req-notice { background: rgba(17,24,39,.92); color: #f8fafc; }
-    .req-notice .dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--brand-500);
-      box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .25);
-      animation: dot-pulse 1.4s ease-out infinite;
-      flex: 0 0 auto;
+    .notice .dot {
+      width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto;
+      background: var(--brand-500); animation: pulse-ring 1.6s var(--ease-out) infinite;
     }
-    @keyframes dot-pulse {
-      0%   { box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .25); }
-      70%  { box-shadow: 0 0 0 10px oklch(from var(--brand-500) l c h / 0); }
-      100% { box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / 0); }
-    }
-    .req-notice .text { font-size: 13px; font-weight: 600; flex: 1; }
-    .req-notice .text .sub { display: block; font-size: 11.5px; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
-    @keyframes notice-in {
-      from { transform: translateY(-12px); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
+    .notice .nt { flex: 1; min-width: 0; }
+    .notice .nt .t { font-size: 13.5px; font-weight: 700; }
+    .notice .nt .s { font-size: 11.5px; color: var(--text-faint); margin-top: 1px; }
+    @keyframes notice-in { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    /* ── Bottom sheet ────────────────────────────────────────── */
-    .req-sheet {
-      position: absolute; bottom: 0; inset-inline: 0;
-      z-index: 1100;
+    /* Bottom sheet */
+    .sheet {
+      position: absolute; inset-inline: 0; bottom: 0; z-index: 20;
       background: var(--bg);
       border-radius: 28px 28px 0 0;
-      padding: 8px 22px 22px;
-      box-shadow: 0 -16px 40px rgba(15,23,42,.25);
-      animation: sheet-up .4s cubic-bezier(.2,.7,.3,1.05) both;
-      display: flex; flex-direction: column; gap: 14px;
-      max-height: 78%;
+      padding: 8px 22px 30px;
+      box-shadow: 0 -16px 40px rgba(20,18,12,.18);
+      animation: sheet-up .42s var(--ease-spring) both;
     }
-    @keyframes sheet-up {
-      from { transform: translateY(40%); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
-    .sheet-handle {
-      width: 44px; height: 5px; border-radius: 999px;
-      background: var(--surface-2);
-      margin: 4px auto 6px;
+    .grabber { width: 44px; height: 5px; border-radius: 999px; background: var(--surface-3); margin: 4px auto 12px; }
+
+    .sheet-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .sheet-head .h2 { font-size: 22px; }
+    .sheet-head .small { margin-top: 4px; }
+
+    /* Countdown ring */
+    .cdr { position: relative; width: 56px; height: 56px; flex: 0 0 auto; }
+    .cdr svg { width: 56px; height: 56px; transform: rotate(-90deg); }
+    .cdr .track { fill: none; stroke: var(--surface-2); stroke-width: 4.2; }
+    .cdr .prog { fill: none; stroke: var(--brand-600); stroke-width: 4.2; stroke-linecap: round; transition: stroke-dashoffset .9s linear, stroke .25s; }
+    .cdr.low  .prog { stroke: var(--accent-600); }
+    .cdr.crit .prog { stroke: var(--danger); }
+    .cdr .n {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums;
     }
 
-    .req-header {
-      display: flex; align-items: flex-start; gap: 12px;
-    }
-    .req-header h2 {
-      margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.02em;
-      flex: 1; min-width: 0;
-    }
-    .req-header h2 .sub { display: block; font-size: 12.5px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+    /* Route card */
+    .route { position: relative; padding: 18px; margin-bottom: 14px; }
+    .route .track-line { position: absolute; inset-inline-start: 27px; top: 30px; bottom: 30px; width: 2px; background: var(--border); }
+    .route .stop { display: flex; gap: 14px; align-items: flex-start; padding-block: 4px; }
+    .route .stop .pin { width: 14px; height: 14px; margin-top: 4px; flex: 0 0 auto; }
+    .route .stop .pin.from { border-radius: 50%; background: var(--brand-600); box-shadow: 0 0 0 4px var(--brand-50); }
+    .route .stop .pin.to { border-radius: 3px; background: var(--terra-500); box-shadow: 0 0 0 4px oklch(from var(--terra-500) l c h / .15); }
+    [data-theme="dark"] .route .stop .pin.from { box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .18); }
+    .route .stop .info { flex: 1; min-width: 0; }
+    .route .stop .info .addr { font-size: 14.5px; font-weight: 600; margin-top: 2px; }
+    .route .stop .dist { font-size: 11.5px; font-weight: 600; color: var(--text-faint); }
+    .route .gap { height: 16px; }
 
-    /* Countdown ring — auto-decline timer (§5 TBD) */
-    .cd-ring {
-      position: relative;
-      width: 52px; height: 52px;
-      flex: 0 0 auto;
-    }
-    .cd-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-    .cd-ring .bg { stroke: var(--surface-2); }
-    .cd-ring .fg {
-      stroke: var(--brand-500);
-      stroke-dasharray: 138;             /* 2 * π * 22 ≈ 138 */
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 1s linear, stroke .25s;
-    }
-    .cd-ring.low .fg { stroke: var(--accent-600); }
-    .cd-ring.crit .fg { stroke: var(--danger); animation: cd-blink 1s steps(2) infinite; }
-    @keyframes cd-blink { 50% { opacity: .55; } }
-    .cd-ring .n {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      color: var(--text);
-    }
-
-    /* Pickup / destination route */
-    .route {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 14px 14px 50px;
-      position: relative;
-    }
-    [dir="rtl"] .route { padding: 14px 50px 14px 14px; }
-    .route .stop {
-      display: flex; flex-direction: column;
-      padding-block: 4px;
-    }
-    .route .stop + .stop { margin-top: 14px; }
-    .route .stop .label { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
-    .route .stop .addr { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 2px; line-height: 1.35; }
-    /* Vertical track between the two stops */
-    .route::before {
-      content: "";
-      position: absolute;
-      top: 26px; bottom: 26px;
-      inset-inline-start: 26px;
-      width: 2px;
-      background: var(--border);
-      border-radius: 2px;
-    }
-    .route .stop::before {
-      content: "";
-      position: absolute;
-      inset-inline-start: 18px;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      border: 2px solid white;
-      box-shadow: 0 0 0 1px var(--border);
-    }
-    .route .stop.pickup::before {
-      background: var(--brand-500); top: 14px;
-      box-shadow: 0 0 0 1px var(--brand-500);
-    }
-    .route .stop.dest::before {
-      background: var(--danger); bottom: 14px;
-      box-shadow: 0 0 0 1px var(--danger);
-    }
-
-    /* Metrics row */
-    .metrics {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-    }
-    .metric {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 10px 12px;
-      text-align: center;
-    }
-    .metric .v {
-      font-size: 17px; font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.01em;
-    }
-    .metric .v .unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
-    .metric .l { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-    .metric.fare {
-      background: var(--brand-50);
-      border-color: oklch(from var(--brand-500) l c h / .3);
-    }
-    [data-theme="dark"] .metric.fare {
-      background: oklch(from var(--brand-500) l c h / .12);
-      border-color: oklch(from var(--brand-500) l c h / .3);
-    }
-    .metric.fare .v { color: var(--brand-700); }
-
-    /* Actions */
-    .req-actions {
-      display: grid; grid-template-columns: 1fr 1.5fr;
-      gap: 10px;
-    }
-    .btn-danger {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-danger:hover { background: var(--surface-2); }
-
-    .todo-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin: 6px auto 0;
-      padding: 5px 11px;
-      background: oklch(from var(--accent-600) l c h / .12);
-      color: var(--accent-600);
-      border-radius: 999px;
-      font-size: 11px; font-weight: 600;
-    }
-    .todo-chip::before {
-      content: ""; width: 5px; height: 5px; border-radius: 50%;
-      background: var(--accent-600);
-    }
+    /* Metrics */
+    .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .metric { padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--r-md); text-align: center; background: var(--surface); }
+    .metric.hi { background: var(--brand-50); border-color: oklch(from var(--brand-500) l c h / .35); }
+    [data-theme="dark"] .metric.hi { background: oklch(from var(--brand-500) l c h / .12); }
+    .metric .v { font-size: 18px; font-weight: 700; letter-spacing: -0.018em; font-variant-numeric: tabular-nums; }
+    .metric.hi .v { color: var(--brand-700); }
+    .metric .v .u { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-inline-start: 3px; }
+    .metric .l { font-size: 11.5px; color: var(--text-faint); margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -232,68 +94,71 @@
   <div class="stage">
     <div class="phone">
       <div class="screen req-screen">
-        <div class="req-map" aria-hidden="true">
-          <div id="req-map-el"></div>
-        </div>
+        <div class="map-fill"><div id="map" style="width:100%;height:100%;"></div></div>
 
-        <div class="req-notice" role="status">
-          <span class="dot" aria-hidden="true"></span>
-          <div class="text">
-            <span data-i18n="req.incoming">Incoming request</span>
-            <span class="sub" data-i18n="req.incoming.sub">A rider needs you nearby</span>
+        <!-- Notice pill -->
+        <div class="notice">
+          <span class="dot"></span>
+          <div class="nt">
+            <div class="t" data-i18n="req.incoming">Incoming request</div>
+            <div class="s" data-i18n="req.sub">Confirm within the timer</div>
           </div>
+          <span class="badge badge-brand">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M12 3l2.7 5.7 6.3.6-4.8 4.3 1.5 6.2L12 16.9l-5.7 2.9 1.5-6.2L3 9.3l6.3-.6L12 3z"/></svg>
+            4.8
+          </span>
         </div>
 
-        <div class="req-sheet">
-          <div class="sheet-handle" aria-hidden="true"></div>
-
-          <div class="req-header">
-            <h2>
-              <span data-i18n="req.title">New trip request</span>
-              <span class="sub" data-i18n="req.title.sub">Confirm within the timer</span>
-            </h2>
-            <div class="cd-ring" id="cd-ring">
-              <svg viewBox="0 0 50 50" aria-hidden="true">
-                <circle class="bg" cx="25" cy="25" r="22" fill="none" stroke-width="4"/>
-                <circle class="fg" cx="25" cy="25" r="22" fill="none" stroke-width="4" stroke-linecap="round"/>
+        <!-- Bottom sheet -->
+        <div class="sheet">
+          <div class="grabber"></div>
+          <div class="sheet-head">
+            <div style="flex:1">
+              <h2 class="h2" data-i18n="req.incoming">Incoming request</h2>
+              <p class="small" data-i18n="req.sub">Confirm within the timer</p>
+            </div>
+            <div class="cdr" id="cdr">
+              <svg viewBox="0 0 56 56">
+                <circle class="track" cx="28" cy="28" r="23.5"/>
+                <circle class="prog" id="cdr-prog" cx="28" cy="28" r="23.5"/>
               </svg>
-              <div class="n" id="cd-n">15</div>
+              <span class="n" id="cdr-n">15</span>
             </div>
           </div>
 
-          <div class="route">
-            <div class="stop pickup">
-              <span class="label" data-i18n="req.pickup">Pickup</span>
-              <span class="addr" data-i18n="req.pickup.addr">Hai al-Andalus, Tripoli</span>
+          <!-- Route card -->
+          <div class="card route">
+            <div class="track-line"></div>
+            <div class="stop">
+              <span class="pin from"></span>
+              <div class="info">
+                <div class="eyebrow" data-i18n="req.pickup">Pickup</div>
+                <div class="addr" data-i18n="req.pickup.addr">Hai al-Andalus, Tripoli</div>
+              </div>
+              <span class="dist">1.5 <span data-i18n="unit.km">km</span></span>
             </div>
-            <div class="stop dest">
-              <span class="label" data-i18n="req.dest">Destination</span>
-              <span class="addr" data-i18n="req.dest.addr">Gargaresh, Tripoli</span>
+            <div class="gap"></div>
+            <div class="stop">
+              <span class="pin to"></span>
+              <div class="info">
+                <div class="eyebrow" data-i18n="req.dest">Destination</div>
+                <div class="addr" data-i18n="req.dest.addr">Gargaresh, Tripoli</div>
+              </div>
+              <span class="dist">8.5 <span data-i18n="unit.km">km</span></span>
             </div>
           </div>
 
+          <!-- Metrics -->
           <div class="metrics">
-            <div class="metric">
-              <div class="v">1.5<span class="unit" data-i18n="unit.km">km</span></div>
-              <div class="l" data-i18n="req.metric.toRider">To rider</div>
-            </div>
-            <div class="metric">
-              <div class="v">8.5<span class="unit" data-i18n="unit.km">km</span></div>
-              <div class="l" data-i18n="req.metric.trip">Trip distance</div>
-            </div>
-            <div class="metric fare">
-              <div class="v">25<span class="unit" data-i18n="unit.currency">LYD</span></div>
-              <div class="l" data-i18n="req.metric.fare">Fare</div>
-            </div>
+            <div class="metric"><div class="v">1.5<span class="u" data-i18n="unit.km">km</span></div><div class="l" data-i18n="req.toRider">To rider</div></div>
+            <div class="metric"><div class="v">8.5<span class="u" data-i18n="unit.km">km</span></div><div class="l" data-i18n="req.trip">Trip</div></div>
+            <div class="metric hi"><div class="v">25<span class="u" data-i18n="unit.currency">LYD</span></div><div class="l" data-i18n="req.fare">Fare</div></div>
           </div>
 
-          <div class="req-actions">
-            <button type="button" class="btn btn-danger" id="reject" data-i18n="req.reject">Reject</button>
-            <button type="button" class="btn btn-primary" id="accept" data-i18n="req.accept">Accept</button>
-          </div>
-
-          <div style="text-align:center;">
-            <span class="todo-chip" data-i18n="req.todo">TODO §5 — auto-decline timer value (10s? 15s?)</span>
+          <!-- Actions -->
+          <div class="btn-row">
+            <a class="btn btn-danger" href="../dashboard/index.html" data-i18n="req.reject">Reject</a>
+            <a class="btn btn-primary" style="flex:1.4" href="../active-trip/to-pickup.html" data-i18n="req.accept">Accept</a>
           </div>
         </div>
       </div>
@@ -302,84 +167,51 @@
 
   <script>
     I18N.register({
-      "req.incoming":      { en: "Incoming request",                    ar: "طلب وارد" },
-      "req.incoming.sub":  { en: "A rider needs you nearby",            ar: "هناك راكب قريب يحتاج إلى رحلة" },
-      "req.title":         { en: "New trip request",                    ar: "طلب رحلة جديد" },
-      "req.title.sub":     { en: "Confirm within the timer",            ar: "أكّد قبل انتهاء المؤقّت" },
-      "req.pickup":        { en: "Pickup",                              ar: "نقطة الانطلاق" },
-      "req.pickup.addr":   { en: "Hai al-Andalus, Tripoli",             ar: "حي الأندلس، طرابلس" },
-      "req.dest":          { en: "Destination",                         ar: "الوجهة" },
-      "req.dest.addr":     { en: "Gargaresh, Tripoli",                  ar: "قرقارش، طرابلس" },
-      "req.metric.toRider":{ en: "To rider",                            ar: "إلى الراكب" },
-      "req.metric.trip":   { en: "Trip distance",                       ar: "مسافة الرحلة" },
-      "req.metric.fare":   { en: "Fare",                                ar: "الأجرة" },
-      "unit.km":           { en: "km",                                  ar: "كم" },
-      "unit.currency":     { en: "LYD",                                 ar: "د.ل" },
-      "req.reject":        { en: "Reject",                              ar: "رفض" },
-      "req.accept":        { en: "Accept",                              ar: "قبول" },
-      "req.todo":          { en: "TODO §5 — auto-decline timer value (10s? 15s?)",
-                             ar: "TODO §5 — قيمة مؤقّت الرفض التلقائي (10ث؟ 15ث؟)" },
+      "req.incoming":   { en: "Incoming request",        ar: "طلب وارد" },
+      "req.sub":        { en: "Confirm within the timer", ar: "أكّد قبل انتهاء المؤقّت" },
+      "req.pickup":     { en: "Pickup",                   ar: "نقطة الانطلاق" },
+      "req.dest":       { en: "Destination",              ar: "الوجهة" },
+      "req.pickup.addr":{ en: "Hai al-Andalus, Tripoli",  ar: "حي الأندلس، طرابلس" },
+      "req.dest.addr":  { en: "Gargaresh, Tripoli",       ar: "قرقارش، طرابلس" },
+      "req.toRider":    { en: "To rider",                 ar: "إلى الراكب" },
+      "req.trip":       { en: "Trip",                     ar: "الرحلة" },
+      "req.fare":       { en: "Fare",                     ar: "الأجرة" },
+      "req.reject":     { en: "Reject",                   ar: "رفض" },
+      "req.accept":     { en: "Accept",                   ar: "قبول الرحلة" },
+      "unit.km":        { en: "km",                       ar: "كم" },
+      "unit.currency":  { en: "LYD",                      ar: "د.ل" },
     });
 
-    // Real Tripoli map showing the pickup → destination route the driver
-    // would take if they accept. Driver pin near Andalus (pickup point),
-    // rider pin at the pickup, dest flag at Gargaresh.
-    DjeraMap.create('req-map-el', {
-      center: [32.853, 13.135],   // mid-route, between Andalus and Gargaresh
-      zoom: 13,
+    // Real Tripoli map: driver near pickup, pickup + drop-off pins, route.
+    const T = JeeraMap.TRIPOLI;
+    JeeraMap.create('map', {
+      center: T.center, zoom: 13,
       onReady(map, L) {
-        const driver  = DjeraMap.pin(L, [32.866, 13.158], 'driver').addTo(map);
-        const rider   = DjeraMap.pin(L, DjeraMap.TRIPOLI.andalus, 'rider',
-                                     { label: 'Pickup' }).addTo(map);
-        const dest    = DjeraMap.pin(L, DjeraMap.TRIPOLI.gargaresh, 'dest',
-                                     { label: 'Drop-off' }).addTo(map);
-        const route = DjeraMap.route(L, [
-          [32.866, 13.158], DjeraMap.TRIPOLI.andalus,
-          [32.855, 13.140], [32.850, 13.128],
-          DjeraMap.TRIPOLI.gargaresh,
-        ]).addTo(map);
-        map.fitBounds(route.getBounds().pad(0.18));
+        JeeraMap.route(L, [T.andalus, T.center, T.gargaresh]).addTo(map);
+        JeeraMap.pin(L, T.center, 'driver', { pulse: true }).addTo(map);
+        JeeraMap.pin(L, T.andalus, 'rider', { label: I18N.t('req.pickup') }).addTo(map);
+        JeeraMap.pin(L, T.gargaresh, 'dest', { label: I18N.t('req.dest') }).addTo(map);
       },
     });
 
-    // Auto-decline countdown. Placeholder value 15s — confirm with client per §5.
-    const TIMER = 15;
-    const C = 138; // circumference of r=22
-    const ring = document.getElementById('cd-ring');
-    const ringFg = ring.querySelector('.fg');
-    const nEl = document.getElementById('cd-n');
-    const rejectBtn = document.getElementById('reject');
-    const acceptBtn = document.getElementById('accept');
-
-    let remaining = TIMER;
-    let done = false;
-
+    // Countdown ring (15s) — brand → amber (≤7) → red (≤3); 0 returns to dashboard.
+    const R = 23.5, C = 2 * Math.PI * R;
+    const prog = document.getElementById('cdr-prog');
+    const numEl = document.getElementById('cdr-n');
+    const cdr = document.getElementById('cdr');
+    prog.style.strokeDasharray = C;
+    let n = 15;
     function tick() {
-      if (done) return;
-      const pct = remaining / TIMER;
-      ringFg.style.strokeDashoffset = String(C * (1 - pct));
-      nEl.textContent = String(remaining);
-      ring.classList.toggle('low',  remaining <= 7 && remaining > 3);
-      ring.classList.toggle('crit', remaining <= 3);
-      if (remaining <= 0) {
-        // Auto-decline → back to dashboard
-        done = true;
-        location.href = '../dashboard/index.html';
-        return;
-      }
-      remaining -= 1;
-      setTimeout(tick, 1000);
+      const pct = n / 15;
+      prog.style.strokeDashoffset = C * (1 - pct);
+      numEl.textContent = n;
+      cdr.classList.toggle('low', n <= 7 && n > 3);
+      cdr.classList.toggle('crit', n <= 3);
+      if (n <= 0) { location.href = '../dashboard/index.html'; return; }
+      n -= 1;
+      window._cd = setTimeout(tick, 1000);
     }
     tick();
-
-    acceptBtn.addEventListener('click', () => {
-      done = true;
-      location.href = '../active-trip/to-pickup.html';
-    });
-    rejectBtn.addEventListener('click', () => {
-      done = true;
-      location.href = '../dashboard/index.html';
-    });
   </script>
 </body>
 </html>
