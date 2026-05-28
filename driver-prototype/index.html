@@ -1,11 +1,338 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
-  <title>Djera Driver — Prototype</title>
-  <meta http-equiv="refresh" content="0; url=./welcome/index.html" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Djera Driver — Prototype Index</title>
+  <link rel="stylesheet" href="./_shared/tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      padding: 56px 32px 96px;
+    }
+
+    .wrap { max-width: 1180px; margin: 0 auto; }
+
+    /* Header */
+    .hdr { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+    .hdr-lead { display: flex; flex-direction: column; gap: 14px; }
+    .hdr-mark { display: flex; align-items: center; gap: 14px; }
+    .hdr-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .hdr-title {
+      font-family: var(--font-display);
+      font-size: 44px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05;
+      margin: 4px 0 0;
+    }
+    .hdr-sub { font-size: 15px; color: var(--text-muted); margin: 0; max-width: 560px; line-height: 1.5; }
+
+    .hdr-tools { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+    .tool-row { display: flex; gap: 6px; align-items: center; }
+    .tool-row button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .tool-row button:hover { border-color: var(--brand-600); }
+    .tool-row button.on { background: var(--brand-600); border-color: var(--brand-600); color: var(--text-onbrand); }
+    .tool-row .lbl {
+      font-family: var(--font-mono);
+      font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-faint);
+      margin-inline-end: 4px;
+    }
+
+    /* Search */
+    .search-wrap { position: relative; margin-bottom: 36px; }
+    .search {
+      width: 100%;
+      font: inherit;
+      font-size: 15px;
+      padding: 14px 18px;
+      padding-inline-start: 46px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: var(--r-lg);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .search:focus { border-color: var(--brand-600); box-shadow: 0 0 0 4px oklch(from var(--brand-600) l c h / .12); }
+    .search-ic {
+      position: absolute; inset-inline-start: 16px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); pointer-events: none;
+    }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 44px; }
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 18px;
+    }
+    .stat-k { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+    .stat-v { font-family: var(--font-display); font-size: 30px; font-weight: 600; letter-spacing: -0.025em; margin-top: 6px; }
+    .stat-v.brand { color: var(--brand-600); }
+    .stat-v.accent { color: var(--accent-500); }
+
+    /* Sections */
+    .phase { margin-bottom: 44px; }
+    .phase-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+    .phase-tag {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--brand-600);
+      padding: 4px 10px;
+      border: 1px solid oklch(from var(--brand-600) l c h / .35);
+      border-radius: var(--r-sm);
+      background: oklch(from var(--brand-600) l c h / .08);
+    }
+    .phase-name {
+      font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .phase-note { font-size: 13.5px; color: var(--text-muted); margin-inline-start: auto; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    .feat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 18px;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: border-color .15s;
+    }
+    .feat:hover { border-color: var(--brand-600); }
+    .feat-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .feat-name { font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: -0.015em; margin: 0; }
+    .feat-folder { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); }
+    .feat-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+
+    .screens { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .scrn {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      padding: 5px 10px;
+      border-radius: var(--r-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      transition: background .15s, color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .scrn:hover { background: var(--brand-600); border-color: var(--brand-600); color: var(--text-onbrand); }
+
+    .ftr {
+      margin-top: 60px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      font-size: 12.5px; color: var(--text-muted);
+    }
+    .ftr a { color: var(--brand-600); text-decoration: none; }
+    .ftr a:hover { text-decoration: underline; }
+
+    @media (max-width: 720px) {
+      body { padding: 32px 18px 64px; }
+      .hdr-title { font-size: 32px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .hdr-tools { align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-  <p>Redirecting to <a href="./welcome/index.html">welcome</a>…</p>
+  <div class="wrap">
+
+    <header class="hdr">
+      <div class="hdr-lead">
+        <div class="hdr-mark">
+          <svg width="48" height="48" viewBox="0 0 80 80" aria-label="Djera">
+            <rect x="0" y="0" width="80" height="80" rx="22" fill="var(--brand-600)"/>
+            <path d="M22 40 L40 22 L58 40 L40 58 Z" fill="#fff" opacity=".95"/>
+            <circle cx="40" cy="40" r="5" fill="var(--accent-500)"/>
+          </svg>
+          <div>
+            <div class="hdr-eyebrow">Djera · Driver prototype</div>
+            <h1 class="hdr-title">Screen index</h1>
+          </div>
+        </div>
+        <p class="hdr-sub">Every screen in the driver prototype, grouped by build phase. Tap any screen to open it inside the phone frame.</p>
+      </div>
+
+      <div class="hdr-tools">
+        <div class="tool-row">
+          <span class="lbl">Lang</span>
+          <button data-lang="en">EN</button>
+          <button data-lang="ar">عربي</button>
+        </div>
+        <div class="tool-row">
+          <span class="lbl">Theme</span>
+          <button data-themeopt="light">☀︎ Light</button>
+          <button data-themeopt="dark">☾ Dark</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="search-wrap">
+      <svg class="search-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" class="search" placeholder="Search features or screens…" autocomplete="off" />
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-k">Features</div><div class="stat-v" id="st-feat">—</div></div>
+      <div class="stat"><div class="stat-k">Screens</div><div class="stat-v brand" id="st-scrn">—</div></div>
+      <div class="stat"><div class="stat-k">Phases</div><div class="stat-v" id="st-phase">4</div></div>
+      <div class="stat"><div class="stat-k">Status</div><div class="stat-v accent">Live</div></div>
+    </div>
+
+    <div id="phases"></div>
+
+    <footer class="ftr">
+      <div>Djera driver prototype · iPhone 17 Pro Max frame</div>
+      <div>
+        <a href="./TRACKING.md">TRACKING.md</a> ·
+        <a href="../CLAUDE.md">monorepo CLAUDE.md</a> ·
+        <a href="../DEVELOPMENT_PLAYBOOK.md">playbook</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    const PHASES = [
+      {
+        tag: 'D1', name: 'Onboarding', note: 'Welcome · auth · enrollment',
+        features: [
+          { name: 'Welcome',    folder: 'welcome',    desc: 'Brand mark, tagline, feature highlights, get-started CTA.', screens: [{ label: 'index', file: 'index.html' }] },
+          { name: 'Auth',       folder: 'auth',       desc: 'Phone/email sign-in, OTP verify, success state.',           screens: [{ label: 'sign-in', file: 'index.html' }, { label: 'OTP', file: 'otp.html' }, { label: 'success', file: 'success.html' }] },
+          { name: 'Enrollment', folder: 'enrollment', desc: 'KYC form (ID + license + plate), pending-approval state.',  screens: [{ label: 'form', file: 'index.html' }, { label: 'pending', file: 'pending.html' }] },
+        ],
+      },
+      {
+        tag: 'D2', name: 'Active driving', note: 'Dashboard · requests · trip',
+        features: [
+          { name: 'Dashboard',     folder: 'dashboard',     desc: 'Full-bleed Tripoli map, online toggle, earnings + commission dock.', screens: [{ label: 'index', file: 'index.html' }] },
+          { name: 'Ride requests', folder: 'ride-requests', desc: 'Incoming-trip modal with countdown ring, accept/reject.',           screens: [{ label: 'index', file: 'index.html' }] },
+          { name: 'Active trip',   folder: 'active-trip',   desc: 'To-pickup → in-trip → complete, with animated route and check ring.', screens: [{ label: 'to-pickup', file: 'to-pickup.html' }, { label: 'in-trip', file: 'in-trip.html' }, { label: 'complete', file: 'complete.html' }] },
+        ],
+      },
+      {
+        tag: 'D3', name: 'Money & history', note: 'Trips · earnings · commission',
+        features: [
+          { name: 'Trip history', folder: 'trip-history', desc: 'Searchable trip log with day groups, detail page with route map.', screens: [{ label: 'list', file: 'index.html' }, { label: 'detail', file: 'detail.html?id=1' }] },
+          { name: 'Earnings',     folder: 'earnings',     desc: 'Today/week/month tabs, bar chart, stats grid, breakdown list.',    screens: [{ label: 'index', file: 'index.html' }] },
+          { name: 'Commission',   folder: 'commission',   desc: 'Outstanding balance, settle channel picker, history, suspended state.', screens: [{ label: 'balance', file: 'index.html' }, { label: 'settle', file: 'settle.html' }, { label: 'history', file: 'history.html' }, { label: 'suspended', file: 'suspended.html' }] },
+        ],
+      },
+      {
+        tag: 'D4', name: 'Account & support', note: 'Profile · ratings · support · settings',
+        features: [
+          { name: 'Profile',  folder: 'profile',  desc: 'Identity, stats, vehicle, documents, account links.',  screens: [{ label: 'index', file: 'index.html' }] },
+          { name: 'Ratings',  folder: 'ratings',  desc: 'Own rating overview + post-trip rate-rider screen.',   screens: [{ label: 'overview', file: 'index.html' }, { label: 'rate-rider', file: 'rate-rider.html' }] },
+          { name: 'Support',  folder: 'support',  desc: 'SOS, contact, FAQ accordion.',                          screens: [{ label: 'index', file: 'index.html' }] },
+          { name: 'Settings', folder: 'settings', desc: 'Appearance, notifications, security, privacy.',        screens: [{ label: 'index', file: 'index.html' }] },
+        ],
+      },
+    ];
+
+    const root = document.getElementById('phases');
+    let totalFeat = 0, totalScrn = 0;
+
+    PHASES.forEach((p) => {
+      totalFeat += p.features.length;
+      const section = document.createElement('section');
+      section.className = 'phase';
+
+      const head = document.createElement('div');
+      head.className = 'phase-head';
+      head.innerHTML = `
+        <span class="phase-tag">${p.tag}</span>
+        <h2 class="phase-name">${p.name}</h2>
+        <span class="phase-note">${p.note}</span>
+      `;
+      section.appendChild(head);
+
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      p.features.forEach((f) => {
+        totalScrn += f.screens.length;
+        const card = document.createElement('div');
+        card.className = 'feat';
+        card.dataset.search = (f.name + ' ' + f.folder + ' ' + f.desc + ' ' + f.screens.map((s) => s.label).join(' ')).toLowerCase();
+        card.innerHTML = `
+          <div class="feat-head">
+            <h3 class="feat-name">${f.name}</h3>
+            <span class="feat-folder">${f.folder}/</span>
+          </div>
+          <p class="feat-desc">${f.desc}</p>
+          <div class="screens">
+            ${f.screens.map((s) => `<a class="scrn" href="./${f.folder}/${s.file}">${s.label}</a>`).join('')}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      section.appendChild(grid);
+      root.appendChild(section);
+    });
+
+    document.getElementById('st-feat').textContent = totalFeat;
+    document.getElementById('st-scrn').textContent = totalScrn;
+    document.getElementById('st-phase').textContent = PHASES.length;
+
+    // Search
+    const search = document.querySelector('.search');
+    search.addEventListener('input', () => {
+      const q = search.value.trim().toLowerCase();
+      document.querySelectorAll('.phase').forEach((sec) => {
+        let visible = 0;
+        sec.querySelectorAll('.feat').forEach((card) => {
+          const match = !q || card.dataset.search.includes(q);
+          card.style.display = match ? '' : 'none';
+          if (match) visible++;
+        });
+        sec.style.display = visible ? '' : 'none';
+      });
+    });
+
+    // Lang + theme — write to the same localStorage keys i18n.js reads
+    const LANG_KEY = 'jeera.lang';
+    const THEME_KEY = 'jeera.theme';
+
+    function syncToggles() {
+      const lang = localStorage.getItem(LANG_KEY) || 'en';
+      const theme = localStorage.getItem(THEME_KEY) || 'light';
+      document.querySelectorAll('[data-lang]').forEach((b) => b.classList.toggle('on', b.dataset.lang === lang));
+      document.querySelectorAll('[data-themeopt]').forEach((b) => b.classList.toggle('on', b.dataset.themeopt === theme));
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    }
+
+    document.querySelectorAll('[data-lang]').forEach((b) => {
+      b.addEventListener('click', () => { localStorage.setItem(LANG_KEY, b.dataset.lang); syncToggles(); });
+    });
+    document.querySelectorAll('[data-themeopt]').forEach((b) => {
+      b.addEventListener('click', () => { localStorage.setItem(THEME_KEY, b.dataset.themeopt); syncToggles(); });
+    });
+
+    syncToggles();
+  </script>
 </body>
 </html>
