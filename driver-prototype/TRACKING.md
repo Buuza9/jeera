@@ -56,7 +56,7 @@ points to `driver-app/REQUIREMENTS.md` sections.
 ### Phase D4
 | Folder | Screens | Status | Spec | Notes |
 |---|---|---|---|---|
-| `ratings/` | `index.html` (own rating), `rate-rider.html` (post-trip modal) | ⏳ | §3 | |
+| `ratings/` | `index.html` (own rating), `rate-rider.html` (post-trip modal) | ✅ | §3 | **index**: rating hero (4.92 + stars + "top rated" pill), star breakdown bars (5★→1★), behaviour stats (acceptance/cancellation/completion), recent rider reviews (avatar · stars · comment · tags). Reached from Profile → "Your rating". **rate-rider**: post-trip screen — rider avatar, 5 big tappable stars (hint label), quick tags revealed after rating, optional note, submit → dashboard; Skip link. Entered after `active-trip/complete.html` (Confirm cash received → rate-rider → dashboard). Djera design system; EN/AR + light/dark. |
 | `profile/` | `index.html` | ✅ | §3 | **Profile + settings merged** (the navbar's Profile tab). Identity hero (avatar `AM`, name, "Jeera driver · Tripoli", 4.9★ · trips). Quick stats (total trips · acceptance % · tenure). **Vehicle** card (model · plate). **Documents** list with green Verified badges + expiry dates (license · national ID · vehicle reg) + TODO §5 doc-expiry chip. **Settings** group — Language (EN/عربي segmented, drives `I18N.setLang`) · Appearance (Light/Dark segmented, drives `I18N.setTheme`) · Notifications toggle · Security & PIN. **More** group — Help & support (→ `support/`) · Privacy & terms · Sign out (→ `auth/`). Carries the bottom navbar (Profile active). |
 | `settings/` | `index.html` | ⏳ | §3 | Theme, language (AR/EN), notifications, security, privacy. |
 | `support/` | `index.html` | ⏳ | §3 | Help, FAQ accordion, contact, SOS button. |

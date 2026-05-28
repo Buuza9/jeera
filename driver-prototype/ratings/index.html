@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Djera Driver — Your rating</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .rate-hero { padding: 22px; display: flex; align-items: center; gap: 20px; }
+    .rate-hero .big {
+      font-family: var(--font-display); font-size: 52px; font-weight: 600;
+      letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums;
+    }
+    .rate-hero .stars { display: flex; gap: 3px; margin-top: 6px; color: var(--accent-500); }
+    .rate-hero .stars svg { width: 15px; height: 15px; }
+    .rate-hero .right { flex: 1; min-width: 0; }
+    .rate-hero .count { font-size: 13px; color: var(--text-muted); }
+    .rate-hero .pill {
+      display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
+      padding: 4px 10px; border-radius: 999px;
+      background: var(--brand-50); color: var(--brand-700);
+      font-size: 11.5px; font-weight: 700;
+    }
+    [data-theme="dark"] .rate-hero .pill { background: oklch(from var(--brand-500) l c h / .18); color: var(--brand-200); }
+
+    /* Breakdown */
+    .bd { padding: 16px; }
+    .bd-row { display: flex; align-items: center; gap: 10px; }
+    .bd-row + .bd-row { margin-top: 8px; }
+    .bd-row .k { font-size: 12px; color: var(--text-muted); width: 26px; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 2px; }
+    .bd-row .k svg { width: 10px; height: 10px; color: var(--accent-500); }
+    .bd-row .track { flex: 1; height: 7px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+    .bd-row .track i { display: block; height: 100%; background: var(--brand-500); border-radius: 999px; }
+    .bd-row .n { font-size: 12px; color: var(--text-faint); width: 34px; text-align: end; font-variant-numeric: tabular-nums; }
+
+    /* Behaviour stats */
+    .stats3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .statc { padding: 14px; text-align: center; }
+    .statc .v { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+    .statc .l { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Reviews */
+    .rev { padding: 16px; }
+    .rev + .rev { margin-top: 10px; }
+    .rev .top { display: flex; align-items: center; gap: 12px; }
+    .rev .av {
+      width: 40px; height: 40px; border-radius: 50%; flex: 0 0 auto;
+      background: var(--accent-500); color: var(--text-onbrand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; font-family: var(--font-display);
+    }
+    .rev .who { flex: 1; min-width: 0; }
+    .rev .who .n { font-size: 14px; font-weight: 600; }
+    .rev .who .d { font-size: 11.5px; color: var(--text-faint); margin-top: 1px; }
+    .rev .rstars { display: flex; gap: 2px; color: var(--accent-500); }
+    .rev .rstars svg { width: 13px; height: 13px; }
+    .rev .cmt { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-top: 10px; }
+    .rev .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="../profile/index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen">
+        <div class="appbar">
+          <a class="ab-btn" href="../profile/index.html" aria-label="Back">
+            <svg class="chev chev-end" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+          </a>
+          <div style="flex:1;min-width:0"><div class="ab-title" data-i18n="rat.title">Your rating</div></div>
+        </div>
+
+        <div class="stack stack-4" style="flex:1">
+          <!-- Rating hero -->
+          <div class="card rate-hero">
+            <div>
+              <div class="big">4.92</div>
+              <div class="stars" id="hero-stars"></div>
+            </div>
+            <div class="right">
+              <div class="count" data-i18n="rat.based">based on 312 ratings</div>
+              <span class="pill">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 3l2.7 5.7 6.3.6-4.8 4.3 1.5 6.2L12 16.9l-5.7 2.9 1.5-6.2L3 9.3l6.3-.6L12 3z"/></svg>
+                <span data-i18n="rat.top">Top rated · top 5%</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Breakdown -->
+          <div>
+            <div class="eyebrow" style="margin:0 0 10px 4px" data-i18n="rat.breakdown">Rating breakdown</div>
+            <div class="card bd" id="bd"></div>
+          </div>
+
+          <!-- Behaviour -->
+          <div class="stats3">
+            <div class="card statc"><div class="v">96<span style="font-size:12px">%</span></div><div class="l" data-i18n="rat.accept">Acceptance</div></div>
+            <div class="card statc"><div class="v">2<span style="font-size:12px">%</span></div><div class="l" data-i18n="rat.cancel">Cancellation</div></div>
+            <div class="card statc"><div class="v">99<span style="font-size:12px">%</span></div><div class="l" data-i18n="rat.complete">Completion</div></div>
+          </div>
+
+          <!-- Reviews -->
+          <div>
+            <div class="eyebrow" style="margin:0 0 10px 4px" data-i18n="rat.recent">Recent reviews</div>
+            <div id="reviews"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "rat.title":    { en: "Your rating",            ar: "تقييمك" },
+      "rat.based":    { en: "based on 312 ratings",   ar: "بناءً على 312 تقييمًا" },
+      "rat.top":      { en: "Top rated · top 5%",     ar: "الأعلى تقييمًا · أفضل 5٪" },
+      "rat.breakdown":{ en: "Rating breakdown",       ar: "توزيع التقييمات" },
+      "rat.accept":   { en: "Acceptance",             ar: "القبول" },
+      "rat.cancel":   { en: "Cancellation",           ar: "الإلغاء" },
+      "rat.complete": { en: "Completion",             ar: "الإكمال" },
+      "rat.recent":   { en: "Recent reviews",         ar: "أحدث المراجعات" },
+      "rat.r1.n":     { en: "Mariam S.",              ar: "مريم س." },
+      "rat.r1.c":     { en: "Very polite and drove safely. Knew the fastest route.",
+                        ar: "مؤدّب جدًا وقاد بأمان. يعرف أسرع طريق." },
+      "rat.r2.n":     { en: "Omar B.",                ar: "عمر ب." },
+      "rat.r2.c":     { en: "On time and friendly. Smooth ride to the airport.",
+                        ar: "في الوقت المحدد ولطيف. رحلة سلسة إلى المطار." },
+      "rat.r3.n":     { en: "Layla N.",               ar: "ليلى ن." },
+      "rat.r3.c":     { en: "Good driver, clean helmet provided. Thank you!",
+                        ar: "سائق جيد، خوذة نظيفة. شكرًا!" },
+      "rat.t.polite": { en: "Polite",                 ar: "مؤدّب" },
+      "rat.t.ontime": { en: "On time",                ar: "في الوقت" },
+      "rat.t.safe":   { en: "Safe driving",           ar: "قيادة آمنة" },
+      "rat.t.clean":  { en: "Clean",                  ar: "نظيف" },
+      "rat.ago.2h":   { en: "2 hours ago",            ar: "قبل ساعتين" },
+      "rat.ago.1d":   { en: "Yesterday",              ar: "أمس" },
+      "rat.ago.3d":   { en: "3 days ago",             ar: "قبل 3 أيام" },
+    });
+
+    const STAR = (f) => `<svg viewBox="0 0 24 24" fill="${f ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.7 5.7 6.3.6-4.8 4.3 1.5 6.2L12 16.9l-5.7 2.9 1.5-6.2L3 9.3l6.3-.6L12 3z"/></svg>`;
+    const stars = (n) => Array.from({ length: 5 }, (_, i) => STAR(i < n)).join('');
+
+    document.getElementById('hero-stars').innerHTML = stars(5);
+
+    // Breakdown bars
+    const BD = [[5, 291, 93], [4, 15, 5], [3, 4, 1], [2, 1, 1], [1, 1, 1]];
+    document.getElementById('bd').innerHTML = BD.map(([k, n, pct]) =>
+      `<div class="bd-row">
+        <span class="k">${k}${STAR(true)}</span>
+        <span class="track"><i style="width:${pct}%"></i></span>
+        <span class="n">${n}</span>
+      </div>`).join('');
+
+    // Reviews
+    const REV = [
+      { i: "MS", n: "rat.r1.n", c: "rat.r1.c", stars: 5, ago: "rat.ago.2h", tags: ["rat.t.polite", "rat.t.safe"] },
+      { i: "OB", n: "rat.r2.n", c: "rat.r2.c", stars: 5, ago: "rat.ago.1d", tags: ["rat.t.ontime"] },
+      { i: "LN", n: "rat.r3.n", c: "rat.r3.c", stars: 4, ago: "rat.ago.3d", tags: ["rat.t.clean", "rat.t.polite"] },
+    ];
+    function renderReviews() {
+      document.getElementById('reviews').innerHTML = REV.map((r) =>
+        `<div class="card rev">
+          <div class="top">
+            <span class="av">${r.i}</span>
+            <div class="who"><div class="n">${I18N.t(r.n)}</div><div class="d">${I18N.t(r.ago)}</div></div>
+            <span class="rstars">${stars(r.stars)}</span>
+          </div>
+          <div class="cmt">${I18N.t(r.c)}</div>
+          <div class="tags">${r.tags.map((t) => `<span class="badge badge-mute">${I18N.t(t)}</span>`).join('')}</div>
+        </div>`).join('');
+    }
+    const _setLang = I18N.setLang.bind(I18N);
+    I18N.setLang = (l) => { _setLang(l); renderReviews(); };
+    renderReviews();
+  </script>
+</body>
+</html>
