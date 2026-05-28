@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Djera Driver — Settings</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .sec-label { margin: 4px 0 10px 4px; }
+    .s-list { padding: 4px; }
+    .s-row { display: flex; align-items: center; gap: 14px; padding: 13px 14px; color: var(--text); text-decoration: none; }
+    .s-row + .s-row { border-top: 1px solid var(--hairline); }
+    .s-row .ic { width: 34px; height: 34px; border-radius: var(--r-sm); flex: 0 0 auto; background: var(--surface-2); color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+    .s-row .ic svg { width: 18px; height: 18px; }
+    .s-row .lab { flex: 1; min-width: 0; }
+    .s-row .lab .t { font-size: 14px; font-weight: 600; }
+    .s-row .lab .d { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
+    .s-row .seg { flex: 0 0 auto; }
+    .s-row .chev { color: var(--text-faint); flex: 0 0 auto; }
+    [dir="rtl"] .s-row .chev svg { transform: scaleX(-1); }
+
+    /* compact segmented for inline rows */
+    .seg { display: inline-flex; gap: 3px; padding: 3px; background: var(--surface-2); border-radius: 10px; }
+    .seg button { border: 0; background: transparent; color: var(--text-muted); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 12.5px; font-weight: 600; transition: background .15s, color .15s; }
+    .seg button.on { background: var(--surface); color: var(--text); box-shadow: var(--shadow-xs), 0 0 0 1px var(--border); }
+
+    /* toggle switch */
+    .switch { position: relative; flex: 0 0 auto; width: 46px; height: 28px; border-radius: 999px; background: var(--surface-3); border: 0; cursor: pointer; transition: background .2s; }
+    .switch::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.2); transition: inset-inline-start .2s var(--ease-out); }
+    .switch.on { background: var(--brand-600); }
+    .switch.on::after { inset-inline-start: 21px; }
+
+    .danger-row .ic { background: oklch(from var(--danger) l c h / .1); color: var(--danger); }
+    .danger-row .lab .t { color: var(--danger); }
+    .ver { text-align: center; font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="../profile/index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen">
+        <div class="appbar">
+          <a class="ab-btn" href="../profile/index.html" aria-label="Back">
+            <svg class="chev chev-end" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+          </a>
+          <div style="flex:1;min-width:0"><div class="ab-title" data-i18n="set.title">Settings</div></div>
+        </div>
+
+        <div class="stack stack-4" style="flex:1">
+          <!-- Appearance -->
+          <div>
+            <div class="eyebrow sec-label" data-i18n="set.appearance">Appearance</div>
+            <div class="card s-list">
+              <div class="s-row">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.language">Language</div></div>
+                <div class="seg" id="seg-lang"><button data-lang="en">EN</button><button data-lang="ar">عربي</button></div>
+              </div>
+              <div class="s-row">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.theme">Theme</div></div>
+                <div class="seg" id="seg-theme"><button data-theme-opt="light" data-i18n="set.light">Light</button><button data-theme-opt="dark" data-i18n="set.dark">Dark</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div>
+            <div class="eyebrow sec-label" data-i18n="set.notifs">Notifications</div>
+            <div class="card s-list">
+              <div class="s-row">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.n.requests">Trip requests</div><div class="d" data-i18n="set.n.requests.d">Sound + vibration for new requests</div></div>
+                <button class="switch on" data-toggle role="switch" aria-checked="true"></button>
+              </div>
+              <div class="s-row">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/><path d="M16 12h3"/><path d="M3 9h18"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.n.earnings">Earnings updates</div><div class="d" data-i18n="set.n.earnings.d">Daily summary &amp; payouts</div></div>
+                <button class="switch on" data-toggle role="switch" aria-checked="true"></button>
+              </div>
+              <div class="s-row">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 13z"/><path d="M11.6 16.8a3 3 0 0 1-5.8-1.6"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.n.promos">Promotions</div><div class="d" data-i18n="set.n.promos.d">Bonuses &amp; offers</div></div>
+                <button class="switch" data-toggle role="switch" aria-checked="false"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security -->
+          <div>
+            <div class="eyebrow sec-label" data-i18n="set.security">Security</div>
+            <div class="card s-list">
+              <div class="s-row">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.pin">App lock (PIN)</div><div class="d" data-i18n="set.pin.d">Require a PIN to open the app</div></div>
+                <button class="switch" data-toggle role="switch" aria-checked="false"></button>
+              </div>
+              <div class="s-row">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11v4a4 4 0 0 1-4 4"/><path d="M12 7a4 4 0 0 1 4 4v3a8 8 0 0 1-1 4"/><path d="M8 11a4 4 0 0 1 8 0v1"/><path d="M4 11a8 8 0 0 1 16 0"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.bio">Biometric unlock</div><div class="d" data-i18n="set.bio.d">Use fingerprint or Face ID</div></div>
+                <button class="switch" data-toggle role="switch" aria-checked="false"></button>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:8px"><span class="todo-chip" data-i18n="set.todo">TODO §5 — PIN / biometric scope TBD</span></div>
+          </div>
+
+          <!-- Privacy & about -->
+          <div>
+            <div class="eyebrow sec-label" data-i18n="set.privacy">Privacy</div>
+            <div class="card s-list">
+              <a class="s-row" href="#">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V7z"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.privacy.policy">Privacy &amp; terms</div></div>
+                <span class="chev"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+              </a>
+              <a class="s-row" href="../support/index.html">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.5c0 1.7-2.5 2-2.5 3.5"/><path d="M12 17h.01"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.help">Help &amp; support</div></div>
+                <span class="chev"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+              </a>
+              <a class="s-row danger-row" href="../auth/index.html">
+                <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg></span>
+                <div class="lab"><div class="t" data-i18n="set.signout">Sign out</div></div>
+              </a>
+            </div>
+          </div>
+
+          <div class="ver" data-i18n="set.version">Djera Driver · v0.1 (prototype)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "set.title":          { en: "Settings",            ar: "الإعدادات" },
+      "set.appearance":     { en: "Appearance",          ar: "المظهر" },
+      "set.language":       { en: "Language",            ar: "اللغة" },
+      "set.theme":          { en: "Theme",               ar: "السمة" },
+      "set.light":          { en: "Light",               ar: "فاتح" },
+      "set.dark":           { en: "Dark",                ar: "داكن" },
+      "set.notifs":         { en: "Notifications",       ar: "الإشعارات" },
+      "set.n.requests":     { en: "Trip requests",       ar: "طلبات الرحلات" },
+      "set.n.requests.d":   { en: "Sound + vibration for new requests", ar: "صوت واهتزاز للطلبات الجديدة" },
+      "set.n.earnings":     { en: "Earnings updates",    ar: "تحديثات الأرباح" },
+      "set.n.earnings.d":   { en: "Daily summary & payouts", ar: "ملخص يومي ودفعات" },
+      "set.n.promos":       { en: "Promotions",          ar: "العروض" },
+      "set.n.promos.d":     { en: "Bonuses & offers",    ar: "مكافآت وعروض" },
+      "set.security":       { en: "Security",            ar: "الأمان" },
+      "set.pin":            { en: "App lock (PIN)",       ar: "قفل التطبيق (رمز)" },
+      "set.pin.d":          { en: "Require a PIN to open the app", ar: "طلب رمز لفتح التطبيق" },
+      "set.bio":            { en: "Biometric unlock",     ar: "فتح بالبصمة" },
+      "set.bio.d":          { en: "Use fingerprint or Face ID", ar: "استخدم البصمة أو التعرّف على الوجه" },
+      "set.todo":           { en: "TODO §5 — PIN / biometric scope TBD", ar: "TODO §5 — نطاق الرمز/البصمة قيد التأكيد" },
+      "set.privacy":        { en: "Privacy",             ar: "الخصوصية" },
+      "set.privacy.policy": { en: "Privacy & terms",      ar: "الخصوصية والشروط" },
+      "set.help":           { en: "Help & support",       ar: "المساعدة والدعم" },
+      "set.signout":        { en: "Sign out",            ar: "تسجيل الخروج" },
+      "set.version":        { en: "Djera Driver · v0.1 (prototype)", ar: "دجيرا للسائق · v0.1 (نموذج)" },
+    });
+
+    // Language + theme segmented controls reflect and drive I18N.
+    const segLang = document.getElementById('seg-lang');
+    const segTheme = document.getElementById('seg-theme');
+    function syncSegs() {
+      const lang = localStorage.getItem('jeera.lang') || 'en';
+      const theme = localStorage.getItem('jeera.theme') || 'light';
+      segLang.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.lang === lang));
+      segTheme.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.themeOpt === theme));
+    }
+    segLang.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { I18N.setLang(b.dataset.lang); syncSegs(); }));
+    segTheme.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { I18N.setTheme(b.dataset.themeOpt); syncSegs(); }));
+    syncSegs();
+
+    // Notification / security toggles (local only)
+    document.querySelectorAll('[data-toggle]').forEach((sw) => {
+      sw.addEventListener('click', () => {
+        const on = !sw.classList.contains('on');
+        sw.classList.toggle('on', on);
+        sw.setAttribute('aria-checked', String(on));
+      });
+    });
+  </script>
+</body>
+</html>
