@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Djera Driver — Rate rider</title>
+  <link rel="stylesheet" href="../_shared/app.css" />
+  <script src="../_shared/i18n.js"></script>
+  <script src="../_shared/frame.js"></script>
+  <style>
+    .rr-screen { padding: 70px 24px 28px; text-align: center; }
+    .rr-skip { position: absolute; top: 64px; inset-inline-end: 20px; z-index: 5; }
+    .rr-skip a { font-size: 13.5px; font-weight: 600; color: var(--text-muted); }
+
+    .rr-av {
+      width: 76px; height: 76px; border-radius: 50%; margin: 16px auto 0;
+      background: var(--accent-500); color: var(--text-onbrand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; font-weight: 700; font-family: var(--font-display);
+      box-shadow: 0 10px 24px oklch(from var(--accent-600) l c h / .3);
+    }
+    .rr-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; letter-spacing: -0.03em; margin: 18px 0 4px; }
+    .rr-sub { font-size: 14.5px; color: var(--text-muted); margin: 0 0 6px; }
+
+    /* Big tappable stars */
+    .rr-stars { display: flex; justify-content: center; gap: 10px; margin: 26px 0 8px; }
+    .rr-stars button {
+      border: 0; background: transparent; cursor: pointer; padding: 4px;
+      color: var(--border-strong); transition: transform .1s var(--ease-spring), color .12s;
+    }
+    .rr-stars button:active { transform: scale(.9); }
+    .rr-stars button svg { width: 38px; height: 38px; }
+    .rr-stars button.on { color: var(--accent-500); }
+    .rr-hint { font-size: 13px; color: var(--text-faint); min-height: 18px; font-weight: 600; }
+
+    /* Tags */
+    .rr-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 18px 0 0; opacity: 0; max-height: 0; overflow: hidden; transition: opacity .25s, max-height .25s; }
+    .rr-tags.show { opacity: 1; max-height: 200px; }
+    .rr-tag {
+      padding: 8px 14px; border-radius: 999px; cursor: pointer;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); font-size: 13px; font-weight: 600; font-family: inherit;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .rr-tag.on { background: var(--brand-50); border-color: var(--brand-500); color: var(--brand-700); }
+    [data-theme="dark"] .rr-tag.on { background: oklch(from var(--brand-500) l c h / .15); color: var(--brand-200); }
+
+    .rr-note { margin-top: 16px; }
+    .rr-note textarea {
+      width: 100%; min-height: 64px; resize: none;
+      padding: 14px 15px; background: var(--surface); color: var(--text);
+      border: 1px solid var(--border); border-radius: var(--r-md);
+      font-size: 14px; font-family: inherit; outline: none;
+    }
+    .rr-note textarea:focus { border-color: var(--brand-500); box-shadow: 0 0 0 4px oklch(from var(--brand-500) l c h / .14); }
+    .rr-note textarea::placeholder { color: var(--text-faint); }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button data-toolbar-lang="en" onclick="I18N.setLang('en')">EN</button>
+    <button data-toolbar-lang="ar" onclick="I18N.setLang('ar')">AR</button>
+    <button data-toolbar-theme="light" onclick="I18N.setTheme('light')">☀︎</button>
+    <button data-toolbar-theme="dark"  onclick="I18N.setTheme('dark')">☾</button>
+    <a class="back" href="../dashboard/index.html">←</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen rr-screen">
+        <div class="rr-skip"><a href="../dashboard/index.html" data-i18n="rr.skip">Skip</a></div>
+
+        <div class="rr-av">KA</div>
+        <h1 class="rr-title" data-i18n="rr.title">Rate your rider</h1>
+        <p class="rr-sub"><span data-i18n="rr.sub">How was your trip with</span> <b data-i18n="rr.rider">Khalid</b>?</p>
+
+        <div class="rr-stars" id="stars">
+          <button data-v="1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.7 6.3.6-4.8 4.3 1.5 6.2L12 16.9l-5.7 2.9 1.5-6.2L3 9.3l6.3-.6L12 3z"/></svg></button>
+          <button data-v="2"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.7 6.3.6-4.8 4.3 1.5 6.2L12 16.9l-5.7 2.9 1.5-6.2L3 9.3l6.3-.6L12 3z"/></svg></button>
+          <button data-v="3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.7 6.3.6-4.8 4.3 1.5 6.2L12 16.9l-5.7 2.9 1.5-6.2L3 9.3l6.3-.6L12 3z"/></svg></button>
+          <button data-v="4"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.7 6.3.6-4.8 4.3 1.5 6.2L12 16.9l-5.7 2.9 1.5-6.2L3 9.3l6.3-.6L12 3z"/></svg></button>
+          <button data-v="5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.7 6.3.6-4.8 4.3 1.5 6.2L12 16.9l-5.7 2.9 1.5-6.2L3 9.3l6.3-.6L12 3z"/></svg></button>
+        </div>
+        <div class="rr-hint" id="hint"></div>
+
+        <div class="rr-tags" id="tags">
+          <button class="rr-tag" data-i18n="rr.t.polite">Polite</button>
+          <button class="rr-tag" data-i18n="rr.t.ontime">On time</button>
+          <button class="rr-tag" data-i18n="rr.t.respectful">Respectful</button>
+          <button class="rr-tag" data-i18n="rr.t.clear">Clear directions</button>
+        </div>
+
+        <div class="rr-note">
+          <textarea id="note" placeholder="Add a note (optional)" data-i18n-placeholder="rr.note.ph"></textarea>
+        </div>
+
+        <div class="spacer"></div>
+        <button class="btn btn-primary" id="submit" disabled data-i18n="rr.submit">Submit rating</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    I18N.register({
+      "rr.skip":         { en: "Skip",                     ar: "تخطّي" },
+      "rr.title":        { en: "Rate your rider",          ar: "قيّم راكبك" },
+      "rr.sub":          { en: "How was your trip with",   ar: "كيف كانت رحلتك مع" },
+      "rr.rider":        { en: "Khalid",                   ar: "خالد" },
+      "rr.note.ph":      { en: "Add a note (optional)",    ar: "أضف ملاحظة (اختياري)" },
+      "rr.submit":       { en: "Submit rating",            ar: "إرسال التقييم" },
+      "rr.t.polite":     { en: "Polite",                   ar: "مؤدّب" },
+      "rr.t.ontime":     { en: "On time",                  ar: "في الوقت" },
+      "rr.t.respectful": { en: "Respectful",               ar: "محترم" },
+      "rr.t.clear":      { en: "Clear directions",         ar: "إرشادات واضحة" },
+      "rr.h1":           { en: "Poor",                     ar: "سيئ" },
+      "rr.h2":           { en: "Fair",                     ar: "مقبول" },
+      "rr.h3":           { en: "Good",                     ar: "جيد" },
+      "rr.h4":           { en: "Great",                    ar: "رائع" },
+      "rr.h5":           { en: "Excellent",                ar: "ممتاز" },
+    });
+
+    const HINTS = ['', 'rr.h1', 'rr.h2', 'rr.h3', 'rr.h4', 'rr.h5'];
+    const starBtns = [...document.querySelectorAll('#stars button')];
+    const hintEl = document.getElementById('hint');
+    const tags = document.getElementById('tags');
+    const submit = document.getElementById('submit');
+    let rating = 0;
+
+    function paint() {
+      starBtns.forEach((b) => b.classList.toggle('on', +b.dataset.v <= rating));
+      hintEl.setAttribute('data-i18n', HINTS[rating] || '');
+      hintEl.textContent = rating ? I18N.t(HINTS[rating]) : '';
+      tags.classList.toggle('show', rating > 0);
+      submit.disabled = rating === 0;
+    }
+    starBtns.forEach((b) => b.addEventListener('click', () => { rating = +b.dataset.v; paint(); }));
+    tags.querySelectorAll('.rr-tag').forEach((tg) => tg.addEventListener('click', () => tg.classList.toggle('on')));
+    submit.addEventListener('click', () => { location.href = '../dashboard/index.html'; });
+    paint();
+  </script>
+</body>
+</html>
