@@ -51,6 +51,30 @@
     "cta": "Continue to dashboard",
     "auto": { "prefix": "Redirecting in", "s": "s" }
   },
+  "enr": {
+    "title": "Driver enrollment",
+    "sub": "We'll review your details within 24 hours.",
+    "fullName": "Full name",
+    "fullNamePh": "Ahmed Mohamed Al-Tarhouni",
+    "phone": "Phone",
+    "id": "National ID number",
+    "license": "Driver's license number",
+    "plate": "Vehicle plate",
+    "idPhoto": "National ID photo",
+    "idPhotoSub": "Front side, clear & legible",
+    "licPhoto": "Driver's license photo",
+    "licPhotoSub": "Both sides if double-sided",
+    "submit": "Submit for review",
+    "pend": {
+      "title": "Application submitted",
+      "sub": "We're reviewing your documents. You'll get a notification within 24 hours.",
+      "eta": "Estimated wait: under 24 hours",
+      "home": "Back to home"
+    }
+  },
+  "prof": {
+    "docs": "Documents"
+  },
   "common": {
     "comingSoon": "Coming soon",
     "back": "Back"
