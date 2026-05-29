@@ -22,6 +22,35 @@
     "signin": "I already have an account",
     "legal": "By continuing you agree to Djera's Terms and Privacy Policy."
   },
+  "auth": {
+    "title": "Djera Driver",
+    "tag": "Start your journey with us.",
+    "method": { "phone": "Phone", "email": "Email" },
+    "phone": { "label": "Phone number", "err": "Enter a valid 9-digit Libyan number." },
+    "email": { "label": "Email address", "err": "Enter a valid email address." },
+    "help": "We'll send a one-time code to verify it's you.",
+    "send": "Send code",
+    "new": { "q": "New driver?", "cta": "Register as a driver" },
+    "todo": "TODO §5 — PIN / biometric session lock scope"
+  },
+  "otp": {
+    "title": "Enter verification code",
+    "tag": "We sent a 6-digit code to",
+    "hint": "For this demo, code is 123456.",
+    "verify": "Verify",
+    "verifying": "Verifying…",
+    "resend": { "q": "Didn't get the code?", "cta": "Resend" },
+    "change": "Use a different method",
+    "err": { "bad": "Incorrect code. Try again.", "short": "Enter all 6 digits." },
+    "ok": "Verified — signing you in…",
+    "todo": "TODO §2.2 — post-verify checks approval status (pending / approved / suspended)"
+  },
+  "ok": {
+    "title": "You're signed in",
+    "tag": "Welcome back to Djera. Let's get you on the road.",
+    "cta": "Continue to dashboard",
+    "auto": { "prefix": "Redirecting in", "s": "s" }
+  },
   "common": {
     "comingSoon": "Coming soon",
     "back": "Back"

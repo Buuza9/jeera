@@ -72,6 +72,22 @@ const ICONS = {
     ),
   },
   phone: { size: 18, sw: 1.8, shape: (sw, c) => <Path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2.2z" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" /> },
+  envelope: {
+    size: 18, sw: 1.8, shape: (sw, c) => (
+      <>
+        <Rect x={3} y={5} width={18} height={14} rx={2} stroke={c} strokeWidth={sw} fill="none" />
+        <Path d="M3 7l9 6 9-6" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
+  device: {
+    size: 18, sw: 1.8, shape: (sw, c) => (
+      <>
+        <Rect x={6} y={2} width={12} height={20} rx={3} stroke={c} strokeWidth={sw} fill="none" />
+        <Path d="M11 18h2" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
   check: { size: 18, sw: 2, shape: (sw, c) => <Path d="M5 12l5 5L20 7" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" /> },
   shield: {
     size: 22, sw: 1.8, shape: (sw, c) => (

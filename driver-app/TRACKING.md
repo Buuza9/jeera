@@ -76,13 +76,13 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | Theme system (light/dark + tokens ported from prototype) | ✅ | `src/theme/tokens.ts` (TS mirror for non-NativeWind use). `src/theme/ThemeProvider.tsx` exposes `preference` (`light`/`dark`/`system`), `active` (resolved name), `setPreference`; persisted to `AsyncStorage` (`djera.theme`). |
 | `react-i18next` + EN/AR | ✅ | `src/i18n/index.ts` initializes `i18next` lazily; resources in `src/i18n/locales/{en,ar}.json`. `src/i18n/LangProvider.tsx` exposes `lang`, `rtl`, `setLang`, `needsReload`; persists to `AsyncStorage` (`djera.lang`); detects device locale on first run via `expo-localization`. |
 | RTL via `I18nManager` | ✅ | `LangProvider` calls `I18nManager.allowRTL(true)` + `forceRTL` on lang change; surfaces `needsReload: boolean` so the UI can prompt for an app reload when native layout direction differs from the picked language. |
-| Zustand stores (`authStore`, `settingsStore`, `driverStore`) | ⏳ | Persist via `AsyncStorage`. |
+| Zustand stores (`authStore`, `settingsStore`, `driverStore`) | 🟡 | `authStore` live (`src/features/auth/store.ts`, persisted to secure-store). `settingsStore`/`driverStore` land as features need them. |
 | TanStack Query v5 | ⏳ | Query client provider in root layout. |
-| `expo-secure-store` (tokens, PIN hash) | ⏳ | |
+| `expo-secure-store` (tokens, PIN hash) | ✅ | Installed + linked (native build). Backs `authStore` persistence via `src/shared/store/secureStorage.ts` adapter. |
 | `AsyncStorage` | ✅ | Used by theme + lang providers. Available for future state. |
-| Mock layer (`USE_MOCKS=true`) | ⏳ | Mirrors prototype mock branches; lives in `src/shared/mocks/`. |
+| Mock layer (`USE_MOCKS`) | 🟡 | `src/shared/config.ts` reads `EXPO_PUBLIC_USE_MOCKS` (default true), `.env` committed. Per-feature mock data lives in `<feature>/data.ts` (e.g. `auth/data.ts`). |
 | Boot flow (splash → auth gate → enrollment/auth/dashboard) | 🟡 | Root layout wires `ThemeProvider` → `LangProvider` → `Stack`. Auth gate + splash lands with the `auth` feature PR. Current entry (`src/app/index.tsx`) is a foundation demo: theme picker + lang picker + direction note. |
-| Shared component primitives | 🟡 | Live in `src/shared/components/`: `Screen`, `Brand` (Djera SVG mark), `Button` (primary/secondary/ghost/danger), `Icon` (full 30-icon Djera set ported from `claude-design-mockups/app/icons.jsx` → `react-native-svg`). `Field`, `Badge`, `Card`, `Appbar`, `Navbar`, `Segment` land as features need them. |
+| Shared component primitives | 🟡 | Live in `src/shared/components/`: `Screen`, `Brand` (Djera SVG mark), `Button` (primary/secondary/ghost/danger), `Icon` (full Djera set ported to `react-native-svg`), `Field` (label/error/prefix, vertically-centered input). `Badge`, `Card`, `Appbar`, `Navbar`, `Segment` land as features need them. |
 | Icons (`react-native-svg`) | ✅ | Custom monoline set in `Icon.tsx` (currentColor stroke, 24×24, 1.8 base). Replaced `react-native-heroicons` for prototype fidelity. Requires native build (linked). |
 | Map shim (`react-native-maps`) | ⏳ | Mock-first; mirror `JeeraMap` API from prototype. |
 | Brand assets (icon, splash, fonts) | ⏳ | Replace template's defaults with Djera mark + Geist/Inter/IBM Plex Sans Arabic (load via `expo-font`). |
@@ -93,7 +93,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 |---|---|---|---|
 | `welcome` | D1 | ✅ | `../driver-prototype/welcome/` — entry screen, ported 1:1. Verified on iOS sim. |
 | `enrollment` | D1 | 🟡 | `../driver-prototype/enrollment/` — placeholder route (`ComingSoon`) only. |
-| `auth` | D1 | 🟡 | `../driver-prototype/auth/` — placeholder route (`ComingSoon`) only. |
+| `auth` | D1 | ✅ | `../driver-prototype/auth/` — sign-in → OTP → success, ported 1:1. authStore + secure-store + mock OTP (123456). Verified on iOS sim. SMS deferred; Supabase email OTP stubbed. |
 | `dashboard` | D2 | ⏳ | `../driver-prototype/dashboard/` |
 | `ride-requests` | D2 | ⏳ | `../driver-prototype/ride-requests/` |
 | `active-trip` | D2 | ⏳ | `../driver-prototype/active-trip/` |
