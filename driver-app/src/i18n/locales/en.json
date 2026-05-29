@@ -1,0 +1,18 @@
+{
+  "brand": {
+    "name": "Djera",
+    "tagline": "Drive when you want. Get paid in cash."
+  },
+  "boot": {
+    "welcome": "Welcome to Djera Driver",
+    "subtitle": "The driver app foundation is wired up — NativeWind, i18n, and RTL all working.",
+    "themeLabel": "Theme",
+    "langLabel": "Language",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "english": "EN",
+    "arabic": "عربي",
+    "directionNote": "Layout direction: {{dir}}"
+  }
+}
