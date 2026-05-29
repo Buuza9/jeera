@@ -4,18 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 
 import { Brand, Button, Field, Icon, Screen } from '@/shared/components';
+import { COUNTRY, formatLocalPhone, fullPhone, isValidLocalPhone } from '@/shared/phone';
 
 import { type AuthMethod } from './store';
 
-// Libyan mobile: 9 digits starting with 9. Format as "9X XXX XXXX".
-function formatPhone(raw: string) {
-  const d = raw.replace(/\D/g, '').slice(0, 9);
-  return [d.slice(0, 2), d.slice(2, 5), d.slice(5, 9)].filter(Boolean).join(' ');
-}
-const isValidPhone = (raw: string) => {
-  const d = raw.replace(/\D/g, '');
-  return d.length === 9 && d.startsWith('9');
-};
 const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
 
 export function SignInScreen() {
@@ -28,9 +20,8 @@ export function SignInScreen() {
 
   const onSend = () => {
     if (method === 'phone') {
-      if (!isValidPhone(phone)) return setError(t('auth.phone.err'));
-      const to = `+218 ${phone}`;
-      router.push({ pathname: '/auth/otp', params: { via: 'phone', to } });
+      if (!isValidLocalPhone(phone)) return setError(t('auth.phone.err'));
+      router.push({ pathname: '/auth/otp', params: { via: 'phone', to: fullPhone(phone) } });
     } else {
       if (!isValidEmail(email)) return setError(t('auth.email.err'));
       router.push({ pathname: '/auth/otp', params: { via: 'email', to: email.trim() } });
@@ -83,20 +74,15 @@ export function SignInScreen() {
           placeholder="9X XXX XXXX"
           value={phone}
           onChangeText={(v) => {
-            setPhone(formatPhone(v));
+            setPhone(formatLocalPhone(v));
             setError(null);
           }}
           error={error}
           maxLength={11}
           prefix={
-            <View className="flex-row items-center gap-2 self-stretch border-e border-border bg-surface-2 px-3.5 dark:border-dark-border dark:bg-dark-surface-2">
-              <View className="h-4 w-[22px] overflow-hidden rounded-[3px]">
-                <View className="flex-1 bg-[#e70013]" />
-                <View className="flex-1 bg-black" />
-                <View className="flex-1 bg-[#239e46]" />
-              </View>
-              <Text className="text-[15px] font-semibold text-text dark:text-dark-text">+218</Text>
-            </View>
+            <Text className="text-[15px] font-medium text-text-muted dark:text-dark-text-muted">
+              {COUNTRY.dialCode}
+            </Text>
           }
         />
       ) : (

@@ -1,3 +1,4 @@
+export { Appbar } from './Appbar';
 export { Brand } from './Brand';
 export { Button } from './Button';
 export { Field } from './Field';
