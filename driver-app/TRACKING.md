@@ -71,7 +71,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | Item | Status | Notes |
 |---|---|---|
 | Expo scaffold | ✅ | `create-expo-app@latest` default template. SDK 56, RN 0.85.3, React 19.2.3, Expo Router v5+, Reanimated v4 + Worklets, Gesture Handler v2. Template demo files (`AppTabs`, `animated-icon`, `themed-text`, `hint-row`, etc.) removed once foundation landed. |
-| Folder layout (`src/theme/`, `src/i18n/`, `src/app/`) | 🟡 | `src/theme/` and `src/i18n/` live. `src/shared/`, `src/features/` will land alongside the first feature PR. |
+| Folder layout (`src/theme/`, `src/i18n/`, `src/app/`, `src/shared/`, `src/features/`) | ✅ | All present. `src/shared/components/` and `src/features/welcome/` landed with the welcome feature. |
 | NativeWind v4 | ✅ | Wired via `metro.config.js` (`withNativeWind`), `babel.config.js` (preset-expo + `nativewind/babel`), `tailwind.config.js` (Djera oklch tokens — palm-green brand, saffron accent, terracotta danger, warm cream surfaces light + warm-midnight dark), `nativewind-env.d.ts`. `src/global.css` carries `@tailwind` directives. |
 | Theme system (light/dark + tokens ported from prototype) | ✅ | `src/theme/tokens.ts` (TS mirror for non-NativeWind use). `src/theme/ThemeProvider.tsx` exposes `preference` (`light`/`dark`/`system`), `active` (resolved name), `setPreference`; persisted to `AsyncStorage` (`djera.theme`). |
 | `react-i18next` + EN/AR | ✅ | `src/i18n/index.ts` initializes `i18next` lazily; resources in `src/i18n/locales/{en,ar}.json`. `src/i18n/LangProvider.tsx` exposes `lang`, `rtl`, `setLang`, `needsReload`; persists to `AsyncStorage` (`djera.lang`); detects device locale on first run via `expo-localization`. |
@@ -82,7 +82,8 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | `AsyncStorage` | ✅ | Used by theme + lang providers. Available for future state. |
 | Mock layer (`USE_MOCKS=true`) | ⏳ | Mirrors prototype mock branches; lives in `src/shared/mocks/`. |
 | Boot flow (splash → auth gate → enrollment/auth/dashboard) | 🟡 | Root layout wires `ThemeProvider` → `LangProvider` → `Stack`. Auth gate + splash lands with the `auth` feature PR. Current entry (`src/app/index.tsx`) is a foundation demo: theme picker + lang picker + direction note. |
-| Shared component primitives (`Button`, `Card`, `Field`, `Segment`, `Badge`, `Row`, `Appbar`, `Navbar`) | 🟡 | A small inline `Segmented` lives in the boot demo. Full primitives lib lands in `src/shared/components/` when the first feature needs them. |
+| Shared component primitives | 🟡 | Live in `src/shared/components/`: `Screen`, `Brand` (Djera SVG mark), `Button` (primary/secondary/ghost/danger), `Icon` (full 30-icon Djera set ported from `claude-design-mockups/app/icons.jsx` → `react-native-svg`). `Field`, `Badge`, `Card`, `Appbar`, `Navbar`, `Segment` land as features need them. |
+| Icons (`react-native-svg`) | ✅ | Custom monoline set in `Icon.tsx` (currentColor stroke, 24×24, 1.8 base). Replaced `react-native-heroicons` for prototype fidelity. Requires native build (linked). |
 | Map shim (`react-native-maps`) | ⏳ | Mock-first; mirror `JeeraMap` API from prototype. |
 | Brand assets (icon, splash, fonts) | ⏳ | Replace template's defaults with Djera mark + Geist/Inter/IBM Plex Sans Arabic (load via `expo-font`). |
 
@@ -90,8 +91,9 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 
 | Feature | Phase | Status | Prototype reference |
 |---|---|---|---|
-| `enrollment` | D1 | ⏳ | `../driver-prototype/enrollment/` |
-| `auth` | D1 | ⏳ | `../driver-prototype/auth/` |
+| `welcome` | D1 | ✅ | `../driver-prototype/welcome/` — entry screen, ported 1:1. Verified on iOS sim. |
+| `enrollment` | D1 | 🟡 | `../driver-prototype/enrollment/` — placeholder route (`ComingSoon`) only. |
+| `auth` | D1 | 🟡 | `../driver-prototype/auth/` — placeholder route (`ComingSoon`) only. |
 | `dashboard` | D2 | ⏳ | `../driver-prototype/dashboard/` |
 | `ride-requests` | D2 | ⏳ | `../driver-prototype/ride-requests/` |
 | `active-trip` | D2 | ⏳ | `../driver-prototype/active-trip/` |
