@@ -70,20 +70,21 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 
 | Item | Status | Notes |
 |---|---|---|
-| Expo scaffold | 🟡 | `create-expo-app@latest` default template. SDK 56, RN 0.85.3, React 19.2.3, Expo Router v5+, Reanimated v4 + Worklets, Gesture Handler v2. Template ships `src/app/`, `src/components/`, `src/constants/`, `src/hooks/`, `src/global.css`. |
-| Folder layout (`src/features/`, `src/shared/`, `src/theme/`, `src/i18n/`) | ⏳ | Not yet — replaces template's flat `src/` once feature work starts. |
-| NativeWind v4 | ⏳ | `global.css` is in the scaffold but NativeWind is not yet installed/configured. |
-| Theme system (light/dark + tokens ported from prototype) | ⏳ | Source: `../driver-prototype/_shared/tokens.css` oklch palette. |
-| `react-i18next` + EN/AR | ⏳ | EN default; AR via toggle. Wire `I18nManager` for RTL. |
+| Expo scaffold | ✅ | `create-expo-app@latest` default template. SDK 56, RN 0.85.3, React 19.2.3, Expo Router v5+, Reanimated v4 + Worklets, Gesture Handler v2. Template demo files (`AppTabs`, `animated-icon`, `themed-text`, `hint-row`, etc.) removed once foundation landed. |
+| Folder layout (`src/theme/`, `src/i18n/`, `src/app/`) | 🟡 | `src/theme/` and `src/i18n/` live. `src/shared/`, `src/features/` will land alongside the first feature PR. |
+| NativeWind v4 | ✅ | Wired via `metro.config.js` (`withNativeWind`), `babel.config.js` (preset-expo + `nativewind/babel`), `tailwind.config.js` (Djera oklch tokens — palm-green brand, saffron accent, terracotta danger, warm cream surfaces light + warm-midnight dark), `nativewind-env.d.ts`. `src/global.css` carries `@tailwind` directives. |
+| Theme system (light/dark + tokens ported from prototype) | ✅ | `src/theme/tokens.ts` (TS mirror for non-NativeWind use). `src/theme/ThemeProvider.tsx` exposes `preference` (`light`/`dark`/`system`), `active` (resolved name), `setPreference`; persisted to `AsyncStorage` (`djera.theme`). |
+| `react-i18next` + EN/AR | ✅ | `src/i18n/index.ts` initializes `i18next` lazily; resources in `src/i18n/locales/{en,ar}.json`. `src/i18n/LangProvider.tsx` exposes `lang`, `rtl`, `setLang`, `needsReload`; persists to `AsyncStorage` (`djera.lang`); detects device locale on first run via `expo-localization`. |
+| RTL via `I18nManager` | ✅ | `LangProvider` calls `I18nManager.allowRTL(true)` + `forceRTL` on lang change; surfaces `needsReload: boolean` so the UI can prompt for an app reload when native layout direction differs from the picked language. |
 | Zustand stores (`authStore`, `settingsStore`, `driverStore`) | ⏳ | Persist via `AsyncStorage`. |
 | TanStack Query v5 | ⏳ | Query client provider in root layout. |
 | `expo-secure-store` (tokens, PIN hash) | ⏳ | |
-| `AsyncStorage` (theme, language, toolbar collapsed) | ⏳ | |
+| `AsyncStorage` | ✅ | Used by theme + lang providers. Available for future state. |
 | Mock layer (`USE_MOCKS=true`) | ⏳ | Mirrors prototype mock branches; lives in `src/shared/mocks/`. |
-| Boot flow (splash → auth gate → enrollment/auth/dashboard) | ⏳ | |
-| Shared component primitives (`Button`, `Card`, `Field`, `Segment`, `Badge`, `Row`, `Appbar`, `Navbar`) | ⏳ | Match `../driver-prototype/_shared/app.css` primitives. |
+| Boot flow (splash → auth gate → enrollment/auth/dashboard) | 🟡 | Root layout wires `ThemeProvider` → `LangProvider` → `Stack`. Auth gate + splash lands with the `auth` feature PR. Current entry (`src/app/index.tsx`) is a foundation demo: theme picker + lang picker + direction note. |
+| Shared component primitives (`Button`, `Card`, `Field`, `Segment`, `Badge`, `Row`, `Appbar`, `Navbar`) | 🟡 | A small inline `Segmented` lives in the boot demo. Full primitives lib lands in `src/shared/components/` when the first feature needs them. |
 | Map shim (`react-native-maps`) | ⏳ | Mock-first; mirror `JeeraMap` API from prototype. |
-| Brand assets (icon, splash, fonts) | ⏳ | Replace template's defaults with Djera mark + Geist/Inter/IBM Plex Sans Arabic. |
+| Brand assets (icon, splash, fonts) | ⏳ | Replace template's defaults with Djera mark + Geist/Inter/IBM Plex Sans Arabic (load via `expo-font`). |
 
 ## Features (per `CLAUDE.md` §3 — D1 → D4)
 
