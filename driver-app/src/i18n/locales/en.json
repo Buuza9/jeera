@@ -3,16 +3,27 @@
     "name": "Djera",
     "tagline": "Drive when you want. Get paid in cash."
   },
-  "boot": {
-    "welcome": "Welcome to Djera Driver",
-    "subtitle": "The driver app foundation is wired up — NativeWind, i18n, and RTL all working.",
-    "themeLabel": "Theme",
-    "langLabel": "Language",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System",
-    "english": "EN",
-    "arabic": "عربي",
-    "directionNote": "Layout direction: {{dir}}"
+  "welcome": {
+    "title": "Welcome to Djera",
+    "tag": "Start your journey with us — drive, earn, and grow.",
+    "f1": {
+      "title": "Drive on your own schedule",
+      "sub": "Go online whenever you want."
+    },
+    "f2": {
+      "title": "Cash at the end of every trip",
+      "sub": "Riders pay you directly."
+    },
+    "f3": {
+      "title": "Track earnings in real time",
+      "sub": "See today's trips and totals at a glance."
+    },
+    "cta": "Get started",
+    "signin": "I already have an account",
+    "legal": "By continuing you agree to Djera's Terms and Privacy Policy."
+  },
+  "common": {
+    "comingSoon": "Coming soon",
+    "back": "Back"
   }
 }
