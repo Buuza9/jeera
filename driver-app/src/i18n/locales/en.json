@@ -183,7 +183,37 @@
   "success": {
     "earned": "You earned",
     "collected": "Cash collected",
-    "home": "Back to home"
+    "home": "Back to home",
+    "rate": "Rate your rider"
+  },
+  "rat": {
+    "title": "Your rating",
+    "based": "based on {{count}} ratings",
+    "top": "Top rated · top 5%",
+    "breakdown": "Rating breakdown",
+    "accept": "Acceptance",
+    "cancel": "Cancellation",
+    "complete": "Completion",
+    "recent": "Recent reviews",
+    "r1": { "n": "Mariam S.", "c": "Very polite and drove safely. Knew the fastest route." },
+    "r2": { "n": "Omar B.", "c": "On time and friendly. Smooth ride to the airport." },
+    "r3": { "n": "Layla N.", "c": "Good driver, clean helmet provided. Thank you!" },
+    "t": { "polite": "Polite", "ontime": "On time", "safe": "Safe driving", "clean": "Clean" },
+    "ago": { "2h": "2 hours ago", "1d": "Yesterday", "3d": "3 days ago" }
+  },
+  "rr": {
+    "skip": "Skip",
+    "title": "Rate your rider",
+    "sub": "How was your trip with",
+    "rider": "Khalid",
+    "note": { "ph": "Add a note (optional)" },
+    "submit": "Submit rating",
+    "t": { "polite": "Polite", "ontime": "On time", "respectful": "Respectful", "clear": "Clear directions" },
+    "h1": "Poor",
+    "h2": "Fair",
+    "h3": "Good",
+    "h4": "Great",
+    "h5": "Excellent"
   },
   "earn": {
     "title": "Earnings",
