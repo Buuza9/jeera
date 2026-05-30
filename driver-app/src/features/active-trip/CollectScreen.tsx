@@ -42,7 +42,7 @@ export function CollectScreen() {
           style={{ letterSpacing: -2 }}
         >
           {fare}
-          <Text className="text-[20px] text-text-muted dark:text-dark-text-muted">
+          <Text className="text-[20px] text-text-muted dark:text-dark-text-muted" style={{ letterSpacing: 0 }}>
             {' '}
             {t('unit.currency')}
           </Text>

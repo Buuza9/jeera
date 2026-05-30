@@ -36,7 +36,7 @@ export function BalanceScreen() {
           </Text>
           <Text className="mt-1 font-display text-[56px] font-semibold text-white" style={{ letterSpacing: -2.2 }}>
             {outstanding}
-            <Text className="text-[18px] font-semibold text-white/75"> {t('unit.currency')}</Text>
+            <Text className="text-[18px] font-semibold text-white/75" style={{ letterSpacing: 0 }}> {t('unit.currency')}</Text>
           </Text>
           <View className="mt-3.5 h-1.5 overflow-hidden rounded-full bg-white/25">
             <View className="h-full rounded-full bg-white" style={{ width: `${pct}%` }} />

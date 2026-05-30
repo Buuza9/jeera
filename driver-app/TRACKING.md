@@ -98,7 +98,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | `dashboard` | D2 | ✅ | `../driver-prototype/dashboard/` — full-bleed map (real GPS via expo-location), online toggle, Today/Commission dock, navbar. Verified on iOS sim. Summary/commission values still mock. |
 | `ride-requests` | D2 | ✅ | `../driver-prototype/ride-requests/` — map + route polyline, notice pill, 15s countdown ring, route card, metrics, accept/reject. Verified on iOS sim. Mock request; real dispatch later. |
 | `active-trip` | D2 | ✅ | `../driver-prototype/active-trip/` — to-pickup → in-trip → collect-payment → success, real GPS + Google Maps handoff, interactive maps. Verified on iOS sim. **D2 loop complete.** |
-| `earnings` | D3 | ⏳ | `../driver-prototype/earnings/` |
+| `earnings` | D3 | ✅ | `../driver-prototype/earnings/` — period tabs (today/week/month), brand hero (net + delta), animated bar chart, 2×2 stats grid, per-bucket breakdown, ported 1:1. Mock `EARNINGS` data; EN/AR + RTL. Real aggregation + trip-history detail links pending. |
 | `trip-history` | D3 | ⏳ | `../driver-prototype/trip-history/` |
 | `commission` | D3 | ✅ | `../driver-prototype/commission/` — balance → settle (full/partial, channel picker, success overlay) → history (month-grouped) + suspended state, ported 1:1. In-memory commissionStore, mock accruals/settlements. EN/AR + RTL. PR #19. Rate/cap/channels/grace client-blocked (§5). |
 | `ratings` | D4 | ⏳ | `../driver-prototype/ratings/` |
