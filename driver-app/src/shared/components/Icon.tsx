@@ -155,6 +155,32 @@ const ICONS = {
     ),
   },
   bank: { size: 22, sw: 1.8, shape: (sw, c) => <Path d="M3 9l9-5 9 5M5 9v8M19 9v8M9 9v8M15 9v8M3 20h18" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" /> },
+  bankTransfer: {
+    size: 22, sw: 2, shape: (sw, c) => (
+      <>
+        <Path d="M3 10l9-6 9 6" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+        <Path d="M5 10v9h14v-9" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+        <Path d="M9 19v-5h6v5" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
+  building: {
+    size: 22, sw: 2, shape: (sw, c) => (
+      <>
+        <Rect x={4} y={3} width={16} height={18} rx={2} stroke={c} strokeWidth={sw} fill="none" />
+        <Path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M10 21v-4h4v4" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
+  alertCircle: {
+    size: 22, sw: 2.2, shape: (sw, c) => (
+      <>
+        <Circle cx={12} cy={12} r={9} stroke={c} strokeWidth={sw} fill="none" />
+        <Path d="M12 8v5" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+        <Path d="M12 16h.01" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
   fingerprint: {
     size: 22, sw: 1.6, shape: (sw, c) => (
       <>

@@ -142,6 +142,62 @@
     "collected": "Cash collected",
     "home": "Back to home"
   },
+  "com": {
+    "title": "Commission",
+    "outstanding": "Outstanding balance",
+    "cap": "{{balance}} of {{cap}} LYD cap",
+    "next": "Next settlement",
+    "nextVal": "Sunday · in 4 days",
+    "rate": "Rate · 15%",
+    "policy": "Auto-suspend after {{cap}} LYD cap",
+    "recent": "Recent accruals",
+    "settle": "Settle now",
+    "history": "Settlement history",
+    "fare": "fare",
+    "h": {
+      "title": "Settlement history",
+      "thisMonth": "Settled this month",
+      "allTime": "All time",
+      "may": "May 2026",
+      "apr": "April 2026",
+      "paid": "Paid"
+    }
+  },
+  "set": {
+    "title": "Settle commission",
+    "youOwe": "You're settling",
+    "outOf": "of {{cap}} LYD outstanding",
+    "full": "Full balance",
+    "partial": "Partial",
+    "amount": "Amount to settle",
+    "channel": "Settlement method",
+    "ch": {
+      "bank": { "n": "Bank transfer", "d": "To Djera's settlement account." },
+      "office": { "n": "In-person drop-off", "d": "Pay cash at the Djera office, Tripoli." },
+      "mobile": { "n": "Mobile money", "d": "Transfer from a linked mobile wallet." }
+    },
+    "todo": "TODO §5 — confirm approved settlement channels with client",
+    "cta": "Confirm settlement",
+    "ref": "Reference",
+    "done": {
+      "title": "Settlement recorded",
+      "sub": "Your commission balance has been updated. Keep driving!",
+      "cta": "View settlement history"
+    }
+  },
+  "susp": {
+    "badge": "Account suspended",
+    "title": "You can't go online",
+    "tag": "Your commission balance is overdue. Clear it to reactivate your account and start receiving requests again.",
+    "owed": "Balance to clear",
+    "reason": "Overdue since {{since}} · exceeds {{cap}} LYD cap",
+    "s1": { "t": "Settle the full balance", "d": "Pay {{balance}} LYD through any approved channel." },
+    "s2": { "t": "Wait for admin confirmation", "d": "Djera verifies the payment and reactivates your account." },
+    "s3": { "t": "Go back online", "d": "Resume receiving ride requests as usual." },
+    "cta": "Settle now to reactivate",
+    "support": "Contact support",
+    "todo": "TODO §5 — settlement cap + overdue grace period TBD"
+  },
   "nav": {
     "home": "Home",
     "trips": "Trips",
