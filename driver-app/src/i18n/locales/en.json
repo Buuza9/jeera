@@ -101,6 +101,43 @@
     "reject": "Reject",
     "accept": "Accept"
   },
+  "trip": {
+    "rider": "Khalid Al-Asmari",
+    "pickupHead": "Heading to pickup",
+    "intripHead": "Trip in progress",
+    "remaining": "Remaining",
+    "directions": "View directions",
+    "call": "Call",
+    "arrived": "I've arrived",
+    "end": "End trip",
+    "doneTitle": "Trip complete",
+    "doneSub": "Safe trip, Ahmad.",
+    "due": "Collect from rider",
+    "cash": "Cash",
+    "distance": "Distance",
+    "duration": "Duration",
+    "commission": "Djera commission (−15%)",
+    "commissionAmt": "{{amount}} LYD added to outstanding",
+    "cashReceived": "Confirm cash received",
+    "receipt": "View trip receipt"
+  },
+  "collect": {
+    "eyebrow": "Trip ended",
+    "title": "Collect payment",
+    "due": "Amount to collect",
+    "method": "Payment method",
+    "cash": "Cash",
+    "cashSub": "Rider pays you directly",
+    "fare": "Trip fare",
+    "commission": "Djera commission (−15%)",
+    "earnings": "Your earnings",
+    "confirm": "I've collected the cash"
+  },
+  "success": {
+    "earned": "You earned",
+    "collected": "Cash collected",
+    "home": "Back to home"
+  },
   "nav": {
     "home": "Home",
     "trips": "Trips",
@@ -110,7 +147,8 @@
   "unit": {
     "currency": "LYD",
     "hr": "h",
-    "km": "km"
+    "km": "km",
+    "min": "min"
   },
   "common": {
     "comingSoon": "Coming soon",

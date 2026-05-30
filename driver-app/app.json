@@ -11,7 +11,8 @@
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.buuza99.driver-app",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Djera uses your location to show your position on the map and match you with nearby ride requests."
+        "NSLocationWhenInUseUsageDescription": "Djera uses your location to show your position on the map and match you with nearby ride requests.",
+        "LSApplicationQueriesSchemes": ["comgooglemaps"]
       }
     },
     "android": {
@@ -33,11 +34,10 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "android": {
-            "image": "./assets/images/splash-icon.png",
-            "imageWidth": 76
-          }
+          "backgroundColor": "#faf6f1",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76,
+          "dark": { "backgroundColor": "#110c08" }
         }
       ],
       "expo-secure-store",

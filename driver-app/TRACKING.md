@@ -97,7 +97,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | `auth` | D1 | ✅ | `../driver-prototype/auth/` — sign-in → OTP → success, ported 1:1. authStore + secure-store + mock OTP (123456). Verified on iOS sim. SMS deferred; Supabase email OTP stubbed. |
 | `dashboard` | D2 | ✅ | `../driver-prototype/dashboard/` — full-bleed map (real GPS via expo-location), online toggle, Today/Commission dock, navbar. Verified on iOS sim. Summary/commission values still mock. |
 | `ride-requests` | D2 | ✅ | `../driver-prototype/ride-requests/` — map + route polyline, notice pill, 15s countdown ring, route card, metrics, accept/reject. Verified on iOS sim. Mock request; real dispatch later. |
-| `active-trip` | D2 | ⏳ | `../driver-prototype/active-trip/` |
+| `active-trip` | D2 | ✅ | `../driver-prototype/active-trip/` — to-pickup → in-trip → collect-payment → success, real GPS + Google Maps handoff, interactive maps. Verified on iOS sim. **D2 loop complete.** |
 | `earnings` | D3 | ⏳ | `../driver-prototype/earnings/` |
 | `trip-history` | D3 | ⏳ | `../driver-prototype/trip-history/` |
 | `commission` | D3 | ⏳ | `../driver-prototype/commission/` |
