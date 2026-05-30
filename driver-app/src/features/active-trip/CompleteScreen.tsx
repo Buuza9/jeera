@@ -12,16 +12,14 @@ import { TRIP, commissionAmount } from './data';
 export function CompleteScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const finish = useRideStore((s) => s.finish);
   const trip = useRideStore((s) => s.active) ?? MOCK_REQUEST;
   const fare = trip.fare;
   const commission = commissionAmount(fare, TRIP.commissionRate);
   const earnings = +(fare - commission).toFixed(2);
 
-  const done = () => {
-    finish(); // clear ride state; real impl writes the commission accrual to the ledger
-    router.replace('/dashboard');
-  };
+  // Next: rate the rider. The rate-rider screen clears the ride state and
+  // returns home (or the driver can skip there).
+  const done = () => router.replace('/ratings/rate-rider');
 
   return (
     <Screen contentClassName="items-center pt-16">
@@ -80,7 +78,7 @@ export function CompleteScreen() {
       <View className="flex-1" />
 
       <View className="w-full">
-        <Button label={t('success.home')} onPress={done} />
+        <Button label={t('success.rate')} onPress={done} />
       </View>
     </Screen>
   );

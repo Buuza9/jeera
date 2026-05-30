@@ -101,7 +101,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | `earnings` | D3 | ✅ | `../driver-prototype/earnings/` — period tabs (today/week/month), brand hero (net + delta), animated bar chart, 2×2 stats grid, per-bucket breakdown, ported 1:1. Mock `EARNINGS` data; EN/AR + RTL. Real aggregation + trip-history detail links pending. |
 | `trip-history` | D3 | ✅ | `../driver-prototype/trip-history/` — list (stats · search · day filter · day-grouped cards · cancelled variant) + detail (route map · fare breakdown · rider · timeline), ported 1:1. Routes `/trips`, `/trips/[id]`. Mock `TRIPS`; EN/AR + RTL. Real query + support/call links pending. |
 | `commission` | D3 | ✅ | `../driver-prototype/commission/` — balance → settle (full/partial, channel picker, success overlay) → history (month-grouped) + suspended state, ported 1:1. In-memory commissionStore, mock accruals/settlements. EN/AR + RTL. PR #19. Rate/cap/channels/grace client-blocked (§5). |
-| `ratings` | D4 | ⏳ | `../driver-prototype/ratings/` |
+| `ratings` | D4 | ✅ | `../driver-prototype/ratings/` — overview (hero · breakdown · behaviour stats · reviews) + rate-rider (tappable stars · tags · note), ported 1:1. Routes `/ratings`, `/ratings/rate-rider`; entered from Profile + after a trip. Mock data; EN/AR + RTL. |
 | `profile` | D4 | ✅ | `../driver-prototype/profile/` — identity · vehicle · documents · links · sign out, ported 1:1. Tab route. Mock DRIVER; EN/AR + RTL. |
 | `settings` | D4 | ✅ | `../driver-prototype/settings/` — appearance (live language + theme), notifications & security toggles (persisted), privacy, sign out. Route `/settings`. EN/AR + RTL. |
 | `support` | D4 | ⏳ | `../driver-prototype/support/` |
