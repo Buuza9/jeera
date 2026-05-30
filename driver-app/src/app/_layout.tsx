@@ -3,6 +3,7 @@ import '@/global.css';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useColorScheme } from 'nativewind';
 import { useEffect } from 'react';
 
@@ -25,15 +26,16 @@ export default function RootLayout() {
   }, []);
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <ThemeProvider>
       <LangProvider>
         <LocationProvider>
           <StatusBarFromTheme />
           <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
-            {/* Returning to the dashboard via router.replace (placeholder "Back",
-                end-of-trip "home") should animate as a pop — slide left→right —
-                instead of the default push direction. */}
-            <Stack.Screen name="dashboard" options={{ animationTypeForReplace: 'pop' }} />
+            {/* The four main screens live in the (tabs) group — switching tabs is
+                instant (kept mounted). Entering it animates left→right (the
+                opposite of the default), e.g. the welcome dev button → dashboard. */}
+            <Stack.Screen name="(tabs)" options={{ animation: 'ios_from_left' }} />
             {/* Ride request slides up as a sheet OVER the dashboard (map stays behind). */}
             <Stack.Screen
               name="ride-requests"
@@ -47,5 +49,6 @@ export default function RootLayout() {
         </LocationProvider>
       </LangProvider>
     </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

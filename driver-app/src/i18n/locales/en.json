@@ -155,7 +155,26 @@
     "vs": "vs prev."
   },
   "hist": {
-    "title": "Trip history"
+    "title": "Trip history",
+    "searchPh": "Search rider, place…",
+    "all": "All",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "empty": "No trips match",
+    "cancelled": "Cancelled",
+    "net": "Net to you",
+    "rider": "Rider",
+    "paid": "Paid in cash",
+    "timeline": "Trip timeline",
+    "help": "Get help with this trip",
+    "fare": { "trip": "Trip fare" },
+    "detail": { "head": "Completed" },
+    "tl": {
+      "accept": "Request accepted",
+      "arrive": "Arrived at pickup",
+      "start": "Trip started",
+      "end": "Trip ended"
+    }
   },
   "com": {
     "title": "Commission",

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Appbar, Icon, Navbar } from '@/shared/components';
+import { Appbar, Icon } from '@/shared/components';
 
 import { BarChart } from './BarChart';
 import { EARNINGS, PERIODS, group, type Period } from './data';
@@ -19,7 +19,7 @@ export function EarningsScreen() {
   return (
     <SafeAreaView edges={['top', 'left', 'right']} className="flex-1 bg-bg dark:bg-dark-bg">
       <View className="px-7">
-        <Appbar title={t('earn.title')} onBack={() => router.replace('/dashboard')} />
+        <Appbar title={t('earn.title')} onBack={() => router.navigate('/dashboard')} />
       </View>
 
       <ScrollView
@@ -113,7 +113,7 @@ export function EarningsScreen() {
         {/* Breakdown */}
         <View className="mb-2.5 mt-5 flex-row items-center justify-between">
           <Text className="text-[15px] font-bold text-text dark:text-dark-text">{t('earn.breakdown')}</Text>
-          <Pressable onPress={() => router.push('/trips')} className="flex-row items-center gap-1">
+          <Pressable onPress={() => router.navigate('/trips')} className="flex-row items-center gap-1">
             <Text className="text-[13px] font-semibold text-brand-600">{t('hist.title')}</Text>
             <Icon name="arrowRight" size={14} color="#2a673a" />
           </Pressable>
@@ -147,7 +147,6 @@ export function EarningsScreen() {
         </View>
       </ScrollView>
 
-      <Navbar active="earnings" />
     </SafeAreaView>
   );
 }
