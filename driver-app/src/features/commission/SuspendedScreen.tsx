@@ -52,7 +52,7 @@ export function SuspendedScreen() {
           </Text>
           <Text className="mt-1.5 font-display text-[44px] font-semibold text-text dark:text-dark-text" style={{ letterSpacing: -1.8 }}>
             {SUSPENDED.balance}
-            <Text className="text-[17px] font-bold text-text-muted dark:text-dark-text-muted"> {t('unit.currency')}</Text>
+            <Text className="text-[17px] font-bold text-text-muted dark:text-dark-text-muted" style={{ letterSpacing: 0 }}> {t('unit.currency')}</Text>
           </Text>
           <Text className="mt-1 text-[12.5px] text-text-muted dark:text-dark-text-muted">
             {t('susp.reason', { since: SUSPENDED.since, cap: SUSPENDED.cap })}

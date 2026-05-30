@@ -47,16 +47,30 @@ export function SettleScreen() {
           </Text>
           <Text className="mt-1.5 font-display text-[44px] font-semibold text-text dark:text-dark-text" style={{ letterSpacing: -1.8 }}>
             {amountLabel}
-            <Text className="text-[17px] font-bold text-text-muted dark:text-dark-text-muted"> {t('unit.currency')}</Text>
+            <Text className="text-[17px] font-bold text-text-muted dark:text-dark-text-muted" style={{ letterSpacing: 0 }}> {t('unit.currency')}</Text>
           </Text>
           <Text className="text-[12.5px] text-text-muted dark:text-dark-text-muted">
             {t('set.outOf', { cap: outstanding })}
           </Text>
 
-          {/* Full / partial segmented control */}
+          {/* Full / partial segmented control — inline (matches the working Navbar pattern) */}
           <View className="mt-3.5 w-full flex-row gap-1 rounded-md bg-surface-2 p-1 dark:bg-dark-surface-2">
-            <Seg label={t('set.full')} on={full} onPress={() => setFull(true)} />
-            <Seg label={t('set.partial')} on={!full} onPress={() => setFull(false)} />
+            {([['set.full', true], ['set.partial', false]] as const).map(([key, isFull]) => {
+              const on = full === isFull;
+              // Pressable className stays static; toggling classes live on an inner
+              // View (a Pressable whose own className toggles crashes under NativeWind).
+              return (
+                <Pressable key={key} onPress={() => setFull(isFull)} className="flex-1">
+                  <View className={`items-center rounded-[10px] py-2.5 ${on ? 'bg-surface dark:bg-dark-surface' : 'bg-transparent'}`}>
+                    <Text
+                      className={`text-[13.5px] font-semibold ${on ? 'text-text dark:text-dark-text' : 'text-text-muted dark:text-dark-text-muted'}`}
+                    >
+                      {t(key)}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
           </View>
 
           {full ? null : (
@@ -172,25 +186,6 @@ export function SettleScreen() {
         </Animated.View>
       ) : null}
     </SafeArea>
-  );
-}
-
-function Seg({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      className={`flex-1 items-center rounded-[10px] py-2.5 ${
-        on ? 'bg-bg shadow-sm dark:bg-dark-surface' : ''
-      }`}
-    >
-      <Text
-        className={`text-[13.5px] font-semibold ${
-          on ? 'text-text dark:text-dark-text' : 'text-text-muted dark:text-dark-text-muted'
-        }`}
-      >
-        {label}
-      </Text>
-    </Pressable>
   );
 }
 

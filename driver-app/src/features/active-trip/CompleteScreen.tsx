@@ -62,7 +62,7 @@ export function CompleteScreen() {
           style={{ letterSpacing: -1.5 }}
         >
           {earnings}
-          <Text className="text-[16px] text-text-muted dark:text-dark-text-muted">
+          <Text className="text-[16px] text-text-muted dark:text-dark-text-muted" style={{ letterSpacing: 0 }}>
             {' '}
             {t('unit.currency')}
           </Text>
