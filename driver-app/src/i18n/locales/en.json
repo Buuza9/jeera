@@ -75,6 +75,28 @@
   "prof": {
     "docs": "Documents"
   },
+  "dash": {
+    "weather": "Tripoli · 26°",
+    "greet": "Salaam, Ahmad",
+    "online": "Go online",
+    "onlineOn": "You're online",
+    "onlineTap": "Tap to start receiving requests",
+    "onlineListening": "Listening for requests…",
+    "today": "Today",
+    "trips": "trips",
+    "commission": "Commission",
+    "due": "Due Sunday"
+  },
+  "nav": {
+    "home": "Home",
+    "trips": "Trips",
+    "earnings": "Earnings",
+    "profile": "Profile"
+  },
+  "unit": {
+    "currency": "LYD",
+    "hr": "h"
+  },
   "common": {
     "comingSoon": "Coming soon",
     "back": "Back"

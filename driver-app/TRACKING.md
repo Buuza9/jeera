@@ -76,7 +76,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | Theme system (light/dark + tokens ported from prototype) | ✅ | `src/theme/tokens.ts` (TS mirror for non-NativeWind use). `src/theme/ThemeProvider.tsx` exposes `preference` (`light`/`dark`/`system`), `active` (resolved name), `setPreference`; persisted to `AsyncStorage` (`djera.theme`). |
 | `react-i18next` + EN/AR | ✅ | `src/i18n/index.ts` initializes `i18next` lazily; resources in `src/i18n/locales/{en,ar}.json`. `src/i18n/LangProvider.tsx` exposes `lang`, `rtl`, `setLang`, `needsReload`; persists to `AsyncStorage` (`djera.lang`); detects device locale on first run via `expo-localization`. |
 | RTL via `I18nManager` | ✅ | `LangProvider` calls `I18nManager.allowRTL(true)` + `forceRTL` on lang change; surfaces `needsReload: boolean` so the UI can prompt for an app reload when native layout direction differs from the picked language. |
-| Zustand stores | 🟡 | `authStore` (secure-store) + `enrollmentStore` (AsyncStorage) live. Both storage adapters in `src/shared/store/`. `settingsStore`/`driverStore` land as features need them. |
+| Zustand stores | 🟡 | `authStore` (secure-store) + `enrollmentStore` + `dashboardStore` (AsyncStorage) live. Both storage adapters in `src/shared/store/`. `settingsStore`/`driverStore` land as features need them. |
 | TanStack Query v5 | ⏳ | Query client provider in root layout. |
 | `expo-secure-store` (tokens, PIN hash) | ✅ | Installed + linked (native build). Backs `authStore` persistence via `src/shared/store/secureStorage.ts` adapter. |
 | `AsyncStorage` | ✅ | Used by theme + lang providers. Available for future state. |
@@ -84,7 +84,8 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | Boot flow (splash → auth gate → enrollment/auth/dashboard) | 🟡 | Root layout wires `ThemeProvider` → `LangProvider` → `Stack`. Auth gate + splash lands with the `auth` feature PR. Current entry (`src/app/index.tsx`) is a foundation demo: theme picker + lang picker + direction note. |
 | Shared component primitives | 🟡 | Live in `src/shared/components/`: `Screen`, `Brand`, `Button`, `Icon` (full Djera set on `react-native-svg`), `Field` (label/error/prefix, centered), `Appbar` (back + title, RTL chevron). `Badge`, `Card`, `Navbar`, `Segment` land as features need them. |
 | Icons (`react-native-svg`) | ✅ | Custom monoline set in `Icon.tsx` (currentColor stroke, 24×24, 1.8 base). Replaced `react-native-heroicons` for prototype fidelity. Requires native build (linked). |
-| Map shim (`react-native-maps`) | ⏳ | Mock-first; mirror `JeeraMap` API from prototype. |
+| Map shim (`react-native-maps`) | ✅ | `src/shared/components/Map.tsx` (`DjeraMap`) — Apple provider on iOS (no key), driver/rider/dest pins, Tripoli geo in `src/shared/geo.ts`. Real GPS via `expo-location` + `src/shared/useDeviceLocation.ts` (permission + watch + Tripoli fallback). Landed with dashboard. |
+| Navbar (bottom tabs) | ✅ | `src/shared/components/Navbar.tsx` — Home/Trips/Earnings/Profile, safe-area aware. Landed with dashboard. |
 | Brand assets (icon, splash, fonts) | ⏳ | Replace template's defaults with Djera mark + Geist/Inter/IBM Plex Sans Arabic (load via `expo-font`). |
 
 ## Features (per `CLAUDE.md` §3 — D1 → D4)
@@ -94,7 +95,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | `welcome` | D1 | ✅ | `../driver-prototype/welcome/` — entry screen, ported 1:1. Verified on iOS sim. |
 | `enrollment` | D1 | ✅ | `../driver-prototype/enrollment/` — form + pending, ported 1:1. enrollmentStore (AsyncStorage), mock submit, doc upload tiles (mock toggle). Verified on iOS sim. |
 | `auth` | D1 | ✅ | `../driver-prototype/auth/` — sign-in → OTP → success, ported 1:1. authStore + secure-store + mock OTP (123456). Verified on iOS sim. SMS deferred; Supabase email OTP stubbed. |
-| `dashboard` | D2 | ⏳ | `../driver-prototype/dashboard/` |
+| `dashboard` | D2 | ✅ | `../driver-prototype/dashboard/` — full-bleed map (real GPS via expo-location), online toggle, Today/Commission dock, navbar. Verified on iOS sim. Summary/commission values still mock. |
 | `ride-requests` | D2 | ⏳ | `../driver-prototype/ride-requests/` |
 | `active-trip` | D2 | ⏳ | `../driver-prototype/active-trip/` |
 | `earnings` | D3 | ⏳ | `../driver-prototype/earnings/` |
