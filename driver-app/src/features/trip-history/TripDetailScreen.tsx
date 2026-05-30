@@ -213,8 +213,8 @@ export function TripDetailScreen() {
           ))}
         </View>
 
-          {/* Support (inert until the support feature lands) */}
-          <Button label={t('hist.help')} variant="secondary" icon="shield" />
+          {/* Get help with this trip → support */}
+          <Button label={t('hist.help')} variant="secondary" icon="shield" onPress={() => router.push('/support')} />
         </ScrollView>
       </Animated.View>
     </View>

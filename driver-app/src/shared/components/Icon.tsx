@@ -195,6 +195,19 @@ const ICONS = {
       </>
     ),
   },
+  sos: {
+    size: 24, sw: 2, shape: (sw, c) => (
+      <>
+        <Path d="M12 2a9 9 0 0 0-9 9c0 6 9 11 9 11s9-5 9-11a9 9 0 0 0-9-9z" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+        <Path d="M12 8v4M12 16h.01" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
+  chat: {
+    size: 22, sw: 1.8, shape: (sw, c) => (
+      <Path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+    ),
+  },
   globe: {
     size: 22, sw: 1.8, shape: (sw, c) => (
       <>

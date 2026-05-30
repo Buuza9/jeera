@@ -100,7 +100,7 @@ export function SettingsScreen() {
         <Section label={t('stg.privacy')} />
         <Card>
           <LinkRow icon="shield" label={t('stg.privacyPolicy')} />
-          <LinkRow icon="help" label={t('stg.help')} divider />
+          <LinkRow icon="help" label={t('stg.help')} divider onPress={() => router.push('/support')} />
           <Pressable onPress={onSignOut} className="flex-row items-center gap-3.5 border-t border-border py-3.5 dark:border-dark-border">
             <View className="h-[34px] w-[34px] items-center justify-center rounded-md bg-danger/10">
               <Icon name="logout" size={18} color="#c5372f" />
@@ -154,15 +154,18 @@ function Row({
   );
 }
 
-function LinkRow({ icon, label, divider = false }: { icon: IconName; label: string; divider?: boolean }) {
+function LinkRow({ icon, label, divider = false, onPress }: { icon: IconName; label: string; divider?: boolean; onPress?: () => void }) {
   return (
-    <View className={`flex-row items-center gap-3.5 py-3.5 ${divider ? 'border-t border-border dark:border-dark-border' : ''}`}>
+    <Pressable
+      onPress={onPress}
+      className={`flex-row items-center gap-3.5 py-3.5 ${divider ? 'border-t border-border dark:border-dark-border' : ''}`}
+    >
       <View className="h-[34px] w-[34px] items-center justify-center rounded-md bg-surface-2 dark:bg-dark-surface-2">
         <Icon name={icon} size={18} color="#5e5650" />
       </View>
       <Text className="flex-1 text-[14px] font-semibold text-text dark:text-dark-text">{label}</Text>
       <Icon name="arrowRight" size={16} color="#8b857f" />
-    </View>
+    </Pressable>
   );
 }
 

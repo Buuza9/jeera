@@ -149,7 +149,7 @@ export function DashboardScreen() {
       </View>
 
       {/* Map controls */}
-      <View style={{ bottom: insets.bottom + 180 }} className="absolute end-4 gap-2">
+      <View style={{ bottom: insets.bottom + 144 }} className="absolute end-4 gap-2">
         <View className="h-11 w-11 items-center justify-center rounded-full border border-border bg-surface shadow dark:border-dark-border dark:bg-dark-surface">
           <Icon name="layers" size={20} color="#1b1410" />
         </View>
@@ -164,7 +164,7 @@ export function DashboardScreen() {
 
       {/* Bottom dock: today + commission */}
       <View
-        style={{ bottom: insets.bottom + 84 }}
+        style={{ bottom: insets.bottom + 48 }}
         className="absolute inset-x-4 flex-row overflow-hidden rounded-lg border border-border bg-surface shadow-md dark:border-dark-border dark:bg-dark-surface"
       >
         <Pressable onPress={() => router.navigate('/earnings')} className="flex-1 p-3.5">
