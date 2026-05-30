@@ -28,18 +28,24 @@ export function RideRequestScreen() {
   const [seconds, setSeconds] = useState(req.autoDeclineSeconds);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Snapshot whether a genuine offer existed when this screen mounted. We must
+  // NOT react to `incoming` later becoming null — accept()/reject() clear it on
+  // purpose and navigate themselves; reacting would race that navigation and
+  // bounce the driver back to the dashboard instead of opening the trip.
+  const mountedWithOffer = useRef(storeReq !== null);
+
   const dismissBack = useCallback(() => {
     if (router.canGoBack()) router.back();
     else router.replace('/dashboard');
   }, [router]);
 
   // Guard against dev-reload artifacts: Expo Router restores this modal route
-  // across reloads, but the in-memory ride store resets to no offer. Without a
-  // genuine incoming request, bail back to the dashboard instead of rendering
-  // the fallback mock (which looked like a phantom request on reload).
+  // across reloads, but the in-memory ride store resets to no offer. If the
+  // screen mounts without a genuine request, bail back to the dashboard instead
+  // of rendering the fallback mock (which looked like a phantom request).
   useEffect(() => {
-    if (!storeReq) dismissBack();
-  }, [storeReq, dismissBack]);
+    if (!mountedWithOffer.current) dismissBack();
+  }, [dismissBack]);
 
   // Reject / timeout: clear the request (removes the dashboard pin) + go back;
   // the dashboard re-searches and offers another.
@@ -69,9 +75,9 @@ export function RideRequestScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
 
-  // No genuine offer (e.g. restored route after a reload) → render nothing
-  // while the guard effect above dismisses back to the dashboard.
-  if (!storeReq) return null;
+  // Mounted with no genuine offer (e.g. restored route after a reload) → render
+  // nothing while the guard effect above dismisses back to the dashboard.
+  if (!mountedWithOffer.current) return null;
 
   return (
     <View className="flex-1 justify-end">

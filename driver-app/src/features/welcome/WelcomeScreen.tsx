@@ -75,6 +75,12 @@ export function WelcomeScreen() {
           variant="ghost"
           onPress={() => router.push("/auth")}
         />
+        {/* TEMP dev shortcut — skip auth straight to the dashboard. REMOVE before ship. */}
+        <Button
+          label="▶︎ Dev: go to dashboard"
+          variant="secondary"
+          onPress={() => router.replace("/dashboard")}
+        />
       </View>
 
       <Text className="mx-auto mt-4 max-w-[280px] text-center text-[11.5px] leading-4 text-text-faint dark:text-dark-text-faint">

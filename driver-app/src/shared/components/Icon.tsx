@@ -1,5 +1,19 @@
 import { type ReactNode } from 'react';
+import { useColorScheme } from 'nativewind';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
+
+// Dark-mode color remap. Icons pass light-theme colors (the default foreground
+// is #1b1410); in dark mode those would sit invisibly on dark surfaces. Map the
+// neutral text tokens to (near-)white and lighten on-surface brand greens so
+// every icon stays legible. White-on-colored icons (#ffffff) are left untouched.
+const DARK_MAP: Record<string, string> = {
+  '#1b1410': '#f9f4ee', // text → dark-text (white)
+  '#5e5650': '#aaa39b', // text-muted → dark-text-muted
+  '#8b857f': '#77706a', // text-faint → dark-text-faint
+  '#194f29': '#89b992', // brand-700 → brand-300 (on dark-surface tints)
+  '#2a673a': '#578f63', // brand-600 → brand-400
+  '#9a6a00': '#f6a157', // amber → accent-400
+};
 
 // Djera icon set — monoline, 24×24 viewBox, currentColor stroke.
 // Ported 1:1 from ../claude-design-mockups/app/icons.jsx so the RN app matches
@@ -214,12 +228,14 @@ type IconProps = {
 };
 
 export function Icon({ name, size, color = '#1b1410', strokeWidth, filled = false }: IconProps) {
+  const { colorScheme } = useColorScheme();
   const def = ICONS[name];
   const px = size ?? def.size;
   const sw = strokeWidth ?? def.sw;
+  const resolved = colorScheme === 'dark' ? (DARK_MAP[color.toLowerCase()] ?? color) : color;
   return (
     <Svg width={px} height={px} viewBox="0 0 24 24" fill="none">
-      {def.shape(sw, color, filled)}
+      {def.shape(sw, resolved, filled)}
     </Svg>
   );
 }

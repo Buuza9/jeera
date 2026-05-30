@@ -20,7 +20,10 @@ export function ComingSoon({ title }: { title: string }) {
         {t('common.comingSoon')}
       </Text>
       <View className="mt-8 w-full max-w-[240px]">
-        <Button label={t('common.back')} variant="secondary" onPress={() => router.back()} />
+        {/* These placeholders are tab destinations reached via Navbar's
+            router.replace, so there's no back-stack entry — return to the
+            dashboard explicitly rather than router.back() (which goes nowhere). */}
+        <Button label={t('common.back')} variant="secondary" onPress={() => router.replace('/dashboard')} />
       </View>
     </Screen>
   );

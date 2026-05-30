@@ -23,7 +23,7 @@ export function BalanceScreen() {
 
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-7 pb-32"
+        contentContainerClassName="px-7 pb-48"
         showsVerticalScrollIndicator={false}
       >
         {/* Balance hero (amber) */}
@@ -31,7 +31,6 @@ export function BalanceScreen() {
           className="overflow-hidden rounded-lg bg-accent-500 p-[22px]"
           style={{ shadowColor: '#c9732f', shadowOpacity: 0.3, shadowRadius: 28, shadowOffset: { width: 0, height: 12 } }}
         >
-          <View className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-accent-400/40" />
           <Text className="font-mono text-[11px] uppercase tracking-widest text-white/80">
             {t('com.outstanding')}
           </Text>
@@ -105,14 +104,10 @@ export function BalanceScreen() {
         </View>
       </ScrollView>
 
-      {/* Sticky action bar */}
-      <View className="absolute inset-x-0 bottom-0 flex-row gap-2.5 bg-bg px-7 pb-7 pt-3 dark:bg-dark-bg">
-        <View className="flex-1">
-          <Button label={t('com.history')} variant="secondary" onPress={() => router.push('/commission/history')} />
-        </View>
-        <View style={{ flex: 1.3 }}>
-          <Button label={t('com.settle')} onPress={() => router.push('/commission/settle')} />
-        </View>
+      {/* Sticky action bar — stacked full-width so both labels stay centered */}
+      <View className="absolute inset-x-0 bottom-0 gap-2.5 bg-bg px-7 pb-7 pt-3 dark:bg-dark-bg">
+        <Button label={t('com.settle')} onPress={() => router.push('/commission/settle')} />
+        <Button label={t('com.history')} variant="secondary" onPress={() => router.push('/commission/history')} />
       </View>
     </SafeAreaView>
   );
