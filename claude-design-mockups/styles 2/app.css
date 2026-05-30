@@ -409,3 +409,270 @@
 
 /* RTL adjustments for chevrons */
 [dir="rtl"] svg.chev-end { transform: scaleX(-1); }
+
+/* ───────────────────────────────────────────────────────────────
+   Welcome screen — minimalist, editorial
+   ─────────────────────────────────────────────────────────────── */
+.welcome-screen {
+  display: flex; flex-direction: column;
+  padding: 78px 30px 30px;
+}
+
+.wel-top { margin-bottom: 52px; }
+
+.wel-lead { max-width: 360px; }
+.wel-title {
+  font-size: 42px; font-weight: 600;
+  letter-spacing: -0.045em; line-height: 1.02;
+  white-space: pre-line;
+  margin: 0 0 16px;
+  color: var(--text);
+}
+.wel-sub {
+  font-size: 16px; line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 330px;
+}
+
+/* Feature list — hairline rule, numbered, no fills */
+.wel-features {
+  list-style: none; margin: 0 0 28px; padding: 0;
+  border-top: 1px solid var(--hairline);
+}
+.wel-item {
+  display: flex; align-items: baseline; gap: 16px;
+  padding: 16px 2px;
+  border-bottom: 1px solid var(--hairline);
+}
+.wel-item-n {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+  color: var(--brand-600);
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.wel-item-text h4 {
+  margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.014em;
+  color: var(--text);
+}
+.wel-item-text p {
+  margin: 2px 0 0; font-size: 13px; color: var(--text-muted); line-height: 1.4;
+}
+
+.btn.btn-lg { padding: 17px 18px; font-size: 16px; border-radius: var(--r-md); }
+
+.wel-actions {
+  display: flex; flex-direction: column; gap: 10px;
+  width: 100%;
+}
+.wel-legal {
+  margin-top: 16px; max-width: 300px; margin-inline: auto;
+  text-align: center;
+}
+
+/* Staggered entrance — animates TRANSFORM ONLY, never opacity.
+   Elements stay fully visible even if the animation timeline is
+   throttled (backgrounded tab) or never runs. The overall fade
+   comes from the parent .screen-in (which rests at opacity 1). */
+.wel-anim {
+  animation: wel-rise .5s var(--ease-out) var(--d, 0ms) both;
+}
+@keyframes wel-rise {
+  from { transform: translateY(9px); }
+  to   { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wel-anim { animation: none; }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Splash / loading screen
+   ─────────────────────────────────────────────────────────────── */
+.splash {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background:
+    radial-gradient(130% 80% at 75% 12%, oklch(from var(--brand-500) calc(l + 0.07) c h) 0%, transparent 55%),
+    linear-gradient(165deg, var(--brand-600) 0%, var(--brand-700) 56%, var(--brand-900) 100%);
+  overflow: hidden;
+  transition: opacity .45s var(--ease-out), transform .45s var(--ease-out);
+}
+.splash-exit { opacity: 0; transform: scale(1.04); }
+
+.splash-grid {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: 0;
+  animation: splash-grid-fade 1s var(--ease-out) both;
+}
+@keyframes splash-grid-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.splash-center {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+/* Brand tile + pulsing rings */
+.splash-mark {
+  position: relative;
+  width: 96px; height: 96px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 30px;
+}
+.splash-tile {
+  position: relative; z-index: 2;
+  width: 96px; height: 96px; border-radius: 28px;
+  background: oklch(1 0 0 / .14);
+  border: 1px solid oklch(1 0 0 / .22);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 16px 40px rgba(0,0,0,.28);
+  animation: splash-tile-in .6s var(--ease-spring) both;
+}
+@keyframes splash-tile-in {
+  from { transform: scale(.7); }
+  to   { transform: scale(1); }
+}
+.splash-tile-dot {
+  position: absolute; top: 18px; inset-inline-end: 18px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent-500);
+  box-shadow: 0 0 0 3px oklch(1 0 0 / .15);
+  animation: splash-pop .45s .5s var(--ease-spring) both;
+}
+.splash-ring {
+  position: absolute; z-index: 1;
+  width: 96px; height: 96px; border-radius: 30px;
+  border: 2px solid oklch(1 0 0 / .4);
+  animation: splash-ring 2.4s var(--ease-out) infinite;
+}
+.splash-ring-2 { animation-delay: 1.2s; }
+@keyframes splash-ring {
+  0%   { opacity: .5; transform: scale(1); }
+  70%  { opacity: 0;  transform: scale(1.8); }
+  100% { opacity: 0;  transform: scale(1.8); }
+}
+@keyframes splash-pop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+.splash-word {
+  display: flex; align-items: baseline; gap: 14px;
+  animation: wel-rise .55s .35s var(--ease-out) both;
+}
+.splash-word-en {
+  font-family: var(--font-display);
+  font-size: 44px; font-weight: 600; letter-spacing: -0.05em;
+  color: #fff; line-height: 1;
+}
+.splash-word-ar {
+  font-family: var(--font-ar);
+  font-size: 40px; font-weight: 700; line-height: 1;
+  color: oklch(1 0 0 / .55);
+  direction: rtl;
+}
+.splash-tag {
+  margin-top: 14px;
+  font-size: 14px; font-weight: 500;
+  color: oklch(1 0 0 / .72);
+  animation: wel-rise .55s .5s var(--ease-out) both;
+}
+
+/* Indeterminate progress bar */
+.splash-progress {
+  position: absolute; bottom: 76px; inset-inline: 0; z-index: 2;
+  display: flex; justify-content: center;
+}
+.splash-progress span {
+  width: 132px; height: 4px; border-radius: 999px;
+  background: oklch(1 0 0 / .18);
+  overflow: hidden; position: relative;
+}
+.splash-progress span::after {
+  content: ""; position: absolute; top: 0; height: 100%;
+  width: 45%; border-radius: 999px;
+  background: #fff;
+  animation: splash-slide 1.3s var(--ease-out) infinite;
+}
+@keyframes splash-slide {
+  0%   { left: -45%; }
+  100% { left: 100%; }
+}
+
+/* ── Reusable in-app loading page ────────────────────────────── */
+.loading-page {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+}
+.loading-dark {
+  background:
+    radial-gradient(130% 80% at 75% 12%, oklch(from var(--brand-500) calc(l + 0.07) c h) 0%, transparent 55%),
+    linear-gradient(165deg, var(--brand-600) 0%, var(--brand-700) 56%, var(--brand-900) 100%);
+}
+.loading-center {
+  display: flex; flex-direction: column; align-items: center;
+}
+.loading-orbit {
+  position: relative;
+  width: 64px; height: 64px;
+  margin-bottom: 22px;
+}
+.loading-orbit > svg { position: absolute; inset: 0; }
+.loading-orbit-spin {
+  position: absolute; inset: 0;
+  transform-origin: center;
+  animation: route-spin 1.05s linear infinite;
+}
+.loading-orbit-spin svg circle { animation: none; }
+.loading-dart {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  animation: loading-dart-pulse 1.4s var(--ease-out) infinite;
+}
+@keyframes loading-dart-pulse {
+  0%, 100% { transform: scale(1); opacity: .9; }
+  50%      { transform: scale(1.12); opacity: 1; }
+}
+.loading-label {
+  font-size: 15.5px; font-weight: 600; letter-spacing: -0.014em;
+  color: var(--text);
+}
+.loading-dark .loading-label { color: #fff; }
+.loading-sub {
+  margin-top: 5px; font-size: 13px; color: var(--text-muted);
+}
+.loading-dark .loading-sub { color: oklch(1 0 0 / .7); }
+.loading-dots {
+  display: flex; gap: 6px; margin-top: 16px;
+}
+.loading-dots span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--brand-600);
+  animation: loading-dot 1.2s var(--ease-out) infinite;
+}
+.loading-dark .loading-dots span { background: #fff; }
+.loading-dots span:nth-child(2) { animation-delay: .15s; }
+.loading-dots span:nth-child(3) { animation-delay: .3s; }
+@keyframes loading-dot {
+  0%, 100% { opacity: .25; transform: translateY(0); }
+  40%      { opacity: 1;   transform: translateY(-4px); }
+}
+
+/* ── Route spinner — reusable inline loader ── */
+.route-spinner {
+  width: 28px; height: 28px;
+  display: inline-block;
+}
+.route-spinner svg { display: block; }
+.route-spinner circle {
+  fill: none;
+  stroke: var(--brand-600);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 44 64;
+  transform-origin: center;
+  animation: route-spin 1s linear infinite;
+}
+@keyframes route-spin { to { transform: rotate(360deg); } }

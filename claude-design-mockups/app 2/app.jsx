@@ -61,7 +61,7 @@ function App() {
   useFitPhone();
 
   const [tweaks, setTweak] = useTweaks(TWEAKS_DEFAULTS);
-  const [screen, setScreen] = useState("welcome");
+  const [screen, setScreen] = useState("splash");
   const [params, setParams] = useState({});
   const [online, setOnline] = useState(false);
 
@@ -120,6 +120,8 @@ function App() {
     screen === "commission"  ? "earnings" : null;
 
   const screens = {
+    splash:             () => <ScreenSplash go={go}/>,
+    loading:            () => <ScreenLoading label={params.label} sub={params.sub} dark={params.dark} next={params.next} go={go}/>,
     welcome:            () => <ScreenWelcome go={go}/>,
     auth:               () => <ScreenAuth go={go} back={back}/>,
     otp:                () => <ScreenOTP go={go} back={back} phone={params.phone}/>,
@@ -209,6 +211,8 @@ function App() {
 /* Quick screen-jump nav for previewing during reviews */
 function TweakNav({ onGo, current }) {
   const items = [
+    ["splash", "Splash"],
+    ["loading", "Loading"],
     ["welcome", "Welcome"],
     ["auth", "Auth"],
     ["otp", "OTP"],
