@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo/ui": "~56.0.14",
     "@react-native-async-storage/async-storage": "^3.1.0",
+    "@react-navigation/bottom-tabs": "^7.16.2",
     "expo": "~56.0.6",
     "expo-constants": "~56.0.16",
     "expo-dev-client": "~56.0.18",

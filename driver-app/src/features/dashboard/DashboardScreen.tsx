@@ -5,7 +5,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type MapView from 'react-native-maps';
 
-import { DjeraMap, Icon, Navbar } from '@/shared/components';
+import { DjeraMap, Icon } from '@/shared/components';
 import { useLocation } from '@/shared/LocationProvider';
 import { MOCK_REQUEST } from '@/features/ride-requests/data';
 import { useRideStore } from '@/features/ride-requests/store';
@@ -91,7 +91,7 @@ export function DashboardScreen() {
         className="absolute inset-x-4 flex-row items-center"
       >
         <Pressable
-          onPress={() => router.push('/profile')}
+          onPress={() => router.navigate('/profile')}
           accessibilityLabel="Profile"
           className="h-11 w-11 items-center justify-center rounded-full bg-brand-600 shadow"
         >
@@ -167,7 +167,7 @@ export function DashboardScreen() {
         style={{ bottom: insets.bottom + 84 }}
         className="absolute inset-x-4 flex-row overflow-hidden rounded-lg border border-border bg-surface shadow-md dark:border-dark-border dark:bg-dark-surface"
       >
-        <Pressable onPress={() => router.push('/earnings')} className="flex-1 p-3.5">
+        <Pressable onPress={() => router.navigate('/earnings')} className="flex-1 p-3.5">
           <Text className="font-mono text-[10px] uppercase tracking-widest text-text-muted dark:text-dark-text-muted">
             {t('dash.today')}
           </Text>
@@ -203,7 +203,6 @@ export function DashboardScreen() {
         </Pressable>
       </View>
 
-      <Navbar active="home" />
     </View>
   );
 }
