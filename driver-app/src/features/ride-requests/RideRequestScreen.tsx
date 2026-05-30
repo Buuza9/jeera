@@ -5,9 +5,11 @@ import { Pressable, Text, View } from 'react-native';
 import Animated, { Easing, FadeIn, SlideInDown } from 'react-native-reanimated';
 
 import { Button } from '@/shared/components';
+import { openDirections } from '@/shared/maps';
 
 import { CountdownRing } from './CountdownRing';
 import { MOCK_REQUEST } from './data';
+import { useRideStore } from './store';
 
 // Matches the prototype's --ease-spring (gentle overshoot).
 const SPRING = Easing.bezier(0.34, 1.56, 0.64, 1).factory();
@@ -19,16 +21,34 @@ const SPRING = Easing.bezier(0.34, 1.56, 0.64, 1).factory();
 export function RideRequestScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const req = MOCK_REQUEST;
+  const storeReq = useRideStore((s) => s.incoming);
+  const rejectRide = useRideStore((s) => s.reject);
+  const acceptRide = useRideStore((s) => s.accept);
+  const req = storeReq ?? MOCK_REQUEST; // fallback supports direct deep-link
   const [seconds, setSeconds] = useState(req.autoDeclineSeconds);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const dismiss = () => {
+  const dismissBack = () => {
     if (router.canGoBack()) router.back();
     else router.replace('/dashboard');
   };
 
-  // Auto-decline countdown → dismiss at 0.
+  // Reject / timeout: clear the request (removes the dashboard pin) + go back;
+  // the dashboard re-searches and offers another.
+  const onReject = () => {
+    rejectRide();
+    dismissBack();
+  };
+
+  // Accept: lock in the trip and move to the in-app to-pickup state. Does NOT
+  // auto-open Google Maps — the driver launches navigation from the
+  // "Navigate in Google Maps" button on the to-pickup screen.
+  const onAccept = () => {
+    acceptRide();
+    router.replace('/active-trip/to-pickup');
+  };
+
+  // Auto-decline countdown → reject at 0.
   useEffect(() => {
     timer.current = setInterval(() => setSeconds((n) => n - 1), 1000);
     return () => {
@@ -37,7 +57,7 @@ export function RideRequestScreen() {
   }, []);
 
   useEffect(() => {
-    if (seconds < 0) dismiss();
+    if (seconds < 0) onReject();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
 
@@ -117,10 +137,10 @@ export function RideRequestScreen() {
         {/* Actions */}
         <View className="flex-row gap-2.5">
           <View className="flex-1">
-            <Button label={t('req.reject')} variant="danger" onPress={dismiss} />
+            <Button label={t('req.reject')} variant="danger" onPress={onReject} />
           </View>
           <View style={{ flex: 1.4 }}>
-            <Button label={t('req.accept')} onPress={() => router.replace('/active-trip/to-pickup')} />
+            <Button label={t('req.accept')} onPress={onAccept} />
           </View>
         </View>
       </Animated.View>

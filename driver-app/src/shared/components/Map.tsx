@@ -4,6 +4,8 @@ import MapView, { Marker, Polyline, PROVIDER_DEFAULT, type Region } from 'react-
 
 import { TRIPOLI_REGION } from '@/shared/geo';
 
+import { Icon } from './Icon';
+
 export type LatLng = { latitude: number; longitude: number };
 
 type DjeraMapProps = {
@@ -55,14 +57,26 @@ export const DjeraMap = forwardRef<MapView, DjeraMapProps>(function DjeraMap(
         </Marker>
       ) : null}
 
-      {markers.map((m) => (
-        <Marker key={m.id} coordinate={m.coord} anchor={{ x: 0.5, y: 1 }}>
-          <View
-            className="h-4 w-4 rounded-full border-2 border-white shadow"
-            style={{ backgroundColor: PIN_COLOR[m.kind ?? 'rider'] }}
-          />
-        </Marker>
-      ))}
+      {markers.map((m) => {
+        const color = PIN_COLOR[m.kind ?? 'rider'];
+        return (
+          <Marker key={m.id} coordinate={m.coord} anchor={{ x: 0.5, y: 1 }}>
+            {/* Teardrop location pin with the icon inside */}
+            <View className="items-center">
+              <View
+                className="h-9 w-9 items-center justify-center rounded-full border-2 border-white shadow-md"
+                style={{ backgroundColor: color }}
+              >
+                <Icon name={m.kind === 'dest' ? 'pin' : 'user'} size={18} color="#ffffff" />
+              </View>
+              <View
+                className="-mt-1 h-2 w-2 rotate-45 border-b-2 border-e-2 border-white"
+                style={{ backgroundColor: color }}
+              />
+            </View>
+          </Marker>
+        );
+      })}
     </MapView>
   );
 });

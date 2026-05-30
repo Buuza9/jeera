@@ -7,6 +7,8 @@ import type MapView from 'react-native-maps';
 
 import { DjeraMap, Icon, Navbar } from '@/shared/components';
 import { useDeviceLocation } from '@/shared/useDeviceLocation';
+import { MOCK_REQUEST } from '@/features/ride-requests/data';
+import { useRideStore } from '@/features/ride-requests/store';
 
 import { useDashboardStore } from './store';
 
@@ -21,19 +23,30 @@ export function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const online = useDashboardStore((s) => s.online);
   const setOnline = useDashboardStore((s) => s.setOnline);
+  const incoming = useRideStore((s) => s.incoming);
+  const offer = useRideStore((s) => s.offer);
 
   const { location, hasFix } = useDeviceLocation();
   const mapRef = useRef<MapView | null>(null);
 
-  // Re-center the map on the driver whenever we get a fresh GPS fix.
+  // Map framing:
+  //  • request incoming → zoom OUT to frame the pickup + drop-off (+ driver),
+  //    keeping the pins above the request sheet.
+  //  • otherwise → center on the driver once we have a GPS fix.
   useEffect(() => {
-    if (hasFix) {
+    if (incoming) {
+      mapRef.current?.fitToCoordinates(
+        [location, incoming.pickup.coord, incoming.dropoff.coord],
+        { edgePadding: { top: 140, right: 70, bottom: 380, left: 70 }, animated: true },
+      );
+    } else if (hasFix) {
       mapRef.current?.animateCamera({ center: location, zoom: 15 }, { duration: 600 });
     }
-  }, [hasFix, location]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [incoming, hasFix]);
 
   const recenter = () =>
-    mapRef.current?.animateCamera({ center: location, zoom: 15 }, { duration: 400 });
+    mapRef.current?.animateCamera({ center: location, zoom: 16 }, { duration: 400 });
 
   // Search loop: whenever the dashboard is focused AND online, schedule a mock
   // request after SEARCH_MS. Because it runs on focus, dismissing the request
@@ -43,17 +56,34 @@ export function DashboardScreen() {
   useFocusEffect(
     useCallback(() => {
       if (!online) return;
-      const id = setTimeout(() => router.push('/ride-requests'), SEARCH_MS);
+      const id = setTimeout(() => {
+        offer(MOCK_REQUEST); // pins the pickup + draws the route below
+        router.push('/ride-requests');
+      }, SEARCH_MS);
       return () => clearTimeout(id);
-    }, [online, router]),
+    }, [online, router, offer]),
   );
 
   const toggleOnline = () => setOnline(!online);
 
   return (
     <View className="flex-1 bg-bg dark:bg-dark-bg">
-      {/* Full-bleed map */}
-      <DjeraMap ref={mapRef} driver={location} online={online} style={{ flex: 1 }} />
+      {/* Full-bleed map — when a request is incoming, pin the pickup + drop-off
+          spots ONLY (no route/navigation line; directions are in Google Maps). */}
+      <DjeraMap
+        ref={mapRef}
+        driver={location}
+        online={online}
+        markers={
+          incoming
+            ? [
+                { id: 'pickup', coord: incoming.pickup.coord, kind: 'rider' },
+                { id: 'dropoff', coord: incoming.dropoff.coord, kind: 'dest' },
+              ]
+            : []
+        }
+        style={{ flex: 1 }}
+      />
 
       {/* Top overlay: avatar (start) · bell (end) */}
       <View

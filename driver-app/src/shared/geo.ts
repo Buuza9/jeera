@@ -15,3 +15,34 @@ export const TRIPOLI_REGION = {
   latitudeDelta: 0.06,
   longitudeDelta: 0.06,
 };
+
+type Pt = { latitude: number; longitude: number };
+
+/** Great-circle distance between two points, in kilometres. */
+export function haversineKm(a: Pt, b: Pt): number {
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(b.latitude - a.latitude);
+  const dLng = toRad(b.longitude - a.longitude);
+  const lat1 = toRad(a.latitude);
+  const lat2 = toRad(b.latitude);
+  const h =
+    Math.sin(dLat / 2) ** 2 + Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+/** A region that frames all given points with comfortable padding. */
+export function regionForPoints(points: Pt[]) {
+  const lats = points.map((p) => p.latitude);
+  const lngs = points.map((p) => p.longitude);
+  const minLat = Math.min(...lats);
+  const maxLat = Math.max(...lats);
+  const minLng = Math.min(...lngs);
+  const maxLng = Math.max(...lngs);
+  return {
+    latitude: (minLat + maxLat) / 2,
+    longitude: (minLng + maxLng) / 2,
+    latitudeDelta: Math.max((maxLat - minLat) * 1.6, 0.02),
+    longitudeDelta: Math.max((maxLng - minLng) * 1.6, 0.02),
+  };
+}
