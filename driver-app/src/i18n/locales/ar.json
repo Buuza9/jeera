@@ -75,6 +75,28 @@
   "prof": {
     "docs": "المستندات"
   },
+  "dash": {
+    "weather": "طرابلس · 26°",
+    "greet": "مرحباً، أحمد",
+    "online": "ابدأ العمل",
+    "onlineOn": "أنت متصل الآن",
+    "onlineTap": "اضغط لبدء استقبال الطلبات",
+    "onlineListening": "جارٍ استقبال الطلبات…",
+    "today": "اليوم",
+    "trips": "رحلة",
+    "commission": "العمولة",
+    "due": "تستحق الأحد"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "trips": "الرحلات",
+    "earnings": "الأرباح",
+    "profile": "حسابي"
+  },
+  "unit": {
+    "currency": "د.ل",
+    "hr": "س"
+  },
   "common": {
     "comingSoon": "قريبًا",
     "back": "رجوع"

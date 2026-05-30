@@ -9,7 +9,10 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.buuza99.driver-app"
+      "bundleIdentifier": "com.buuza99.driver-app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Djera uses your location to show your position on the map and match you with nearby ride requests."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,6 +21,7 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -36,7 +40,13 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Djera uses your location to show your position on the map and match you with nearby ride requests."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
