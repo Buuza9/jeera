@@ -33,8 +33,8 @@ export function Navbar({ state, navigation }: TabBarProps) {
 
   return (
     <View
-      style={{ paddingBottom: Math.max(insets.bottom, 12) }}
-      className="absolute inset-x-0 bottom-0 z-20 flex-row border-t border-border bg-surface px-2 pt-2.5 dark:border-dark-border dark:bg-dark-surface"
+      style={{ paddingBottom: Math.max(insets.bottom - 18, 2) }}
+      className="absolute inset-x-0 bottom-0 z-20 flex-row border-t border-border bg-surface px-2 pt-1.5 dark:border-dark-border dark:bg-dark-surface"
     >
       {state.routes.map((route, index) => {
         const meta = TAB_META[route.name];

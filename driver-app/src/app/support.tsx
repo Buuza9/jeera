@@ -1,6 +1,5 @@
-import { ComingSoon } from '@/features/_placeholder/ComingSoon';
+import { SupportScreen } from '@/features/support';
 
-// Placeholder until the support feature (D4) lands.
 export default function SupportRoute() {
-  return <ComingSoon title="Help & support" />;
+  return <SupportScreen />;
 }

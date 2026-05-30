@@ -104,7 +104,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | `ratings` | D4 | ✅ | `../driver-prototype/ratings/` — overview (hero · breakdown · behaviour stats · reviews) + rate-rider (tappable stars · tags · note), ported 1:1. Routes `/ratings`, `/ratings/rate-rider`; entered from Profile + after a trip. Mock data; EN/AR + RTL. |
 | `profile` | D4 | ✅ | `../driver-prototype/profile/` — identity · vehicle · documents · links · sign out, ported 1:1. Tab route. Mock DRIVER; EN/AR + RTL. |
 | `settings` | D4 | ✅ | `../driver-prototype/settings/` — appearance (live language + theme), notifications & security toggles (persisted), privacy, sign out. Route `/settings`. EN/AR + RTL. |
-| `support` | D4 | ⏳ | `../driver-prototype/support/` |
+| `support` | D4 | ✅ | `../driver-prototype/support/` — SOS (confirm → tel), contact (call/chat/email), FAQ accordion, ported 1:1. Route `/support`; from Profile, Settings, trip detail. EN/AR + RTL. |
 
 ## Open decisions
 
