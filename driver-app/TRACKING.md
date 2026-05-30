@@ -100,7 +100,7 @@ Stack confirmed 2026-05-29: Supabase (Frankfurt), email OTP for auth (SMS deferr
 | `active-trip` | D2 | ✅ | `../driver-prototype/active-trip/` — to-pickup → in-trip → collect-payment → success, real GPS + Google Maps handoff, interactive maps. Verified on iOS sim. **D2 loop complete.** |
 | `earnings` | D3 | ⏳ | `../driver-prototype/earnings/` |
 | `trip-history` | D3 | ⏳ | `../driver-prototype/trip-history/` |
-| `commission` | D3 | ⏳ | `../driver-prototype/commission/` |
+| `commission` | D3 | ✅ | `../driver-prototype/commission/` — balance → settle (full/partial, channel picker, success overlay) → history (month-grouped) + suspended state, ported 1:1. In-memory commissionStore, mock accruals/settlements. EN/AR + RTL. PR #19. Rate/cap/channels/grace client-blocked (§5). |
 | `ratings` | D4 | ⏳ | `../driver-prototype/ratings/` |
 | `profile` | D4 | ⏳ | `../driver-prototype/profile/` |
 | `settings` | D4 | ⏳ | `../driver-prototype/settings/` |
@@ -116,3 +116,6 @@ Per-feature client-blocked items (the prototype's `.todo-chip`s):
 - Document expiry / re-upload UX
 - PIN / biometric session lock scope
 - Offline-mid-trip behavior
+
+## Remove before ship (temporary dev aids)
+- `welcome` screen — "▶︎ Dev: go to dashboard" button (`WelcomeScreen.tsx`) skips auth straight to `/dashboard`.
