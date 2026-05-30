@@ -3,6 +3,8 @@ import { getLocales } from 'expo-localization';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { I18nManager } from 'react-native';
 
+import { Splash } from '@/shared/components/Splash';
+
 import i18n, { initI18n, isRTL, SUPPORTED_LANGS, type Lang } from './index';
 
 const STORAGE_KEY = 'djera.lang';
@@ -36,6 +38,7 @@ export function LangProvider({ children }: { children: ReactNode }) {
   // Load persisted lang, else fall back to device locale.
   useEffect(() => {
     (async () => {
+      const startedAt = Date.now();
       const stored = (await AsyncStorage.getItem(STORAGE_KEY)) as Lang | null;
       const initial: Lang = stored && (SUPPORTED_LANGS as readonly string[]).includes(stored)
         ? stored
@@ -44,6 +47,10 @@ export function LangProvider({ children }: { children: ReactNode }) {
       I18nManager.allowRTL(true);
       setLangState(initial);
       setNeedsReload(isRTL(initial) !== I18nManager.isRTL);
+      // Keep the splash up for a minimum beat so it never flashes.
+      const elapsed = Date.now() - startedAt;
+      const MIN_SPLASH = 1100;
+      if (elapsed < MIN_SPLASH) await new Promise((r) => setTimeout(r, MIN_SPLASH - elapsed));
       setReady(true);
     })();
   }, []);
@@ -62,7 +69,7 @@ export function LangProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  if (!ready) return null;
+  if (!ready) return <Splash />;
 
   return (
     <LangContext.Provider value={{ lang, rtl: isRTL(lang), setLang, needsReload }}>

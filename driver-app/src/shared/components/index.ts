@@ -3,6 +3,8 @@ export { Brand } from './Brand';
 export { Button } from './Button';
 export { Field } from './Field';
 export { Icon, type IconName } from './Icon';
+export { Loading } from './Loading';
 export { DjeraMap, type LatLng } from './Map';
 export { Navbar } from './Navbar';
 export { Screen } from './Screen';
+export { Splash } from './Splash';

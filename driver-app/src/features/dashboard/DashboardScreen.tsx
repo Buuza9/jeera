@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type MapView from 'react-native-maps';
 
 import { DjeraMap, Icon, Navbar } from '@/shared/components';
-import { useDeviceLocation } from '@/shared/useDeviceLocation';
+import { useLocation } from '@/shared/LocationProvider';
 import { MOCK_REQUEST } from '@/features/ride-requests/data';
 import { useRideStore } from '@/features/ride-requests/store';
 
@@ -26,7 +26,7 @@ export function DashboardScreen() {
   const incoming = useRideStore((s) => s.incoming);
   const offer = useRideStore((s) => s.offer);
 
-  const { location, hasFix } = useDeviceLocation();
+  const { location, hasFix } = useLocation();
   const mapRef = useRef<MapView | null>(null);
 
   // Map framing:

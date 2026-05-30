@@ -7,7 +7,7 @@ import type MapView from 'react-native-maps';
 import { Button, DjeraMap } from '@/shared/components';
 import { haversineKm, regionForPoints } from '@/shared/geo';
 import { openDirections } from '@/shared/maps';
-import { useDeviceLocation } from '@/shared/useDeviceLocation';
+import { useLocation } from '@/shared/LocationProvider';
 
 import { useRideStore } from '@/features/ride-requests/store';
 import { MOCK_REQUEST } from '@/features/ride-requests/data';
@@ -17,7 +17,7 @@ import { RecenterButton } from './RecenterButton';
 export function InTripScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { location } = useDeviceLocation();
+  const { location } = useLocation();
   const trip = useRideStore((s) => s.active) ?? MOCK_REQUEST;
   const dropoff = trip.dropoff.coord;
   const mapRef = useRef<MapView | null>(null);
