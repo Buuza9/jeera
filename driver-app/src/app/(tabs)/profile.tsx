@@ -1,6 +1,5 @@
-import { ComingSoon } from '@/features/_placeholder/ComingSoon';
+import { ProfileScreen } from '@/features/profile';
 
-// Placeholder until the profile feature (D4) lands.
 export default function ProfileRoute() {
-  return <ComingSoon title="Profile" />;
+  return <ProfileScreen />;
 }
