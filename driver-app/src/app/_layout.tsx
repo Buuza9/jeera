@@ -30,6 +30,10 @@ export default function RootLayout() {
         <LocationProvider>
           <StatusBarFromTheme />
           <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
+            {/* Returning to the dashboard via router.replace (placeholder "Back",
+                end-of-trip "home") should animate as a pop — slide left→right —
+                instead of the default push direction. */}
+            <Stack.Screen name="dashboard" options={{ animationTypeForReplace: 'pop' }} />
             {/* Ride request slides up as a sheet OVER the dashboard (map stays behind). */}
             <Stack.Screen
               name="ride-requests"

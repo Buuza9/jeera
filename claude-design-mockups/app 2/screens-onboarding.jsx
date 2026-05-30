@@ -1,44 +1,140 @@
 /* Geera — onboarding screens.
-   welcome → auth → otp → auth-success → enrollment → enrollment-pending */
+   splash → welcome → auth → otp → auth-success → enrollment → enrollment-pending */
 
-function ScreenWelcome({ go }) {
+/* ── Splash ──────────────────────────────────────────────────── */
+function ScreenSplash({ go }) {
+  const [exiting, setExiting] = useState(false);
+  useEffect(() => {
+    const t1 = setTimeout(() => setExiting(true), 2500);
+    const t2 = setTimeout(() => go("welcome"), 2950);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
   return (
-    <div className="screen screen-in" style={{ padding: "84px 28px 32px", textAlign: "center" }}>
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
-        <GeeraLogo variant="mark" size={96}/>
-      </div>
-      <h1 className="display" style={{ fontSize: 36, margin: "0 0 12px", whiteSpace: "pre-line" }}>
-        {t("wel.title")}
-      </h1>
-      <p className="body" style={{ maxWidth: 340, margin: "0 auto 36px", fontSize: 15.5 }}>
-        {t("wel.sub")}
-      </p>
+    <div className={"screen flush splash" + (exiting ? " splash-exit" : "")}>
+      {/* faint street grid */}
+      <svg className="splash-grid" viewBox="0 0 440 956" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g stroke="rgba(255,255,255,.06)" strokeWidth="1.5">
+          <path d="M-20 200 H460 M-20 360 H460 M-20 520 H460 M-20 680 H460 M-20 840 H460"/>
+          <path d="M70 -20 V976 M170 -20 V976 M270 -20 V976 M370 -20 V976"/>
+        </g>
+      </svg>
 
-      <div className="stack stack-2" style={{ width: "100%", textAlign: "start" }}>
-        <WelcomeRow icon={<Ic.clock/>} title={t("wel.f1")} sub={t("wel.f1.sub")}/>
-        <WelcomeRow icon={<Ic.cash/>} title={t("wel.f2")} sub={t("wel.f2.sub")}/>
-        <WelcomeRow icon={<Ic.chart/>} title={t("wel.f3")} sub={t("wel.f3.sub")}/>
+      <div className="splash-center">
+        {/* Brand tile with pulsing rings */}
+        <div className="splash-mark">
+          <span className="splash-ring"/>
+          <span className="splash-ring splash-ring-2"/>
+          <div className="splash-tile">
+            <svg width="48" height="48" viewBox="0 0 32 32" aria-label="Djera">
+              <g transform="rotate(-12 16 16)">
+                <path d="M16 4 L26 27 L16 22.5 Z" fill="#fff" opacity=".98"/>
+                <path d="M16 4 L6 27 L16 22.5 Z" fill="#fff" opacity=".55"/>
+              </g>
+            </svg>
+            <span className="splash-tile-dot"/>
+          </div>
+        </div>
+
+        {/* wordmark resolves in */}
+        <div className="splash-word">
+          <span className="splash-word-en">djera</span>
+          <span className="splash-word-ar">جيرا</span>
+        </div>
+        <div className="splash-tag">{t("brand.tag")}</div>
       </div>
 
-      <div className="spacer"/>
-      <div className="stack stack-3" style={{ width: "100%", marginTop: 24 }}>
-        <button className="btn btn-primary" onClick={() => go("enrollment")}>{t("wel.cta")}</button>
-        <button className="btn btn-ghost" onClick={() => go("auth")}>{t("wel.signin")}</button>
-      </div>
-      <p className="micro" style={{ marginTop: 18, maxWidth: 280, marginInline: "auto" }}>{t("wel.legal")}</p>
+      {/* sleek indeterminate progress bar */}
+      <div className="splash-progress"><span/></div>
     </div>
   );
 }
 
-function WelcomeRow({ icon, title, sub }) {
+/* ── Reusable in-app loading page ────────────────────────────── */
+function ScreenLoading({ label, sub, dark, next, go }) {
+  useEffect(() => {
+    if (!next || !go) return;
+    const id = setTimeout(() => go(next), 1700);
+    return () => clearTimeout(id);
+  }, [next]);
   return (
-    <div className="row">
-      <div className="row-ic">{icon}</div>
-      <div className="row-text">
+    <div className={"screen flush loading-page" + (dark ? " loading-dark" : "")}>
+      <div className="loading-center">
+        <div className="loading-orbit">
+          {/* track */}
+          <svg viewBox="0 0 64 64" width="64" height="64">
+            <circle cx="32" cy="32" r="27" fill="none" stroke="var(--surface-3)" strokeWidth="4"/>
+          </svg>
+          {/* spinning arc */}
+          <span className="loading-orbit-spin">
+            <svg viewBox="0 0 64 64" width="64" height="64">
+              <circle cx="32" cy="32" r="27" fill="none" stroke="var(--brand-600)" strokeWidth="4"
+                      strokeLinecap="round" strokeDasharray="46 124"/>
+            </svg>
+          </span>
+          {/* centered dart */}
+          <div className="loading-dart">
+            <svg width="22" height="22" viewBox="0 0 32 32">
+              <g transform="rotate(-12 16 16)">
+                <path d="M16 4 L26 27 L16 22.5 Z" fill="var(--brand-600)" opacity=".98"/>
+                <path d="M16 4 L6 27 L16 22.5 Z" fill="var(--brand-600)" opacity=".5"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div className="loading-label">{label || "Finding your route…"}</div>
+        {sub && <div className="loading-sub">{sub}</div>}
+        {/* shimmer dots */}
+        <div className="loading-dots"><span/><span/><span/></div>
+      </div>
+    </div>
+  );
+}
+
+function ScreenWelcome({ go }) {
+  return (
+    <div className="screen welcome-screen screen-in">
+      {/* Brand mark — quiet, top-left */}
+      <div className="wel-top wel-anim" style={{ "--d": "0ms" }}>
+        <GeeraLogo variant="mark" size={52}/>
+      </div>
+
+      {/* Headline block */}
+      <div className="wel-lead">
+        <h1 className="display wel-title wel-anim" style={{ "--d": "60ms" }}>{t("wel.title")}</h1>
+        <p className="wel-sub wel-anim" style={{ "--d": "140ms" }}>{t("wel.sub")}</p>
+      </div>
+
+      <div className="spacer"/>
+
+      {/* Minimal feature list — hairline separated */}
+      <ul className="wel-features">
+        <WelItem n="01" title={t("wel.f1")} sub={t("wel.f1.sub")} d="220ms"/>
+        <WelItem n="02" title={t("wel.f2")} sub={t("wel.f2.sub")} d="300ms"/>
+        <WelItem n="03" title={t("wel.f3")} sub={t("wel.f3.sub")} d="380ms"/>
+      </ul>
+
+      {/* Actions */}
+      <div className="wel-actions wel-anim" style={{ "--d": "460ms" }}>
+        <button className="btn btn-primary btn-lg" onClick={() => go("enrollment")}>
+          {t("wel.cta")} <Ic.arrowRight size={18}/>
+        </button>
+        <button className="btn btn-ghost" onClick={() => go("auth")}>{t("wel.signin")}</button>
+      </div>
+      <p className="micro wel-legal wel-anim" style={{ "--d": "520ms" }}>{t("wel.legal")}</p>
+    </div>
+  );
+}
+
+function WelItem({ n, title, sub, d }) {
+  return (
+    <li className="wel-item wel-anim" style={{ "--d": d }}>
+      <span className="wel-item-n">{n}</span>
+      <div className="wel-item-text">
         <h4>{title}</h4>
         <p>{sub}</p>
       </div>
-    </div>
+    </li>
   );
 }
 
@@ -151,7 +247,11 @@ function ScreenOTP({ go, back, phone }) {
           ))}
         </div>
         {err && <div className="small" style={{ color: "var(--danger)" }}>{t("otp.bad")}</div>}
-        {verifying && <div className="small" style={{ color: "var(--brand-600)" }}>{t("otp.verifying")}</div>}
+        {verifying && (
+          <div className="small" style={{ color: "var(--brand-600)", display: "flex", alignItems: "center", gap: 10 }}>
+            <RouteSpinner size={20}/> {t("otp.verifying")}
+          </div>
+        )}
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button className="btn-ghost btn"
@@ -171,7 +271,7 @@ function ScreenOTP({ go, back, phone }) {
 /* ── Auth success ────────────────────────────────────────────── */
 function ScreenAuthSuccess({ go }) {
   useEffect(() => {
-    const id = setTimeout(() => go("dashboard"), 2400);
+    const id = setTimeout(() => go("loading", { label: "Setting up your dashboard…", sub: "Just a moment", next: "dashboard" }), 1900);
     return () => clearTimeout(id);
   }, []);
   return (
@@ -180,7 +280,7 @@ function ScreenAuthSuccess({ go }) {
       <h1 className="h1" style={{ marginTop: 28 }}>{t("auth.ok.title")}</h1>
       <p className="body" style={{ marginTop: 8 }}>{t("auth.ok.sub")}</p>
       <div className="spacer"/>
-      <button className="btn btn-primary" onClick={() => go("dashboard")}>{t("auth.ok.cta")}</button>
+      <button className="btn btn-primary" onClick={() => go("loading", { label: "Setting up your dashboard…", sub: "Just a moment", next: "dashboard" })}>{t("auth.ok.cta")}</button>
     </div>
   );
 }
@@ -267,6 +367,8 @@ function ScreenEnrollmentPending({ go }) {
   );
 }
 
+window.ScreenSplash = ScreenSplash;
+window.ScreenLoading = ScreenLoading;
 window.ScreenWelcome = ScreenWelcome;
 window.ScreenAuth = ScreenAuth;
 window.ScreenOTP = ScreenOTP;

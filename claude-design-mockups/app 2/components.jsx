@@ -336,6 +336,17 @@ function BottomSheet({ children, dim = false, style = "rounded" }) {
   );
 }
 
+function RouteSpinner({ size = 28 }) {
+  return (
+    <span className="route-spinner" style={{ width: size, height: size }}>
+      <svg viewBox="0 0 32 32" width={size} height={size}>
+        <circle cx="16" cy="16" r="13"/>
+      </svg>
+    </span>
+  );
+}
+
+window.RouteSpinner = RouteSpinner;
 window.PhoneFrame = PhoneFrame;
 window.useFitPhone = useFitPhone;
 window.Navbar = Navbar;
