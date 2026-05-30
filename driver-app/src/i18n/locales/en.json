@@ -51,6 +51,10 @@
     "cta": "Continue to dashboard",
     "auto": { "prefix": "Redirecting in", "s": "s" }
   },
+  "loading": {
+    "label": "Setting up your dashboard…",
+    "sub": "Just a moment"
+  },
   "enr": {
     "title": "Driver enrollment",
     "sub": "We'll review your details within 24 hours.",

@@ -52,7 +52,7 @@ export function OtpScreen() {
       const session = await verifyOtp(via, to, c);
       setStatus({ text: t('otp.ok'), kind: 'ok' });
       signIn(session);
-      setTimeout(() => router.replace({ pathname: '/auth/success', params: { to } }), 500);
+      setTimeout(() => router.replace('/auth/loading'), 500);
     } catch {
       setVerifying(false);
       setError(true);

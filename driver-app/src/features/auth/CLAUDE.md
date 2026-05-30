@@ -4,18 +4,22 @@ Returning-user sign-in: identifier → OTP → signed-in. Ported from `driver-pr
 
 ## Flow
 
-`/auth` (sign-in) → `/auth/otp` (verify) → `/auth/success` → `/dashboard`.
+`/auth` (sign-in) → `/auth/otp` (verify) → `/auth/loading` → `/dashboard`.
+
+(`/auth/success` — the old check-ring screen — is retained but no longer in the flow.)
 
 - **Sign-in** — Phone/Email method tabs, validation, "Send code". Per the locked
   stack, **email OTP is the real path** (Supabase); SMS/phone is deferred. In
   mock mode both methods proceed so the flow is demoable.
 - **OTP** — 6-box code entry (auto-advance, backspace, paste, always LTR),
   resend 30s countdown, change-method link, verifying overlay. Mock code `123456`.
-- **Success** — animated check ring, verified identifier, 3s auto-redirect + CTA.
+- **Loading** — spinning route-arc + pulsing dart, "Setting up your dashboard…",
+  shimmer dots; auto-advances to the dashboard (~1.7s). Ported from the
+  prototype `ScreenLoading`.
 
 ## Files
 
-- `SignInScreen.tsx` · `OtpScreen.tsx` (+ `OtpInput.tsx`) · `SuccessScreen.tsx`
+- `SignInScreen.tsx` · `OtpScreen.tsx` (+ `OtpInput.tsx`) · `LoadingScreen.tsx` · `SuccessScreen.tsx`
 - `store.ts` — `useAuthStore` (Zustand + `persist` via secure-store, key `djera.auth`). Holds `session`, `hydrated`; `signIn`/`signOut`.
 - `data.ts` — `requestOtp` / `verifyOtp`. Mock-gated by `USE_MOCKS`; real path = Supabase email OTP (TODO).
 - Routes in `src/app/auth/`. Copy in `src/i18n/locales/*` under `auth.*`, `otp.*`, `ok.*`.

@@ -9,7 +9,8 @@
 | Phone input | ✅ | +218 prefix with Libya flag, `9X XXX XXXX` auto-format, 9-digit validation. |
 | Email input | ✅ | Email validation. The functional OTP path per locked stack. |
 | OTP screen | ✅ | 6-box entry (auto-advance, backspace, paste, LTR), demo hint, Verify, resend 30s countdown, change-method, verifying overlay. Boxes 12px radius. Verified on sim. |
-| Success screen | ✅ | Animated check ring (Reanimated), verified identifier, 3s auto-redirect + CTA → dashboard. |
+| Loading screen | ✅ | Post-verify loading page (ported from prototype `ScreenLoading`): spinning route-arc + pulsing dart (SVG + Reanimated), label/sub, shimmer dots; auto-advances → dashboard (~1.7s). Shown in place of the success screen before the dashboard. |
+| Success screen | ✅ | Animated check ring (Reanimated), verified identifier, 3s auto-redirect + CTA → dashboard. Kept but no longer in the flow (OTP → loading → dashboard); route `/auth/success` retained. |
 | `authStore` | ✅ | Zustand + persist via expo-secure-store (`djera.auth`). `session`, `hydrated`, `signIn`, `signOut`. |
 | Mock OTP (`data.ts`) | ✅ | `requestOtp`/`verifyOtp` gated by `USE_MOCKS`; code `123456`. |
 | Live OTP (Supabase email) | 🔌 | Stubbed — throws until backend wired. Flip `EXPO_PUBLIC_USE_MOCKS=false`. |
