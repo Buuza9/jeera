@@ -22,3 +22,16 @@
 ## Routes added (placeholders until their features land)
 
 `/trips`, `/earnings`, `/profile`, `/commission`, `/ride-requests` → `ComingSoon`.
+
+## Future enhancements (nice-to-haves for later)
+
+Not required for the feature to ship, but worth revisiting:
+
+- **Live data wiring** — replace the mock Today summary (320 LYD · 15 trips · 6h) and commission (48 LYD · Due Sunday) with real values from the earnings + commission stores once those features land.
+- **Backend presence** — when the driver goes online, publish availability to Supabase Realtime so dispatch can match them; reflect connection state in the toggle.
+- **Background location while online** — request background location so the platform can track position for dispatch even when the app is backgrounded (needs `NSLocationAlwaysAndWhenInUseUsageDescription` + background mode).
+- **Driver-pin heading** — rotate the pin to face direction of travel using GPS bearing (mirrors the prototype's `animateAlong`); animate the online pulse ring with Reanimated instead of a static ring.
+- **Map style toggle** — wire the (currently static) layers control to switch map style, and auto-match the active light/dark theme.
+- **Neighborhood + real weather** — reverse-geocode the live location for the greeting card; replace the mock "Tripoli · 26°" with a real weather call.
+- **Location-denied UX** — show a friendly banner prompting the user to enable location in Settings when permission is denied (currently silently falls back to Tripoli).
+- **Notifications** — make the bell open a real notifications feed with an unread badge driven by data.
