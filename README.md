@@ -25,6 +25,12 @@ each paired with its own HTML clickable prototype.
 - [`ROADMAP.md`](./ROADMAP.md) — phased build plan per surface.
 - [`CLAUDE.md`](./CLAUDE.md) — project-level instructions for AI agents (each workspace has its own).
 
+## Architecture & planning
+
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — system context, container view, data-flow diagrams, repo topology.
+- [`docs/`](./docs/) — cross-cutting planning & operations docs: [build plan](./docs/build-plan.md), [infrastructure](./docs/infrastructure.md), [database & storage](./docs/database-storage.md), [monitoring](./docs/monitoring.md), [error handling](./docs/error-handling.md), [security](./docs/security.md), [testing & QA](./docs/testing-qa.md).
+- [`supabase/SCHEMA.md`](./supabase/SCHEMA.md) — the shared database contract.
+
 ## Pricing & commission (per client spec)
 
 - 100% **cash** payment at end of trip
