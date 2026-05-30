@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { View, type ViewStyle } from 'react-native';
-import MapView, { Marker, PROVIDER_DEFAULT, type Region } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_DEFAULT, type Region } from 'react-native-maps';
 
 import { TRIPOLI_REGION } from '@/shared/geo';
 
@@ -14,6 +14,8 @@ type DjeraMapProps = {
   online?: boolean;
   /** Additional pins (rider pickup, destination, …). */
   markers?: { id: string; coord: LatLng; kind?: 'rider' | 'dest' }[];
+  /** Route polyline (pickup → destination), drawn in brand green. */
+  route?: LatLng[];
   scrollEnabled?: boolean;
 };
 
@@ -25,7 +27,7 @@ const PIN_COLOR = { rider: '#2a673a', dest: '#c5372f' };
  * passed in. Mirrors the prototype JeeraMap pins.
  */
 export const DjeraMap = forwardRef<MapView, DjeraMapProps>(function DjeraMap(
-  { region = TRIPOLI_REGION, style, driver, online = false, markers = [], scrollEnabled = true },
+  { region = TRIPOLI_REGION, style, driver, online = false, markers = [], route, scrollEnabled = true },
   ref,
 ) {
   return (
@@ -38,6 +40,10 @@ export const DjeraMap = forwardRef<MapView, DjeraMapProps>(function DjeraMap(
       showsCompass={false}
       toolbarEnabled={false}
     >
+      {route && route.length > 1 ? (
+        <Polyline coordinates={route} strokeColor="#2a673a" strokeWidth={4} />
+      ) : null}
+
       {driver ? (
         <Marker coordinate={driver} anchor={{ x: 0.5, y: 0.5 }} flat>
           <View className="h-11 w-11 items-center justify-center">

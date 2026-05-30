@@ -17,7 +17,17 @@ export default function RootLayout() {
     <ThemeProvider>
       <LangProvider>
         <StatusBarFromTheme />
-        <Stack screenOptions={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: false }}>
+          {/* Ride request slides up as a sheet OVER the dashboard (map stays behind). */}
+          <Stack.Screen
+            name="ride-requests"
+            options={{
+              presentation: 'transparentModal',
+              animation: 'fade',
+              contentStyle: { backgroundColor: 'transparent' },
+            }}
+          />
+        </Stack>
       </LangProvider>
     </ThemeProvider>
   );
