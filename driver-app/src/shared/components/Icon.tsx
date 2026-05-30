@@ -195,6 +195,49 @@ const ICONS = {
       </>
     ),
   },
+  globe: {
+    size: 22, sw: 1.8, shape: (sw, c) => (
+      <>
+        <Circle cx={12} cy={12} r={9} stroke={c} strokeWidth={sw} fill="none" />
+        <Path d="M3 12h18" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} fill="none" />
+        <Path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
+  megaphone: {
+    size: 22, sw: 1.8, shape: (sw, c) => (
+      <>
+        <Path d="M3 11l18-5v12L3 13z" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+        <Path d="M11.6 16.8a3 3 0 0 1-5.8-1.6" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
+  lock: {
+    size: 22, sw: 1.8, shape: (sw, c) => (
+      <>
+        <Rect x={4} y={10} width={16} height={11} rx={2} stroke={c} strokeWidth={sw} fill="none" />
+        <Path d="M8 10V7a4 4 0 0 1 8 0v3" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
+  help: {
+    size: 22, sw: 1.8, shape: (sw, c) => (
+      <>
+        <Circle cx={12} cy={12} r={9} stroke={c} strokeWidth={sw} fill="none" />
+        <Path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.5c0 1.7-2.5 2-2.5 3.5" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+        <Path d="M12 17h.01" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
+  logout: {
+    size: 22, sw: 1.8, shape: (sw, c) => (
+      <>
+        <Path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+        <Path d="M10 17l5-5-5-5" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+        <Path d="M15 12H3" stroke={c} strokeWidth={sw} strokeLinecap={S.cap} strokeLinejoin={S.join} fill="none" />
+      </>
+    ),
+  },
   fingerprint: {
     size: 22, sw: 1.6, shape: (sw, c) => (
       <>

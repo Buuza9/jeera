@@ -23,7 +23,11 @@ export function ComingSoon({ title }: { title: string }) {
         {/* These placeholders are tab destinations reached via Navbar's
             router.replace, so there's no back-stack entry — return to the
             dashboard explicitly rather than router.back() (which goes nowhere). */}
-        <Button label={t('common.back')} variant="secondary" onPress={() => router.navigate('/dashboard')} />
+        <Button
+          label={t('common.back')}
+          variant="secondary"
+          onPress={() => (router.canGoBack() ? router.back() : router.navigate('/dashboard'))}
+        />
       </View>
     </Screen>
   );
