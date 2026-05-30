@@ -8,7 +8,7 @@
 | Map shim (`DjeraMap`) | ✅ | `src/shared/components/Map.tsx` — react-native-maps, Apple provider on iOS (no key), driver pin (pulse when online) + rider/dest pins. Reused by ride-requests/active-trip/trip-history later. |
 | Real GPS (`expo-location`) | ✅ | `src/shared/useDeviceLocation.ts` — foreground permission, initial fix + watch, Tripoli fallback. Map + driver pin center on live position; recenter control re-centers. Permission strings in app.json. |
 | Navbar | ✅ | `src/shared/components/Navbar.tsx` — 4 tabs (Home/Trips/Earnings/Profile), active highlight, safe-area aware. Reused across D2–D4. |
-| Online toggle | ✅ | `dashboardStore` (Zustand + AsyncStorage, persisted). Going online mocks an incoming request after 3s → `/ride-requests`. |
+| Online toggle | ✅ | `dashboardStore` (Zustand, **in-memory** — always boots offline; persisting would mark a closed app as available). While focused + online, a `useFocusEffect` search loop presents a ride-request sheet after ~3s; rejecting re-searches automatically; accepting/going offline stops it. |
 | Today summary | 🟡 | Mock values (320 LYD · 15 trips · 6h). Real data from earnings store later. |
 | Commission indicator | 🟡 | Mock (48 LYD · Due Sunday). Real data from commission store later. |
 | Notifications bell | 🟡 | Static dot; no notifications feature yet. |

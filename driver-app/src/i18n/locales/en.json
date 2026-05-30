@@ -87,6 +87,20 @@
     "commission": "Commission",
     "due": "Due Sunday"
   },
+  "req": {
+    "incoming": "Incoming request",
+    "sub": "Confirm within the timer",
+    "pickup": "Pickup",
+    "dest": "Destination",
+    "pickupAddr": "Hai al-Andalus, Tripoli",
+    "destAddr": "Gargaresh, Tripoli",
+    "rider": "Khalid Ahmed",
+    "toRider": "To rider",
+    "trip": "Trip",
+    "fare": "Fare",
+    "reject": "Reject",
+    "accept": "Accept"
+  },
   "nav": {
     "home": "Home",
     "trips": "Trips",
@@ -95,7 +109,8 @@
   },
   "unit": {
     "currency": "LYD",
-    "hr": "h"
+    "hr": "h",
+    "km": "km"
   },
   "common": {
     "comingSoon": "Coming soon",

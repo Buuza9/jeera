@@ -1,5 +1,5 @@
-import { useRouter } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +13,7 @@ import { useDashboardStore } from './store';
 // Mock summary — real values come from earnings/commission stores later.
 const TODAY = { earnings: 320, trips: 15, hours: 6 };
 const COMMISSION = { outstanding: 48 };
+const SEARCH_MS = 3000; // mock "searching for a rider" delay
 
 export function DashboardScreen() {
   const { t } = useTranslation();
@@ -20,7 +21,6 @@ export function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const online = useDashboardStore((s) => s.online);
   const setOnline = useDashboardStore((s) => s.setOnline);
-  const pingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { location, hasFix } = useDeviceLocation();
   const mapRef = useRef<MapView | null>(null);
@@ -35,15 +35,20 @@ export function DashboardScreen() {
   const recenter = () =>
     mapRef.current?.animateCamera({ center: location, zoom: 15 }, { duration: 400 });
 
-  // Going online mocks an incoming request after 3s (prototype behaviour).
-  useEffect(() => {
-    if (online) {
-      pingTimer.current = setTimeout(() => router.push('/ride-requests'), 3000);
-    }
-    return () => {
-      if (pingTimer.current) clearTimeout(pingTimer.current);
-    };
-  }, [online, router]);
+  // Search loop: whenever the dashboard is focused AND online, schedule a mock
+  // request after SEARCH_MS. Because it runs on focus, dismissing the request
+  // sheet (reject / timeout) returns here and automatically searches again —
+  // until the driver accepts a trip or goes offline. Cleanup cancels the timer
+  // when the sheet opens (unfocus) or the driver goes offline.
+  useFocusEffect(
+    useCallback(() => {
+      if (!online) return;
+      const id = setTimeout(() => router.push('/ride-requests'), SEARCH_MS);
+      return () => clearTimeout(id);
+    }, [online, router]),
+  );
+
+  const toggleOnline = () => setOnline(!online);
 
   return (
     <View className="flex-1 bg-bg dark:bg-dark-bg">
@@ -85,7 +90,7 @@ export function DashboardScreen() {
         </Text>
 
         <Pressable
-          onPress={() => setOnline(!online)}
+          onPress={toggleOnline}
           accessibilityRole="switch"
           accessibilityState={{ checked: online }}
           className="mt-3 flex-row items-center gap-3 rounded-lg border border-border bg-surface p-3.5 dark:border-dark-border dark:bg-dark-surface-2"
