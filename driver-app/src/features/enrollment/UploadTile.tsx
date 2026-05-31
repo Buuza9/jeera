@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { Pressable, Text, View } from 'react-native';
 
 import { Icon } from '@/shared/components';
@@ -5,16 +6,17 @@ import { Icon } from '@/shared/components';
 type UploadTileProps = {
   title: string;
   subtitle: string;
-  done: boolean;
+  /** Local URI of the picked image; undefined = not yet uploaded. */
+  uri?: string;
   onPress: () => void;
 };
 
 /**
- * Document upload tile — dashed border when empty, solid brand-tinted when done.
- * Mirrors the prototype `.upload-tile`. Mock: tapping toggles the done state
- * (no real picker yet — wires to expo-image-picker + Supabase Storage later).
+ * Document upload tile — dashed border when empty, solid brand-tinted with a
+ * thumbnail once a photo is picked. Tap to (re)pick. Mirrors the prototype.
  */
-export function UploadTile({ title, subtitle, done, onPress }: UploadTileProps) {
+export function UploadTile({ title, subtitle, uri, onPress }: UploadTileProps) {
+  const done = !!uri;
   return (
     <Pressable
       onPress={onPress}
@@ -24,23 +26,20 @@ export function UploadTile({ title, subtitle, done, onPress }: UploadTileProps) 
           : 'border-dashed border-border bg-surface dark:border-dark-border dark:bg-dark-surface'
       }`}
     >
-      <View
-        className={`h-11 w-11 items-center justify-center rounded-[12px] ${
-          done ? 'bg-brand-600' : 'bg-surface-2 dark:bg-dark-surface-2'
-        }`}
-      >
-        <Icon name={done ? 'check' : 'upload'} size={20} color={done ? '#fcf8f1' : '#5e5650'} />
-      </View>
+      {done ? (
+        <Image source={{ uri }} style={{ width: 44, height: 44, borderRadius: 12 }} contentFit="cover" />
+      ) : (
+        <View className="h-11 w-11 items-center justify-center rounded-[12px] bg-surface-2 dark:bg-dark-surface-2">
+          <Icon name="upload" size={20} color="#5e5650" />
+        </View>
+      )}
       <View className="min-w-0 flex-1">
-        <Text
-          className={`text-sm font-semibold ${
-            done ? 'text-brand-700' : 'text-text dark:text-dark-text'
-          }`}
-        >
+        <Text className={`text-sm font-semibold ${done ? 'text-brand-700' : 'text-text dark:text-dark-text'}`}>
           {title}
         </Text>
         <Text className="mt-0.5 text-xs text-text-muted dark:text-dark-text-muted">{subtitle}</Text>
       </View>
+      {done ? <Icon name="check" size={20} color="#194f29" strokeWidth={2.5} /> : null}
     </Pressable>
   );
 }

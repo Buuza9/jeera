@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, Text, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 import { Appbar, Button, Field, Screen } from '@/shared/components';
 import { COUNTRY, formatLocalPhone } from '@/shared/phone';
@@ -9,6 +10,8 @@ import { COUNTRY, formatLocalPhone } from '@/shared/phone';
 import { submitEnrollment } from './data';
 import { UploadTile } from './UploadTile';
 import { useEnrollmentStore } from './store';
+
+type Asset = ImagePicker.ImagePickerAsset;
 
 export function EnrollmentScreen() {
   const { t } = useTranslation();
@@ -20,22 +23,43 @@ export function EnrollmentScreen() {
   const [nationalId, setNationalId] = useState('');
   const [licenseNumber, setLicenseNumber] = useState('');
   const [plate, setPlate] = useState('');
-  const [idPhoto, setIdPhoto] = useState(false);
-  const [licensePhoto, setLicensePhoto] = useState(false);
+  const [idImage, setIdImage] = useState<Asset | null>(null);
+  const [licenseImage, setLicenseImage] = useState<Asset | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   // National ID is exactly 12 digits.
   const idValid = nationalId.length === 12;
   const filled =
     [fullName, phone, licenseNumber, plate].every((v) => v.trim().length > 1) && idValid;
-  const canSubmit = filled && idPhoto && licensePhoto && !submitting;
+  const canSubmit = filled && !!idImage && !!licenseImage && !submitting;
+
+  // Pick a document photo from the library (base64 needed for the Storage upload).
+  const pick = async (set: (a: Asset) => void) => {
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.6,
+      base64: true,
+    });
+    if (!res.canceled && res.assets[0]) set(res.assets[0]);
+  };
 
   const onSubmit = async () => {
-    if (!canSubmit) return;
+    if (!canSubmit || !idImage || !licenseImage) return;
     setSubmitting(true);
-    const application = { fullName, phone, nationalId, licenseNumber, plate, idPhoto, licensePhoto };
+    const application = {
+      fullName,
+      phone,
+      nationalId,
+      licenseNumber,
+      plate,
+      idPhoto: true,
+      licensePhoto: true,
+    };
     try {
-      await submitEnrollment(application);
+      await submitEnrollment(application, {
+        id: { uri: idImage.uri, base64: idImage.base64 },
+        license: { uri: licenseImage.uri, base64: licenseImage.base64 },
+      });
       setSubmitted(application);
       router.replace('/enrollment/pending');
     } catch (e) {
@@ -113,14 +137,14 @@ export function EnrollmentScreen() {
         <UploadTile
           title={t('enr.idPhoto')}
           subtitle={t('enr.idPhotoSub')}
-          done={idPhoto}
-          onPress={() => setIdPhoto((v) => !v)}
+          uri={idImage?.uri}
+          onPress={() => pick(setIdImage)}
         />
         <UploadTile
           title={t('enr.licPhoto')}
           subtitle={t('enr.licPhotoSub')}
-          done={licensePhoto}
-          onPress={() => setLicensePhoto((v) => !v)}
+          uri={licenseImage?.uri}
+          onPress={() => pick(setLicenseImage)}
         />
       </ScrollView>
 

@@ -1,6 +1,10 @@
 import { type ReactNode } from 'react';
+import { I18nManager } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
+
+// Directional icons mirror in RTL (like the prototype's `scaleX(-1)` on chevrons).
+const DIRECTIONAL = new Set(['arrowLeft', 'arrowRight']);
 
 // Dark-mode color remap. Icons pass light-theme colors (the default foreground
 // is #1b1410); in dark mode those would sit invisibly on dark surfaces. Map the
@@ -289,8 +293,15 @@ export function Icon({ name, size, color = '#1b1410', strokeWidth, filled = fals
   const px = size ?? def.size;
   const sw = strokeWidth ?? def.sw;
   const resolved = colorScheme === 'dark' ? (DARK_MAP[color.toLowerCase()] ?? color) : color;
+  const flip = I18nManager.isRTL && DIRECTIONAL.has(name);
   return (
-    <Svg width={px} height={px} viewBox="0 0 24 24" fill="none">
+    <Svg
+      width={px}
+      height={px}
+      viewBox="0 0 24 24"
+      fill="none"
+      style={flip ? { transform: [{ scaleX: -1 }] } : undefined}
+    >
       {def.shape(sw, resolved, filled)}
     </Svg>
   );

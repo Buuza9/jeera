@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLocales } from 'expo-localization';
+import * as Updates from 'expo-updates';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { I18nManager } from 'react-native';
+import { DevSettings, I18nManager } from 'react-native';
 
 import { Splash } from '@/shared/components/Splash';
 
@@ -55,17 +56,27 @@ export function LangProvider({ children }: { children: ReactNode }) {
     })();
   }, []);
 
-  const setLang = (next: Lang) => {
+  const setLang = async (next: Lang) => {
     setLangState(next);
     i18n.changeLanguage(next);
-    AsyncStorage.setItem(STORAGE_KEY, next);
+    // Persist BEFORE any reload so the new language survives the restart.
+    await AsyncStorage.setItem(STORAGE_KEY, next);
+
     const wantRTL = isRTL(next);
-    if (wantRTL !== I18nManager.isRTL) {
-      I18nManager.allowRTL(true);
-      I18nManager.forceRTL(wantRTL);
-      setNeedsReload(true);
-    } else {
+    if (wantRTL === I18nManager.isRTL) {
       setNeedsReload(false);
+      return;
+    }
+    // RN only flips layout direction on a fresh start, so force the direction
+    // and reload the whole app — every screen then re-lays-out RTL/LTR.
+    I18nManager.allowRTL(true);
+    I18nManager.forceRTL(wantRTL);
+    setNeedsReload(true);
+    try {
+      await Updates.reloadAsync();
+    } catch {
+      // Dev fallback (expo-updates reload is a no-op when running from Metro).
+      DevSettings.reload?.();
     }
   };
 

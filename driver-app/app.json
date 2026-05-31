@@ -8,7 +8,6 @@
     "scheme": "driverapp",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.buuza99.driver-app",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Djera uses your location to show your position on the map and match you with nearby ride requests.",
@@ -17,10 +16,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#2a673a",
+        "foregroundImage": "./assets/images/android-icon-foreground.png"
       },
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
       "predictiveBackGestureEnabled": false
@@ -45,6 +42,12 @@
         "expo-location",
         {
           "locationWhenInUsePermission": "Djera uses your location to show your position on the map and match you with nearby ride requests."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Djera needs access to your photos to upload your national ID and driver's license for verification."
         }
       ]
     ],

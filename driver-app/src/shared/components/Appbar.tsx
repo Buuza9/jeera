@@ -1,8 +1,6 @@
 import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
-import { useLang } from '@/i18n/LangProvider';
-
 import { Icon } from './Icon';
 
 type AppbarProps = {
@@ -21,7 +19,6 @@ type AppbarProps = {
  */
 export function Appbar({ title, onBack, hideBack = false, trailing }: AppbarProps) {
   const router = useRouter();
-  const { rtl } = useLang();
   return (
     <View className="flex-row items-center gap-2.5 pb-4">
       {hideBack ? null : (
@@ -31,7 +28,7 @@ export function Appbar({ title, onBack, hideBack = false, trailing }: AppbarProp
           accessibilityLabel="Back"
           className="h-10 w-10 items-center justify-center rounded-full border border-border bg-surface dark:border-dark-border dark:bg-dark-surface"
         >
-          <Icon name={rtl ? 'arrowRight' : 'arrowLeft'} size={20} color="#1b1410" />
+          <Icon name="arrowLeft" size={20} color="#1b1410" />
         </Pressable>
       )}
       {title ? (

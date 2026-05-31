@@ -17,9 +17,9 @@ create table if not exists public.drivers (
   national_id             text not null,
   license_number          text not null,
   plate                   text not null,
-  -- Doc upload state. Phase 3 replaces these booleans with Storage object paths.
-  id_photo_uploaded       boolean not null default false,
-  license_photo_uploaded  boolean not null default false,
+  -- Storage object paths in the private `driver-docs` bucket (null until uploaded).
+  id_photo_path           text,
+  license_photo_path      text,
   status                  public.driver_status not null default 'pending',
   created_at              timestamptz not null default now(),
   updated_at              timestamptz not null default now()

@@ -5,7 +5,7 @@
 | Item | Status | Notes |
 |---|---|---|
 | Form screen | ✅ | Appbar, 5 fields (name, +218 phone, national ID, license, plate), Documents divider, 2 upload tiles, sticky Submit (enabled when complete). Verified on iOS sim. |
-| Upload tiles | 🟡 | `UploadTile.tsx` — dashed→solid brand on "done". Mock toggle; real picker (expo-image-picker + Supabase Storage) is TODO. |
+| Upload tiles | ✅ | `UploadTile.tsx` — tap → `expo-image-picker` (library, base64) with thumbnail preview. Live submit uploads both photos to the private `driver-docs` Storage bucket (`{uid}/id`, `{uid}/license`) via `base64-arraybuffer` decode and stores the paths on the driver row. Bucket + RLS: `supabase/migrations/0002_storage_driver_docs.sql`. Needs a dev-client rebuild (native module). |
 | Pending screen | ✅ | Clock icon, title, sub, amber ETA badge, summary card (masked ID), Back to home. Verified on sim. |
 | `enrollmentStore` | ✅ | Zustand + persist via AsyncStorage (`djera.enrollment`): `application`, `status`, `setSubmitted`, `reset`. |
 | Mock submit (`data.ts`) | ✅ | `submitEnrollment` gated by `USE_MOCKS`; `maskId` helper. |
