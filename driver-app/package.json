@@ -7,6 +7,7 @@
     "@react-native-async-storage/async-storage": "^3.1.0",
     "@react-navigation/bottom-tabs": "^7.16.2",
     "@supabase/supabase-js": "^2.106.2",
+    "base64-arraybuffer": "^1.0.2",
     "expo": "~56.0.6",
     "expo-constants": "~56.0.16",
     "expo-dev-client": "~56.0.18",
@@ -14,6 +15,7 @@
     "expo-font": "~56.0.5",
     "expo-glass-effect": "~56.0.4",
     "expo-image": "~56.0.9",
+    "expo-image-picker": "~56.0.15",
     "expo-linking": "~56.0.12",
     "expo-localization": "^56.0.6",
     "expo-location": "~56.0.14",
@@ -23,6 +25,7 @@
     "expo-status-bar": "~56.0.4",
     "expo-symbols": "~56.0.5",
     "expo-system-ui": "~56.0.5",
+    "expo-updates": "~56.0.17",
     "expo-web-browser": "~56.0.5",
     "i18next": "^26.3.0",
     "nativewind": "^4.2.4",
@@ -44,6 +47,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "sharp": "^0.34.5",
     "typescript": "~6.0.3"
   },
   "scripts": {
