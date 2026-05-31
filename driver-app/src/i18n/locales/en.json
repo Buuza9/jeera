@@ -30,6 +30,7 @@
     "email": { "label": "Email address", "err": "Enter a valid email address." },
     "help": "We'll send a one-time code to verify it's you.",
     "send": "Send code",
+    "sendErr": "Couldn't send the code. Please try again.",
     "new": { "q": "New driver?", "cta": "Register as a driver" },
     "todo": "TODO §5 — PIN / biometric session lock scope"
   },

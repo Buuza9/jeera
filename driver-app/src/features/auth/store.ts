@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { SUPABASE_CONFIGURED, USE_MOCKS } from "@/shared/config";
+import { getSupabase } from "@/shared/supabase";
 import { secureStorage } from "@/shared/store/secureStorage";
 
 export type AuthMethod = "phone" | "email";
@@ -26,7 +28,11 @@ export const useAuthStore = create<AuthState>()(
       session: null,
       hydrated: false,
       signIn: (session) => set({ session }),
-      signOut: () => set({ session: null }),
+      signOut: () => {
+        set({ session: null });
+        // Also clear the Supabase session (fire-and-forget) in live mode.
+        if (!USE_MOCKS && SUPABASE_CONFIGURED) getSupabase().auth.signOut().catch(() => {});
+      },
     }),
     {
       name: "djera.auth",

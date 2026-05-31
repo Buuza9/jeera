@@ -6,6 +6,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Brand, Button, Field, Icon, Screen } from '@/shared/components';
 import { COUNTRY, formatLocalPhone, fullPhone, isValidLocalPhone } from '@/shared/phone';
 
+import { requestOtp } from './data';
 import { type AuthMethod } from './store';
 
 const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
@@ -17,14 +18,30 @@ export function SignInScreen() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
 
-  const onSend = () => {
+  // Validate, request the OTP (sends the email in live mode), then go to the
+  // code screen. Surfacing send errors here means the driver never lands on the
+  // OTP screen waiting for a code that was never sent.
+  const onSend = async () => {
+    setError(null);
+    const via: AuthMethod = method;
+    let to: string;
     if (method === 'phone') {
       if (!isValidLocalPhone(phone)) return setError(t('auth.phone.err'));
-      router.push({ pathname: '/auth/otp', params: { via: 'phone', to: fullPhone(phone) } });
+      to = fullPhone(phone);
     } else {
       if (!isValidEmail(email)) return setError(t('auth.email.err'));
-      router.push({ pathname: '/auth/otp', params: { via: 'email', to: email.trim() } });
+      to = email.trim();
+    }
+    setSending(true);
+    try {
+      await requestOtp(via, to);
+      router.push({ pathname: '/auth/otp', params: { via, to } });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t('auth.sendErr'));
+    } finally {
+      setSending(false);
     }
   };
 
@@ -105,7 +122,7 @@ export function SignInScreen() {
         {t('auth.help')}
       </Text>
 
-      <Button label={t('auth.send')} onPress={onSend} />
+      <Button label={t('auth.send')} onPress={onSend} loading={sending} disabled={sending} />
 
       {/* New driver link */}
       <View className="mt-[18px] flex-row justify-center">
