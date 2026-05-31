@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 
 import { Appbar, Button, Field, Screen } from '@/shared/components';
 import { COUNTRY, formatLocalPhone } from '@/shared/phone';
@@ -24,18 +24,25 @@ export function EnrollmentScreen() {
   const [licensePhoto, setLicensePhoto] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const filled = [fullName, phone, nationalId, licenseNumber, plate].every(
-    (v) => v.trim().length > 1,
-  );
+  // National ID is exactly 12 digits.
+  const idValid = nationalId.length === 12;
+  const filled =
+    [fullName, phone, licenseNumber, plate].every((v) => v.trim().length > 1) && idValid;
   const canSubmit = filled && idPhoto && licensePhoto && !submitting;
 
   const onSubmit = async () => {
     if (!canSubmit) return;
     setSubmitting(true);
     const application = { fullName, phone, nationalId, licenseNumber, plate, idPhoto, licensePhoto };
-    await submitEnrollment(application);
-    setSubmitted(application);
-    router.replace('/enrollment/pending');
+    try {
+      await submitEnrollment(application);
+      setSubmitted(application);
+      router.replace('/enrollment/pending');
+    } catch (e) {
+      Alert.alert(t('enr.title'), e instanceof Error ? e.message : t('enr.submitErr'));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -74,9 +81,10 @@ export function EnrollmentScreen() {
         <Field
           label={t('enr.id')}
           keyboardType="number-pad"
-          placeholder="1198XXXXXXX"
+          placeholder="119XXXXXXXXX"
           value={nationalId}
-          onChangeText={setNationalId}
+          onChangeText={(v) => setNationalId(v.replace(/\D/g, '').slice(0, 12))}
+          maxLength={12}
         />
         <Field
           label={t('enr.license')}

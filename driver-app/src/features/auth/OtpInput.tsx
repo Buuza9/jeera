@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TextInput, View, type NativeSyntheticEvent, type TextInputKeyPressEventData } from 'react-native';
 
 type OtpInputProps = {
@@ -19,6 +19,12 @@ export function OtpInput({ length = 6, value, onChange, error = false, onComplet
   const refs = useRef<(TextInput | null)[]>([]);
   const [focused, setFocused] = useState<number | null>(null);
   const chars = value.padEnd(length).slice(0, length).split('');
+
+  // On an incorrect code (error pulses true after the screen clears the value),
+  // send the cursor back to the first box so the driver retypes from the start.
+  useEffect(() => {
+    if (error) refs.current[0]?.focus();
+  }, [error]);
 
   const setAt = (i: number, digits: string) => {
     const arr = value.padEnd(length).split('');
@@ -69,6 +75,7 @@ export function OtpInput({ length = 6, value, onChange, error = false, onComplet
             maxLength={i === 0 ? length : 1}
             textContentType="oneTimeCode"
             selectTextOnFocus
+            caretHidden
             className={`flex-1 rounded-[12px] border-[1.5px] bg-surface text-center text-[22px] font-bold text-text dark:bg-dark-surface dark:text-dark-text ${
               error
                 ? 'border-danger bg-danger/5'
