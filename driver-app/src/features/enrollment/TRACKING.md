@@ -9,7 +9,7 @@
 | Pending screen | ✅ | Clock icon, title, sub, amber ETA badge, summary card (masked ID), Back to home. Verified on sim. |
 | `enrollmentStore` | ✅ | Zustand + persist via AsyncStorage (`djera.enrollment`): `application`, `status`, `setSubmitted`, `reset`. |
 | Mock submit (`data.ts`) | ✅ | `submitEnrollment` gated by `USE_MOCKS`; `maskId` helper. |
-| Live submit (Supabase) | 🔌 | Stubbed — throws until backend wired. |
+| Live submit (Supabase) | ✅ | `submitEnrollment` upserts a `drivers` row keyed to `auth.uid()` (status→pending). Schema: `supabase/migrations/0001_drivers.sql` (table + RLS + updated_at trigger). Requires a signed-in session; doc photos are booleans for now (Storage upload later). EnrollmentScreen shows an error alert on failure. |
 | Approval-status branch (§2.2) | 🟡 | `status` set to `pending` on submit. Consumed by auth/boot gate later (approved→dashboard, suspended→commission/suspended). |
 | Document expiry / re-upload UX | ⏳ | Client-blocked (§5). |
 | AR/RTL + dark visual pass | ⏳ | Strings translated; needs a screenshot pass. |

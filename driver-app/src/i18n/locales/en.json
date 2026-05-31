@@ -70,6 +70,7 @@
     "licPhoto": "Driver's license photo",
     "licPhotoSub": "Both sides if double-sided",
     "submit": "Submit for review",
+    "submitErr": "Couldn't submit your application. Please try again.",
     "pend": {
       "title": "Application submitted",
       "sub": "We're reviewing your documents. You'll get a notification within 24 hours.",
