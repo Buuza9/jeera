@@ -13,8 +13,8 @@
 | Success screen | ✅ | Animated check ring (Reanimated), verified identifier, 3s auto-redirect + CTA → dashboard. Kept but no longer in the flow (OTP → loading → dashboard); route `/auth/success` retained. |
 | `authStore` | ✅ | Zustand + persist via expo-secure-store (`djera.auth`). `session`, `hydrated`, `signIn`, `signOut`. |
 | Mock OTP (`data.ts`) | ✅ | `requestOtp`/`verifyOtp` gated by `USE_MOCKS`; code `123456`. |
-| Live OTP (Supabase email) | 🔌 | Stubbed — throws until backend wired. Flip `EXPO_PUBLIC_USE_MOCKS=false`. |
-| SMS / phone OTP | ⏳ | Deferred per locked stack. |
+| Live OTP (Supabase email) | ✅ | `signInWithOtp` / `verifyOtp` via `@/shared/supabase`. SignInScreen sends on tap; OtpScreen hides the demo hint in live mode; sign-out clears the Supabase session. **Setup:** custom SMTP (built-in email is hard rate-limited), raise email rate limit, Email OTP length = 6, `{{ .Token }}` in Confirm-signup + Magic-link templates. Env: `EXPO_PUBLIC_SUPABASE_URL` / `_ANON_KEY` in `.env` + `EXPO_PUBLIC_USE_MOCKS=false`. |
+| SMS / phone OTP | ⏳ | Deferred — live path throws "use email" until an SMS provider is wired. |
 | Approval-status branch (§2.2) | ⏳ | Always → dashboard for now. TODO chip surfaces it. |
 | PIN / biometric lock (§5) | ⏳ | Client-blocked. TODO chip surfaces it. |
 | AR/RTL + dark visual pass | ⏳ | Strings translated; OTP boxes forced LTR. Needs a screenshot pass. |

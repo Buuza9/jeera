@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 
 import { Button, Icon, Screen } from '@/shared/components';
+import { USE_MOCKS } from '@/shared/config';
 
 import { requestOtp, verifyOtp } from './data';
 import { OtpInput } from './OtpInput';
@@ -21,8 +22,10 @@ export function OtpScreen() {
   const signIn = useAuthStore((s) => s.signIn);
   const [code, setCode] = useState('');
   const [error, setError] = useState(false);
+  // The "demo code is 123456" hint only applies in mock mode.
+  const initialHint = USE_MOCKS ? t('otp.hint') : '';
   const [status, setStatus] = useState<{ text: string; kind: 'hint' | 'err' | 'ok' }>({
-    text: t('otp.hint'),
+    text: initialHint,
     kind: 'hint',
   });
   const [verifying, setVerifying] = useState(false);
@@ -66,7 +69,7 @@ export function OtpScreen() {
     if (cd > 0) return;
     setCode('');
     setError(false);
-    setStatus({ text: t('otp.hint'), kind: 'hint' });
+    setStatus({ text: initialHint, kind: 'hint' });
     setCd(RESEND_SECONDS);
     timer.current = setInterval(() => {
       setCd((n) => {
